@@ -25,3 +25,4 @@ o	Ensure the code is well-documented and capable of exporting results in CSV for
 3.	Methodology Documentation:
 o	Clearly document the methods and algorithms used for semantic similarity computation.
 o	Explain the choice of metrics (e.g., cosine similarity, embeddings) and any pre-trained models or algorithms applied (e.g., Word2Vec, BERT).
+=======
