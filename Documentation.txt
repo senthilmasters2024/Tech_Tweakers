@@ -21,4 +21,6 @@ Also, OpenAI's provides the following text similarity models:
 •	text-similarity-babbage-002
 
 Here, curie-001 and davinci-002 are expensive compared to others.
+ 
 
+a piece of text just to check if security issue related error is gone
