@@ -6,6 +6,7 @@ namespace SemanticaAnalysisTextualDataTest
         [TestMethod]
         public void TestMethod1()
         {
+           
         }
     }
 }
