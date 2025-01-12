@@ -48,12 +48,16 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 List<string> inputs = new() { inp1, inp2 };
 
                 // Generate embeddings for the input texts
-                OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
-
+                //OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+                
+                //Sample Embedded Vales for Fun
+                float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
                 // Calculate similarity between the two embeddings
+                //Sample Embedded Vales for Fun
+                float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
                 var similarity = CalculateSimilarity(
-                    collection[0].ToFloats().ToArray(),
-                    collection[1].ToFloats().ToArray()
+                    fun.ToArray(),
+                    joy.ToArray()
                 );
 
                 // Display the similarity score
@@ -105,8 +109,35 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return cosineSimilarity;
         }
 
-        
-     
+        /// <summary>
+        /// This is another method to explore how cosine similarity works with vectors
+        /// </summary>
+        /// <param name="vectorA"></param>
+        /// <param name="vectorB"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public double computeCosineSimilarity(double[] vectorA, double[] vectorB)
+        {
+            if (vectorA.Length != vectorB.Length)
+                throw new ArgumentException("Vectors must be of the same dimension.");
+
+            double dotProduct = 0.0;
+            double magnitudeA = 0.0;
+            double magnitudeB = 0.0;
+
+            for (int i = 0; i < vectorA.Length; i++)
+            {
+                dotProduct += vectorA[i] * vectorB[i];
+                magnitudeA += Math.Pow(vectorA[i], 2);
+                magnitudeB += Math.Pow(vectorB[i], 2);
+            }
+
+            magnitudeA = Math.Sqrt(magnitudeA);
+            magnitudeB = Math.Sqrt(magnitudeB);
+
+            return dotProduct / (magnitudeA * magnitudeB);
+        }
+
     }
 }
 
