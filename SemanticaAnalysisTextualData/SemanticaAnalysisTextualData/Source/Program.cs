@@ -22,7 +22,7 @@ namespace SemanticAnalysisTextualData.Source
 
             var textAnalysisService = serviceProvider.GetService<SemanticAnalysisTextualDataService>();
 
-            while (true)
+            /*while (true)
             {
                 Console.WriteLine("Enter text 1: ");
                 var text1 = Console.ReadLine();
@@ -35,12 +35,14 @@ namespace SemanticAnalysisTextualData.Source
                     Console.WriteLine("Both inputs must be non-empty. Please try again.");
                     continue;
                 }
-
+*/
                 try
                 {
                     if (null != textAnalysisService)
                     {
-                        var similarity = await textAnalysisService.CalculateSimilarityAsync(text1, text2);
+                    var text1 = "fun";
+                    var text2 = "joy";
+                    var similarity = await textAnalysisService.CalculateSimilarityAsync(text1, text2);
                         Console.WriteLine($"Similarity: {similarity:F4}");
                     }
                 }
@@ -50,5 +52,5 @@ namespace SemanticAnalysisTextualData.Source
                 }
             }
         }
-    }
+   // }
 }

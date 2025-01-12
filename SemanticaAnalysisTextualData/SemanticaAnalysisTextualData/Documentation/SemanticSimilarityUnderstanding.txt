@@ -56,3 +56,31 @@ Data set used for the above example can be find on this site  https://cookbook.o
 To Create Tokens from the given text https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken
 
 Some examples are given in the above link.
+
+Cosine Similarity Sample Output With Vectors to understand similarity:
+
+var vectorA = new double[] { 1, 2, 3 };
+var vectorB = new double[] { 16,17,18 };
+Cosine Similarity: 0.9746318461970762 
+
+var vectorA = new double[] { 1, 2, 3 };
+var vectorB = new double[] { 16,17,18 };
+ 
+Cosine Similarity: 0.942886533797834
+
+var vectorA = new double[] { 1, 2, 3 };
+var vectorB = new double[] { 1, 2, 3 };
+
+Cosine Similarity: 1
+
+ var vectorA = new double[] { 1, 2, 3 };
+ var vectorB = new double[] { -1, -2, -3 };
+ 
+ Cosine Similarity: -1 ( Completely disimilar)
+ 
+ var vectorA = new double[] { 1, 2, 3 };
+var vectorB = new double[] { 100,20, 30 };
+
+Cosine Similarity: 0.5782619234274095 (disimilar but might be related in broader terms like all numbers here are in positive side)
+
+We will learn to plot this values like sample starting point for POC
