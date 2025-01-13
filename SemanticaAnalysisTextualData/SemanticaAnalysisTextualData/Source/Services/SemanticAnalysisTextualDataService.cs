@@ -48,8 +48,15 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 List<string> inputs = new() { inp1, inp2 };
 
                 // Generate embeddings for the input texts
+<<<<<<< Updated upstream
                 OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
 
+=======
+               //OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+                
+                //Sample Embedded Vales for Fun
+                float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
+>>>>>>> Stashed changes
                 // Calculate similarity between the two embeddings
                 var similarity = CalculateSimilarity(
                     collection[0].ToFloats().ToArray(),
