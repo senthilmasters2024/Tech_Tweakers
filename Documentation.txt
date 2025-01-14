@@ -1,26 +1,37 @@
 Semantic Similarity Analysis of Textual Data
 
-Based on the researches, the following steps has been concluded:
+Based on the researches, the following steps has been decided to follow to implement the task succesfully:
 
-1) Convert the word or text document at the input into tokens of numerical representation using OpenAI APIs
-2) Using any of the similarity analysis methods before creating the embeddings such that similar or closely related vectors in the  vector space can be clustered.
-Cosine Similarity
-Euclidean Similarity
-Jaccord Similarity
-Pearson/Sparman Correlation
-3)Now convert this token into Embeddings using GPIs tools in the high dimentional vector space
-4) Now make use of various tools for visualization.
+1) Apply the input (word, text or documents) into a preprocessing section. 
+2) The output from the preprocessor is successfully applied to a section to create Embeddings using OpenAi's GPT model. 
+3) From the high dimensional vector space, using a similarity model, the 'Semantic Similarity' will be extracted.
+4) For Visualization part, we need to generate CSV file and then can generate Heatmaps or Network Graphs for understanding.
 
-It is also founded that GPT doesnot provide numerical representation like models including Sentence-BERT. Also , the Embeddings can be word or Sentence Embedding depending on the context. OpenAI also provides  endpoint (/v1/embeddings) for obtaining embeddings directly, this is quite efficient than GPTs completion endpoint.
+It is also founded that GPT doesnot provide numerical representation directly unlike other models including Sentence-BERT. Also , the Embeddings can be word or Sentence Embedding depending on the context. OpenAI also provides  endpoint (/v1/embeddings) for obtaining embeddings directly, this is quite efficient than GPTs completion endpoint.
 
-Also, OpenAI's provides the following text similarity models:
+The following are some of the easily available OpenAI's models used by GPT to generate vector space:
 
  .     text-similarity-ada-001
+•	text-similarity-babbage-002
 •	text-similarity-curie-001
 •	text-similarity-davinci-002
-•	text-similarity-babbage-002
 
-Here, curie-001 and davinci-002 are expensive compared to others.
+
+Here, the  text-similarity-ada-001 is the popular one among others due to its simplicity and speed. The text-similarity-babbage-002 model is expensive than "ada models" . Its is preferred over "ada" for those tasks demanding a reasonable balance with less computationally such as keyword matching, basic semantic similarity analysis. The text-similarity-curie-001model is the one with better accuracy and performance as well as costly compared to ada. The model text-similarity-davinci-002 is the most advanced and hence the expensive. It can be integrated with, for applications which needs the highest precision with the ability to understand complex contextual relationships.  
  
+As mentioned once the vector space is obtained by Embeddings, we can extract the similarity by using the below metric models: 
 
-a piece of text just to check if security issue related error is gone
+a) Cosine Similarity : This method focuses more on the orientation or direction of the vectors rather than their magnitude. This is useful when comparing high-dimensional embeddings. The value can be in the range of [-1,1] or [0,1] depending on our apllication. 
+
+b) Euclidean Similarity: The absolute distances in the vector space is calculated if we are using Euclidean structure and this is  more sensitive to the magnitude of the vectors than simply the direction.
+
+c) Jaccard Similarity: Once the  intersection and union is compared , the model focuses on calculating the similarity between two sets.
+
+d) Pearson/Sparman Correlation Correlation Coefficient- This measures the linear relationship between two variables.
+
+Of these above mentioned similarity metric models, the Cosine and Euclidean methods are the widely followed and easily adapted one due to less computational complexity.
+
+
+
+
+
