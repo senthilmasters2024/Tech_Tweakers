@@ -84,3 +84,21 @@ var vectorB = new double[] { 100,20, 30 };
 Cosine Similarity: 0.5782619234274095 (disimilar but might be related in broader terms like all numbers here are in positive side)
 
 We will learn to plot this values like sample starting point for POC
+
+
+VisulisationFromSampleCSVWithTextSimilarityScoreBasic.excel
+
+In this, we have come up the basic similairty score to compare with main label, the main label we choose is medicine
+
+Text 1 : Medicine (TO be compared based on context)
+
+Text 2: (It can all unique tokens from the inputed document)
+
+Our idea is to create an embeddings from the document using open AI API, and once we pass that to cosine similarity
+we will get similarity score,later while we develop we will convert this outputs to get stored in output CSV file automatically.
+
+The above sample contains random score with only 10 values where few relatively similar and few are relatively disimilar.
+
+It is identifed by values between 0 and 1 , more it closer with 1 similarity is better or else it might be disimilar.
+
+Charts are just a sample to make sure that if we are running or developing our idea for our project in the correct direction.
