@@ -6,23 +6,23 @@ namespace Stage_1
 {
     class TextPreprocessorProgram
     {
-        // Function to preprocess text (remove unwanted characters)
+        // Funwanted character removal
         public static string Preprocess(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return string.Empty;
 
-            // Convert to lowercase
+           //Convert to lowercase
             input = input.ToLower();
 
             // Remove unwanted characters (keeping only letters)
             input = Regex.Replace(input, @"[^a-zA-Z]", "");
 
-            // Trim whitespace
+            // Whitespace trimming
             return input.Trim();
         }
 
-        // Function to map words to numbers
+        // converting  words to numbers
         public static void ConvertWordsToNumbers(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -33,7 +33,7 @@ namespace Stage_1
 
             Console.WriteLine("\nNumeral representations of words in the input text:");
 
-            // Dictionary for number words
+            // Defining number words
             Dictionary<string, int> wordToNumber = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
                 { "one", 1 }, { "two", 2 }, { "three", 3 },
@@ -42,7 +42,7 @@ namespace Stage_1
                 { "ten", 10 }
             };
 
-            // Split input into words (using regex to remove punctuation)
+            // Splitting input into words 
             string[] words = Regex.Split(input, @"\W+");
 
             foreach (string word in words)
@@ -58,7 +58,7 @@ namespace Stage_1
 
         static void Main(string[] args)
         {
-            // Step 1: Compare Two Words After Preprocessing
+           
             Console.Write("Enter first word: ");
             string word1 = Console.ReadLine();
 
@@ -76,7 +76,7 @@ namespace Stage_1
             else
                 Console.WriteLine("The words are different after preprocessing.");
 
-            // Step 2: Convert Words to Numbers
+            //   Words to Numbers
             Console.Write("\nEnter a sentence or text: ");
             string input = Console.ReadLine();
 
