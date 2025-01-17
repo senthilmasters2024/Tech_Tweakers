@@ -6,7 +6,7 @@ namespace SemanticAnalysisTextualData.Source
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        /*static async Task Main(string[] args)
         {
             Console.WriteLine("Welcome to Semantic Text Analysis!");
 
@@ -22,7 +22,7 @@ namespace SemanticAnalysisTextualData.Source
 
             var textAnalysisService = serviceProvider.GetService<SemanticAnalysisTextualDataService>();
 
-            /*while (true)
+            *//*while (true)
             {
                 Console.WriteLine("Enter text 1: ");
                 var text1 = Console.ReadLine();
@@ -35,7 +35,7 @@ namespace SemanticAnalysisTextualData.Source
                     Console.WriteLine("Both inputs must be non-empty. Please try again.");
                     continue;
                 }
-*/
+*//*
                 try
                 {
                     if (null != textAnalysisService)
@@ -51,6 +51,6 @@ namespace SemanticAnalysisTextualData.Source
                     Console.WriteLine($"Error: {ex.Message}");
                 }
             }
-        }
-   // }
+        }*/
+   }
 }

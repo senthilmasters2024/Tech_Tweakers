@@ -1,0 +1,53 @@
+{
+  "phrase_pairs": [
+    {
+      "Phrase1": "Angela Merkel",
+      "Phrase2": "Government",
+      "Domain": "Politics",
+      "Context": "Leadership",
+      "SimilarityScore": 0.2192761618425513
+    },
+    {
+      "Phrase1": "Cristiano Ronaldo",
+      "Phrase2": "Government",
+      "Domain": "Sports",
+      "Context": "Irrelevant",
+      "SimilarityScore": 0.10349840488983812
+    },
+    {
+      "Phrase1": "Dog",
+      "Phrase2": "Cat",
+      "Domain": "Animals",
+      "Context": "Pets",
+      "SimilarityScore": 0.6274555318700064
+    },
+    {
+      "Phrase1": "Medicine",
+      "Phrase2": "paracetamol",
+      "Domain": "Medical",
+      "Context": "Medical",
+      "SimilarityScore": 0.2831121858257752
+    },
+    {
+      "Phrase1": "Cricket",
+      "Phrase2": "Sachin Tendulkar",
+      "Domain": "Sports",
+      "Context": "Sports",
+      "SimilarityScore": 0.4137994117739605
+    },
+    {
+      "Phrase1": "Cricket",
+      "Phrase2": "Sports",
+      "Domain": "Sports",
+      "Context": "Sports",
+      "SimilarityScore": 0.5084616093223295
+    },
+    {
+      "Phrase1": "Cricket",
+      "Phrase2": "Yorker",
+      "Domain": "Sports",
+      "Context": "Bowling",
+      "SimilarityScore": 0.37776303166154673
+    }
+  ]
+}
