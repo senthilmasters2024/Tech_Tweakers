@@ -10,7 +10,7 @@ namespace Stage_1
         public static string Preprocess(string input)
         {
             if (string.IsNullOrEmpty(input))
-                return string.Empty;
+                return new List<string>();
 
             // Convert to lowercase
             input = input.ToLower();
@@ -19,7 +19,7 @@ namespace Stage_1
             input = Regex.Replace(input, @"[^a-zA-Z]", "");
 
             // Trim whitespace
-            return input.Trim();
+            return new List<string>(Regex.Split(input, "\\s+").Where(word => !string.IsNullOrEmpty(word)));
         }
 
         // Function to map words to numbers
@@ -34,28 +34,21 @@ namespace Stage_1
             Console.WriteLine("\nNumeral representations of words in the input text:");
 
             // Dictionary for number words
-            Dictionary<string, int> wordToNumber = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
-            {
-                { "one", 1 }, { "two", 2 }, { "three", 3 },
-                { "four", 4 }, { "five", 5 }, { "six", 6 },
-                { "seven", 7 }, { "eight", 8 }, { "nine", 9 },
-                { "ten", 10 }
-            };
+            Dictionary<string, int> wordToNumber = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            int nextId = 1;
 
-            // Split input into words (using regex to remove punctuation)
-            string[] words = Regex.Split(input, @"\W+");
+            List<string> words = Preprocess(input);
 
             foreach (string word in words)
             {
-                string processedWord = Preprocess(word);
-
-                if (wordToNumber.TryGetValue(processedWord, out int numeral))
-                    Console.WriteLine($"{word} -> {numeral}");
-                else
-                    Console.WriteLine($"{word} -> Not a numeral");
+                if (!wordToNumber.ContainsKey(word))
+                {
+                    wordToNumber[word] = nextId;
+                    nextId++;
+                }
+                Console.WriteLine($"{word} -> {wordToNumber[word]}");
             }
         }
-
         static void Main(string[] args)
         {
             // Step 1: Compare Two Words After Preprocessing
