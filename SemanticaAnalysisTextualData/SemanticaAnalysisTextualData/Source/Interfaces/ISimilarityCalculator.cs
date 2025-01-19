@@ -9,7 +9,7 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
    /// <summary>
    /// Interface for Sematic Similar Application. This is the interface that has to be invoked for using our semantica Analysis and Visualisaton
    /// </summary>
-    public interface ISemanticAnalysisTextualDataInterface
+    public interface ISimilarityCalculator
     {
         /// <summary>
         /// Method which accepts simple two different texts to do a semantic similarity between them
