@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 class SemanticSimilarityPhrasesWithInputDataSet
 {
-    static async Task Main(string[] args)
+    /*static async Task Main(string[] args)
     {
         //string huggingFaceApiUrl = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
-      /* // string apiToken = "YOUR_HUGGING_FACE_API_TOKEN";*/
+      *//* // string apiToken = "YOUR_HUGGING_FACE_API_TOKEN";*//*
 
         // Load predefined dataset
-        string datasetPath = "C:\\Users\\ASUS\\source\\repos\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\InputPhrasesDataSet.json";
+        string datasetPath = "C:\\Users\\ASUS\\source\\repos\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\InputPhrases50DataSet.json";
         var dataset = JsonConvert.DeserializeObject<InputDataset>(File.ReadAllText(datasetPath));
         var services = new ServiceCollection();
         services.AddSingleton<SemanticAnalysisTextualDataService>(provider => new SemanticAnalysisTextualDataService());
@@ -57,9 +57,10 @@ class SemanticSimilarityPhrasesWithInputDataSet
         //}
 
         // Save results back to JSON
-        File.WriteAllText("C:\\Users\\ASUS\\source\\repos\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\output_dataset.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
-        Console.WriteLine("Results saved to output_dataset.json.");
-    }
+        string currentDir = Directory.GetCurrentDirectory();
+        File.WriteAllText(currentDir+"\\data\\output_dataset.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
+        Console.WriteLine(currentDir+ "Results saved to output_dataset.json.");
+    }*/
 
 
     // Models for Dataset
