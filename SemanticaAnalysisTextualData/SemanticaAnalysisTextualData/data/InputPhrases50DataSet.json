@@ -1,0 +1,310 @@
+{
+  "phrase_pairs": [
+    {
+      "phrase1": "Angela Merkel",
+      "phrase2": "Government",
+      "domain": "Politics",
+      "context": "Leadership"
+    },
+    {
+      "phrase1": "Cristiano Ronaldo",
+      "phrase2": "Government",
+      "domain": "Sports",
+      "context": "Irrelevant"
+    },
+    {
+      "phrase1": "Dog",
+      "phrase2": "Cat",
+      "domain": "Animals",
+      "context": "Pets"
+    },
+    {
+      "phrase1": "Medicine",
+      "phrase2": "Paracetamol",
+      "domain": "Medical",
+      "context": "Medical"
+    },
+    {
+      "phrase1": "Cricket",
+      "phrase2": "Sachin Tendulkar",
+      "domain": "Sports",
+      "context": "Sports"
+    },
+    {
+      "phrase1": "Cricket",
+      "phrase2": "Sports",
+      "domain": "Sports",
+      "context": "Sports"
+    },
+    {
+      "phrase1": "Cricket",
+      "phrase2": "Yorker",
+      "domain": "Sports",
+      "context": "Bowling"
+    },
+    {
+      "phrase1": "Tesla",
+      "phrase2": "Electric Vehicle",
+      "domain": "Energy",
+      "context": "Innovation"
+    },
+    {
+      "phrase1": "AI Surveillance",
+      "phrase2": "Privacy",
+      "domain": "Surveillance",
+      "context": "Ethics"
+    },
+    {
+      "phrase1": "Heart Surgery",
+      "phrase2": "Cardiologist",
+      "domain": "Medical",
+      "context": "Expertise"
+    },
+    {
+      "phrase1": "Soccer",
+      "phrase2": "FIFA World Cup",
+      "domain": "Sports",
+      "context": "Tournament"
+    },
+    {
+      "phrase1": "Lion",
+      "phrase2": "Predator",
+      "domain": "Animals",
+      "context": "Wildlife"
+    },
+    {
+      "phrase1": "Renewable Energy",
+      "phrase2": "Solar Panel",
+      "domain": "Energy",
+      "context": "Technology"
+    },
+    {
+      "phrase1": "Basketball",
+      "phrase2": "Michael Jordan",
+      "domain": "Sports",
+      "context": "Legend"
+    },
+    {
+      "phrase1": "Data Encryption",
+      "phrase2": "Cybersecurity",
+      "domain": "Technology",
+      "context": "Security"
+    },
+    {
+      "phrase1": "Water Quality",
+      "phrase2": "pH Levels",
+      "domain": "Water Management",
+      "context": "Measurement"
+    },
+    {
+      "phrase1": "COVID-19",
+      "phrase2": "Vaccine",
+      "domain": "Medical",
+      "context": "Prevention"
+    },
+    {
+      "phrase1": "Eiffel Tower",
+      "phrase2": "Tourism",
+      "domain": "Culture",
+      "context": "Landmark"
+    },
+    {
+      "phrase1": "Football",
+      "phrase2": "Goalkeeper",
+      "domain": "Sports",
+      "context": "Position"
+    },
+    {
+      "phrase1": "Polar Bear",
+      "phrase2": "Arctic",
+      "domain": "Animals",
+      "context": "Habitat"
+    },
+    {
+      "phrase1": "Machine Learning",
+      "phrase2": "Neural Networks",
+      "domain": "Technology",
+      "context": "AI"
+    },
+    {
+      "phrase1": "Hydropower",
+      "phrase2": "Dam",
+      "domain": "Energy",
+      "context": "Generation"
+    },
+    {
+      "phrase1": "Marathon",
+      "phrase2": "Runner",
+      "domain": "Sports",
+      "context": "Endurance"
+    },
+    {
+      "phrase1": "Smart Home",
+      "phrase2": "IoT Devices",
+      "domain": "Technology",
+      "context": "Automation"
+    },
+    {
+      "phrase1": "Asthma",
+      "phrase2": "Inhaler",
+      "domain": "Medical",
+      "context": "Treatment"
+    },
+    {
+      "phrase1": "Wildfire",
+      "phrase2": "Deforestation",
+      "domain": "Environment",
+      "context": "Cause"
+    },
+    {
+      "phrase1": "Chess",
+      "phrase2": "Magnus Carlsen",
+      "domain": "Sports",
+      "context": "Grandmaster"
+    },
+    {
+      "phrase1": "Elephant",
+      "phrase2": "Ivory",
+      "domain": "Animals",
+      "context": "Conservation"
+    },
+    {
+      "phrase1": "Climate Change",
+      "phrase2": "Carbon Emissions",
+      "domain": "Environment",
+      "context": "Impact"
+    },
+    {
+      "phrase1": "Olympics",
+      "phrase2": "Gold Medal",
+      "domain": "Sports",
+      "context": "Achievement"
+    },
+    {
+      "phrase1": "Artificial Intelligence",
+      "phrase2": "Deep Learning",
+      "domain": "Technology",
+      "context": "Subset"
+    },
+    {
+      "phrase1": "Rainwater Harvesting",
+      "phrase2": "Sustainability",
+      "domain": "Water Management",
+      "context": "Conservation"
+    },
+    {
+      "phrase1": "Diabetes",
+      "phrase2": "Insulin",
+      "domain": "Medical",
+      "context": "Treatment"
+    },
+    {
+      "phrase1": "Satellite",
+      "phrase2": "Space Exploration",
+      "domain": "Technology",
+      "context": "Orbital"
+    },
+    {
+      "phrase1": "Python",
+      "phrase2": "Programming",
+      "domain": "Technology",
+      "context": "Language"
+    },
+    {
+      "phrase1": "Yoga",
+      "phrase2": "Meditation",
+      "domain": "Wellness",
+      "context": "Practice"
+    },
+    {
+      "phrase1": "Shark",
+      "phrase2": "Ocean",
+      "domain": "Animals",
+      "context": "Marine"
+    },
+    {
+      "phrase1": "Renewable Energy",
+      "phrase2": "Wind Turbine",
+      "domain": "Energy",
+      "context": "Sustainability"
+    },
+    {
+      "phrase1": "Gymnastics",
+      "phrase2": "Balance Beam",
+      "domain": "Sports",
+      "context": "Equipment"
+    },
+    {
+      "phrase1": "Vaccination",
+      "phrase2": "Immunity",
+      "domain": "Medical",
+      "context": "Health"
+    },
+    {
+      "phrase1": "Blockchain",
+      "phrase2": "Cryptocurrency",
+      "domain": "Technology",
+      "context": "Finance"
+    },
+    {
+      "phrase1": "Amazon Rainforest",
+      "phrase2": "Biodiversity",
+      "domain": "Environment",
+      "context": "Ecosystem"
+    },
+    {
+      "phrase1": "Olympic Games",
+      "phrase2": "Tokyo 2020",
+      "domain": "Sports",
+      "context": "Event"
+    },
+    {
+      "phrase1": "Tiger",
+      "phrase2": "Endangered",
+      "domain": "Animals",
+      "context": "Conservation"
+    },
+    {
+      "phrase1": "Electric Vehicle",
+      "phrase2": "Charging Station",
+      "domain": "Energy",
+      "context": "Infrastructure"
+    },
+    {
+      "phrase1": "Renewable Energy",
+      "phrase2": "Geothermal",
+      "domain": "Energy",
+      "context": "Source"
+    },
+    {
+      "phrase1": "Plastic Pollution",
+      "phrase2": "Marine Life",
+      "domain": "Environment",
+      "context": "Threat"
+    },
+    {
+      "phrase1": "Marathon",
+      "phrase2": "Boston Marathon",
+      "domain": "Sports",
+      "context": "Event"
+    },
+    {
+      "phrase1": "Cardiology",
+      "phrase2": "Stent",
+      "domain": "Medical",
+      "context": "Device"
+    },
+    {
+      "phrase1": "Ecosystem",
+      "phrase2": "Biodiversity",
+      "domain": "Environment",
+      "context": "Balance"
+    },
+    {
+      "phrase1": "E-sports",
+      "phrase2": "DOTA 2",
+      "domain": "Technology",
+      "context": "Gaming"
+    }
+  ]
+}

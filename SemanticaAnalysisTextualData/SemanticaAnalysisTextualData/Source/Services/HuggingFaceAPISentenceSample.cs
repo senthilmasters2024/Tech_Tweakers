@@ -7,7 +7,7 @@ class HuggingFaceAPISentenceSample
 {
     private static readonly HttpClient client = new HttpClient();
 
-    static async Task Main(string[] args)
+    /*static async Task Main(string[] args)
     {
         // Replace with your actual Hugging Face API token
         var apiKey = "myApiKey";
@@ -43,5 +43,5 @@ class HuggingFaceAPISentenceSample
             var errorString = await response.Content.ReadAsStringAsync();
             Console.WriteLine("Details: " + errorString);
         }
-    }
+    }*/
 }
