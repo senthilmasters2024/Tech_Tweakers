@@ -1,4 +1,4 @@
-﻿using OpenAI.Embeddings;
+using OpenAI.Embeddings;
 using SemanticaAnalysisTextualData.Source.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -136,4 +136,3 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
     }
 }
-
