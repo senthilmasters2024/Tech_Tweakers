@@ -1,0 +1,46 @@
+{
+  "phrase_pairs": [
+    {
+      "phrase1": "Angela Merkel",
+      "phrase2": "Government",
+      "domain": "Politics",
+      "context": "Leadership"
+    },
+    {
+      "phrase1": "Cristiano Ronaldo",
+      "phrase2": "Government",
+      "domain": "Sports",
+      "context": "Irrelevant"
+    },
+    {
+      "phrase1": "Dog",
+      "phrase2": "Cat",
+      "domain": "Animals",
+      "context": "Pets"
+    },
+    {
+      "phrase1": "Medicine",
+      "phrase2": "paracetamol",
+      "domain": "Medical",
+      "context": "Medical"
+    },
+    {
+      "phrase1": "Cricket",
+      "phrase2": "Sachin Tendulkar",
+      "domain": "Sports",
+      "context": "Sports"
+    },
+    {
+      "phrase1": "Cricket",
+      "phrase2": "Sports",
+      "domain": "Sports",
+      "context": "Sports"
+    },
+    {
+      "phrase1": "Cricket",
+      "phrase2": "Yorker",
+      "domain": "Sports",
+      "context": "Bowling"
+    }
+  ]
+}
