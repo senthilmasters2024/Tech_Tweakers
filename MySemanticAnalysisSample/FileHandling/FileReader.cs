@@ -1,8 +1,6 @@
-﻿using System;
+﻿
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MySemanticAnalysisSample.FileHandling
 {
@@ -15,9 +13,9 @@ namespace MySemanticAnalysisSample.FileHandling
             _filesPath = filesPath;
         }
 
-        public List<string> ReadDocuments()
+        public Dictionary<string, string> ReadDocuments()
         {
-            List<string> documents = new List<string>();
+            var documents = new Dictionary<string, string>();
 
             var documentFiles = Directory.GetFiles(_filesPath, "*.txt");
 
@@ -25,8 +23,9 @@ namespace MySemanticAnalysisSample.FileHandling
             {
                 try
                 {
+                    string documentLabel = Path.GetFileNameWithoutExtension(file);
                     string documentContent = File.ReadAllText(file);
-                    documents.Add(documentContent);
+                    documents.Add(documentLabel, documentContent);
                 }
                 catch (Exception ex)
                 {
@@ -34,7 +33,7 @@ namespace MySemanticAnalysisSample.FileHandling
                 }
             }
 
-            return documents; //return dictionaries instead of list to get labels
+            return documents;
         }
     }
 }
