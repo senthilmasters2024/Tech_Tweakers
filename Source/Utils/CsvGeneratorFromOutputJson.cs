@@ -60,18 +60,25 @@ namespace CsvGenerator
         }
     }
 
+    /// <summary>
+    /// Class to generate CSV file from output JSON data.
+    /// </summary>
     public class CsvGeneratorFromOutputJson
     {
-        static void Main(string[] args)
+       /* /// <summary>
+        /// Main method to execute the CSV generation process.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
+       *//* static void Main(string[] args)
         {
             string currentDir = Directory.GetCurrentDirectory();
             // Define relative paths
             string baseDir = AppDomain.CurrentDomain.BaseDirectory; // Gets the directory where the executable is running
             Console.WriteLine($"Base Directory: {baseDir}");
-            string relativeJsonPath = Path.Combine(baseDir, "output_dataset.json");
+            string relativeJsonPath = Path.Combine(baseDir, "data", "output_dataset.json");
             Console.WriteLine($"File Path: {relativeJsonPath}");
-            string relativeCsvPath = Path.Combine(baseDir, "phrase_pairs_dataset.csv");
-
+            string relativeCsvPath = Path.Combine(baseDir, "data", "phrase_pairs_dataset.csv");
+            CsvGeneratorFromOutputJson csvGeneratorFromOutputJson = new CsvGeneratorFromOutputJson();
             try
             {
                 // Read JSON and parse
@@ -80,7 +87,7 @@ namespace CsvGenerator
                 if (jsonData != null)
                 {
                     // Generate CSV
-                    GenerateCsv(jsonData, relativeCsvPath);
+                    csvGeneratorFromOutputJson.GenerateCsv(jsonData, relativeCsvPath);
                 }
 
                 Console.WriteLine($"CSV file generated successfully at: {Path.GetFullPath(relativeCsvPath)}");
@@ -89,23 +96,33 @@ namespace CsvGenerator
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-        }
+        }*/
 
+        /// <summary>
+        /// Reads the JSON file and parses it into a list of PhrasePair objects.
+        /// </summary>
+        /// <param name="jsonFilePath">The path to the JSON file.</param>
+        /// <returns>A list of PhrasePair objects.</returns>
         public static List<PhrasePair> ReadJsonFile(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
-            
+
             var data = System.Text.Json.JsonSerializer.Deserialize<JsonData>(jsonContent);
             if (data == null || data.PhrasePairs == null || data.PhrasePairs.Count == 0)
             {
                 throw new InvalidOperationException("The JSON file is either empty or invalid.");
             }
-        
+
 
             return data.PhrasePairs;
         }
 
-        static void GenerateCsv(List<PhrasePair> jsonData, string filePath)
+        /// <summary>
+        /// Generates a CSV file from the given list of PhrasePair objects.
+        /// </summary>
+        /// <param name="jsonData">The list of PhrasePair objects.</param>
+        /// <param name="filePath">The path to the CSV file to be generated.</param>
+        public void GenerateCsv(List<PhrasePair> jsonData, string filePath)
         {
             var sb = new StringBuilder();
 
