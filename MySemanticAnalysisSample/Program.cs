@@ -1,6 +1,7 @@
 ﻿using MySemanticAnalysisSample.Embedding;
 using MySemanticAnalysisSample.FileHandling;
 using MySemanticAnalysisSample.SimilarityCalculation;
+using System.Data;
 
 namespace MySemanticAnalysisSample
 {
@@ -54,26 +55,43 @@ namespace MySemanticAnalysisSample
             string inputTextPath = @"C:\Users\NISHTA\OneDrive\Univeristy\sem_1\software_eng\ML_09\MySemanticAnalysisSample\Input\InputText\";
             string domainsPath = @"C:\Users\NISHTA\OneDrive\Univeristy\sem_1\software_eng\ML_09\MySemanticAnalysisSample\Input\Domains\";
 
+            // Check if the directories exist
             if (!Directory.Exists(inputTextPath) || !Directory.Exists(domainsPath))
             {
-                Console.WriteLine("The specified path does not exist");
+                Console.WriteLine("The specified path does not exist.");
+                return;
+            }
+
+            // Check if the directories are empty
+            if (!Directory.GetFiles(inputTextPath).Any())
+            {
+                Console.WriteLine("The InputText directory is empty.");
+                return;
+            }
+
+            if (!Directory.GetFiles(domainsPath).Any())
+            {
+                Console.WriteLine("The Domains directory is empty.");
                 return;
             }
 
             var domainReader = new FileReader(domainsPath);
-            var domains = domainReader.ReadDocuments();
             var inputTextReader = new FileReader(inputTextPath);
+            var domains = domainReader.ReadDocuments();
             var inputTexts = inputTextReader.ReadDocuments();
 
             try
             {
                 if (domains == null || inputTexts == null)
                 {
-                    throw new NullReferenceException();  //add proper exception
+                    throw new NullReferenceException("Either the domains or input texts are null.");
                 }
 
                 var domainEmbeddingDictionary = new Dictionary<string, float[]>();
                 var embeddingGenerator = new ChatGPTEmbeddingGenerator();
+                var similarityDataTable = new List<string[]>();
+                var similarityDataTableFirstRow = new List<string>();
+                similarityDataTableFirstRow.Add("Text");
 
                 foreach (var domain in domains)
                 {
@@ -81,20 +99,26 @@ namespace MySemanticAnalysisSample
                     //check for duplicate domain keys
                     var embedding = await embeddingGenerator.CreateEmbedding(domain.Value);
                     domainEmbeddingDictionary.Add(domain.Key, embedding);
+                    similarityDataTableFirstRow.Add(domain.Key);
                 }
+                similarityDataTable.Add(similarityDataTableFirstRow.ToArray());
+
                 var similarityCalculator = new CosineSimilarityCalculator();
 
                 foreach (var inputText in inputTexts)
                 {
                     //preprocess
                     var embedding = await embeddingGenerator.CreateEmbedding(inputText.Value);
+                    var similarityDataTableRow = new List<string>();     
+                    similarityDataTableRow.Add(inputText.Key);
 
                     foreach (var domainEmbedding in domainEmbeddingDictionary)
                     {
                         var similarity = similarityCalculator.CalculateSimilarity(embedding, domainEmbedding.Value);
-                        Console.WriteLine(inputText.Key + "," + domainEmbedding.Key + "->" + similarity);  //write to csv
-
+                        similarityDataTableRow.Add(similarity.ToString());
                     }
+                    
+                    similarityDataTable.Add(similarityDataTableRow.ToArray());
                 }
 
             }
