@@ -60,7 +60,7 @@ namespace CsvGenerator
         }
     }
 
-    class CsvGeneratorFromOutputJson
+    public class CsvGeneratorFromOutputJson
     {
         static void Main(string[] args)
         {
@@ -91,7 +91,7 @@ namespace CsvGenerator
             }
         }
 
-        static List<PhrasePair> ReadJsonFile(string jsonFilePath)
+        public static List<PhrasePair> ReadJsonFile(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
             
