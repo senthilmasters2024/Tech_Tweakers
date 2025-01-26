@@ -121,6 +121,10 @@ namespace MySemanticAnalysisSample
                     similarityDataTable.Add(similarityDataTableRow.ToArray());
                 }
 
+                string outputFilePath = @"C:\Users\NISHTA\OneDrive\Univeristy\sem_1\software_eng\ML_09\Tech_Tweakers\MySemanticAnalysisSample\Output\similarity_result.csv"; ;
+                CSVWriter.WriteToCSV(outputFilePath, similarityDataTable);
+                Console.WriteLine("Similarity data successfully written to file");
+
             }
             catch (Exception)
             {
