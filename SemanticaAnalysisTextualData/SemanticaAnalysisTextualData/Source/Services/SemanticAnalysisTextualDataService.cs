@@ -1,10 +1,16 @@
+using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Embeddings;
 using SemanticaAnalysisTextualData.Source.Interfaces;
+using SemanticaAnalysisTextualData.Source.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TiktokenSharp;
+
+
+
 
 namespace SemanticaAnalysisTextualData.Source.Services
 {
@@ -13,39 +19,69 @@ namespace SemanticaAnalysisTextualData.Source.Services
    /// </summary>
     public class SemanticAnalysisTextualDataService : ISemanticAnalysisTextualDataInterface
     {
-      
+
         //Create a constructor If needed to Initialise Anything
 
         /// <summary>
         /// Asynchronous method to generate embeddings for two text inputs and calculate their similarity.
         /// </summary>
-        public async Task<double> CalculateSimilarityAsync(string text1, string text2)
+        
+            private readonly IWordPreprocessor _wordPreprocessor;
+            private readonly ISentencePreprocessor _sentencePreprocessor;
+            private readonly IDocumentPreprocessor _documentPreprocessor;
+
+            public SemanticAnalysisTextualDataService(
+                IWordPreprocessor wordPreprocessor,
+                ISentencePreprocessor sentencePreprocessor,
+                IDocumentPreprocessor documentPreprocessor)
+            {
+                _wordPreprocessor = wordPreprocessor;
+                _sentencePreprocessor = sentencePreprocessor;
+                _documentPreprocessor = documentPreprocessor;
+            }
+
+            public async Task<double> CalculateSimilarityAsync(string text1, string text2)
+        
         {
-            // Create an EmbeddingClient instance using the OpenAI API key
-            EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */,
-                Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+            // Preprocess the inputs before generating embeddings
+            var processedText1 = string.Join(", ", _sentencePreprocessor.ProcessSentence(text1));
+            var processedText2 = string.Join(", ", _sentencePreprocessor.ProcessSentence(text2));
+
+            // Generate embeddings for the processed texts
+            EmbeddingClient client = new("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+            List<string> inputs = new() { processedText1, processedText2 };
+
+            OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+
+            // Compute similarity using processed embeddings
+            return CalculateSimilarity(collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray());
+        }
+
+        // { Create an EmbeddingClient instance using the OpenAI API key
+        //EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */,
+        //  Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 
-            // Infinite loop to allow repeated similarity calculations
-            //while (true)
-            //{
-                // Prompt the user to input the first text
-                //Console.WriteLine("Enter text 1: ");
-                //var inp1 = Console.ReadLine();
+        // Infinite loop to allow repeated similarity calculations
+        //while (true)
+        //{
+        // Prompt the user to input the first text
+        //Console.WriteLine("Enter text 1: ");
+        //var inp1 = Console.ReadLine();
 
-                //// Prompt the user to input the second text
-                //Console.WriteLine("Enter text 2: ");
-                //var inp2 = Console.ReadLine();
+        //// Prompt the user to input the second text
+        //Console.WriteLine("Enter text 2: ");
+        //var inp2 = Console.ReadLine();
 
-                // Validate user input
-                //if (string.IsNullOrWhiteSpace(inp1) || string.IsNullOrWhiteSpace(inp2))
-                //{
-                //    Console.WriteLine("Both inputs must be non-empty. Please try again.");
-                //    continue;
-                //}
+        // Validate user input
+        //if (string.IsNullOrWhiteSpace(inp1) || string.IsNullOrWhiteSpace(inp2))
+        //{
+        //    Console.WriteLine("Both inputs must be non-empty. Please try again.");
+        //    continue;
+        //}
 
-                // Prepare the inputs for embedding generation
-               List<string> inputs = new() { text1, text2 };
+        // Prepare the inputs for embedding generation
+        List<string> inputs = new() { text1, text2 };
 
                 // Generate embeddings for the input texts
                 OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
