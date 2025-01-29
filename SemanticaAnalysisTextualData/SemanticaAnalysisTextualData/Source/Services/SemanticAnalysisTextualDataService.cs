@@ -14,9 +14,9 @@ using TiktokenSharp;
 
 namespace SemanticaAnalysisTextualData.Source.Services
 {
-   /// <summary>
-   /// Service to Implement all our TextualDataSemantic Analsysi Implementations
-   /// </summary>
+    /// <summary>
+    /// Service to Implement all our TextualDataSemantic Analsysi Implementations
+    /// </summary>
     public class SemanticAnalysisTextualDataService : ISemanticAnalysisTextualDataInterface
     {
 
@@ -25,27 +25,27 @@ namespace SemanticaAnalysisTextualData.Source.Services
         /// <summary>
         /// Asynchronous method to generate embeddings for two text inputs and calculate their similarity.
         /// </summary>
-        
-            private readonly IWordPreprocessor _wordPreprocessor;
-            private readonly ISentencePreprocessor _sentencePreprocessor;
-            private readonly IDocumentPreprocessor _documentPreprocessor;
 
-            public SemanticAnalysisTextualDataService(
-                IWordPreprocessor wordPreprocessor,
-                ISentencePreprocessor sentencePreprocessor,
-                IDocumentPreprocessor documentPreprocessor)
-            {
-                _wordPreprocessor = wordPreprocessor;
-                _sentencePreprocessor = sentencePreprocessor;
-                _documentPreprocessor = documentPreprocessor;
-            }
+        private readonly IWordPreprocessor _wordPreprocessor;
+        private readonly ISentencePreprocessor _sentencePreprocessor;
+        private readonly IDocumentPreprocessor _documentPreprocessor;
 
-            public async Task<double> CalculateSimilarityAsync(string text1, string text2)
-        
+        public SemanticAnalysisTextualDataService(
+            IWordPreprocessor wordPreprocessor,
+            ISentencePreprocessor sentencePreprocessor,
+            IDocumentPreprocessor documentPreprocessor)
         {
-            // Preprocess the inputs before generating embeddings
-            var processedText1 = string.Join(", ", _sentencePreprocessor.ProcessSentence(text1));
-            var processedText2 = string.Join(", ", _sentencePreprocessor.ProcessSentence(text2));
+            _wordPreprocessor = wordPreprocessor;
+            _sentencePreprocessor = sentencePreprocessor;
+            _documentPreprocessor = documentPreprocessor;
+        }
+
+        public async Task<double> CalculateSimilarityAsync(string text1, string text2)
+
+        {
+            // Preprocess the inputs at word , sentence and document levels before generating embeddings
+            var processedText1 = PreprocessText(text1);
+            var processedText2 = PreprocessText(text2);
 
             // Generate embeddings for the processed texts
             EmbeddingClient client = new("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
@@ -55,6 +55,21 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
             // Compute similarity using processed embeddings
             return CalculateSimilarity(collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray());
+        }
+
+        private string PreprocessText(string text)
+        {
+            // Preprocess at word level
+            var wordProcessedText = _wordPreprocessor.ProcessWord(text);
+
+            // Preprocess at sentence level
+            var sentenceProcessedText = _sentencePreprocessor.ProcessSentence(text);
+
+            // Preprocess at document level
+            var documentProcessedText = _documentPreprocessor.ProcessDocument(text);
+
+            // Combine all preprocessed data (you can customize this logic based on your needs)
+            return $"{wordProcessedText} | {sentenceProcessedText} | {documentProcessedText}";
         }
 
         // { Create an EmbeddingClient instance using the OpenAI API key
@@ -83,20 +98,21 @@ namespace SemanticaAnalysisTextualData.Source.Services
         // Prepare the inputs for embedding generation
         List<string> inputs = new() { text1, text2 };
 
-                // Generate embeddings for the input texts
-                OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
-                
-                //Sample Embedded Vales for Fun
-                //float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
-                //// Calculate similarity between the two embeddings
-                ////Sample Embedded Vales for Fun
-                //float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
-                var similarity = CalculateSimilarity(
-                    collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray()
-                );
+        // Generate embeddings for the input texts
+        OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+
+        //Sample Embedded Vales for Fun
+        //float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
+        //// Calculate similarity between the two embeddings
+        ////Sample Embedded Vales for Fun
+        //float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
+        var similarity = CalculateSimilarity(
+            collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray()
+        );
             return similarity;
             //}
-        }
+        
+}
 
         /// <summary>
         /// Calculates the cosine similarity between two embeddings.
