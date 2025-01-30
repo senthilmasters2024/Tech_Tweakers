@@ -1,30 +1,28 @@
 ﻿using System.Text.RegularExpressions;
-using TiktokenSharp;
 
 public class SentencePreprocessor : ISentencePreprocessor
 {
-    private IWordPreprocessor wordProcessor;
-
+    private IWordPreprocessor _wordProcessor;
+    private object wordProcessor;
     public SentencePreprocessor()
     {
-        wordProcessor = new WordPreprocessor();
+        _wordProcessor = new WordPreprocessor();
     }
 
-    public List<int> ProcessSentence(string sentence)
+    public string ProcessSentences(string sentence1, string sentence2)
     {
-        sentence = sentence.ToLower();
-        sentence = Regex.Replace(sentence, @"[^a-zA-Z0-9\s]", ""); // Remove punctuation
-
-        string[] words = sentence.Split(' ');
-        HashSet<int> uniqueTokens = new HashSet<int>();
-
-        foreach (string word in words)
-        {
-            int tokenId = wordProcessor.ProcessWord(word);
-            if (tokenId != -1) // Ignore stopwords
-                uniqueTokens.Add(tokenId);
+        sentence1 = sentence1.ToLower();
+        sentence2 = sentence2.ToLower();
+        sentence1 = Regex.Replace(sentence1, @"[^a-zA-Z0-9\s]", "");
+        sentence2 = Regex.Replace(sentence2, @"[^a-zA-Z0-9\s]", "");
+        // Split the sentences into words
+        string[] words1 = sentence1.Split(' ');
+        string[] words2 = sentence2.Split(' ');
+        // Process each word using the word preprocessor
+        var processedWords1 = words1.Select(word => wordProcessor.ProcessWords(word, word)).ToList();
+        var processedWords2 = words2.Select(word => wordProcessor.ProcessWords(word, word)).ToList();
+        // Return the processed sentences as combined strings
+        return $"{string.Join(" ", processedWords1)} | {string.Join(" ", processedWords2)}";
         }
-
-        return uniqueTokens.ToList();
     }
-}
+    

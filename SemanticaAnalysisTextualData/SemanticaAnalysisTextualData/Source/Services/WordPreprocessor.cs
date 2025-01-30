@@ -1,31 +1,36 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using TiktokenSharp; // TikToken NuGet package
+
 
 public class WordPreprocessor : IWordPreprocessor
 {
-    private TikToken tikToken;
+
     private static readonly HashSet<string> StopWords = new HashSet<string>
     {
         "the", "is", "in", "at", "of", "am", "pm", "one", "to", "a", "an", "and"
     };
 
-    public WordPreprocessor()
+    public string ProcessWords(string word1, string word2)
     {
-        tikToken = TikToken.GetEncoding("cl100k_base"); // Tokenizer initialization
-    }
 
-    public int ProcessWord(string word)
-    {
-        word = word.ToLower().Trim();
-        word = Regex.Replace(word, @"[^a-zA-Z0-9]", ""); // Remove special characters
 
-        if (StopWords.Contains(word) || string.IsNullOrEmpty(word))
-            return -1; // Return -1 for ignored words
+        word1 = word1.ToLower().Trim();
+        word2 = word2.ToLower().Trim();
+        word1 = Regex.Replace(word1, @"[^a-zA-Z0-9]", "");
+        word2 = Regex.Replace(word2, @"[^a-zA-Z0-9]", "");
+       
+        if (StopWords.Contains(word1) || string.IsNullOrEmpty(word1))
+            word1 = string.Empty;
 
-        List<int> tokenIds = tikToken.Encode(word);
-        return tokenIds.Count > 0 ? tokenIds[0] : -1; // Return first token ID
+        if (StopWords.Contains(word2) || string.IsNullOrEmpty(word2))
+            word2 = string.Empty;
+
+        return $"{word1} | {word2}";
     }
 }
+    
+
+

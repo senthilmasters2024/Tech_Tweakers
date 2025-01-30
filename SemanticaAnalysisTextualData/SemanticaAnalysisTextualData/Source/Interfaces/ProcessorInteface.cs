@@ -10,5 +10,5 @@ public interface ISentencePreprocessor
 
 public interface IDocumentPreprocessor
 {
-    List<int> ProcessDocument(string document);
+    string ProcessTwoDocuments(string document1, string document2);
 }

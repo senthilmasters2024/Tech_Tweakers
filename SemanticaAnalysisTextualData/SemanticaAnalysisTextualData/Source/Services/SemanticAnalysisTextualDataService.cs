@@ -44,8 +44,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
         {
             // Preprocess the inputs at word , sentence and document levels before generating embeddings
-            var processedText1 = PreprocessText(text1);
-            var processedText2 = PreprocessText(text2);
+            var processedText1 = PreprocessText(text1, text2);
+            var processedText2 = PreprocessText(text2, text1);
 
             // Generate embeddings for the processed texts
             EmbeddingClient client = new("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
@@ -57,16 +57,16 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return CalculateSimilarity(collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray());
         }
 
-        private string PreprocessText(string text)
+        private string PreprocessText(string text1, string text2)
         {
             // Preprocess at word level
-            var wordProcessedText = _wordPreprocessor.ProcessWord(text);
+            var wordProcessedText = _wordPreprocessor.ProcessWords(text1, text2);
 
             // Preprocess at sentence level
-            var sentenceProcessedText = _sentencePreprocessor.ProcessSentence(text);
+            var sentenceProcessedText = _sentencePreprocessor.ProcessSentences(text1, text2);
 
             // Preprocess at document level
-            var documentProcessedText = _documentPreprocessor.ProcessDocument(text);
+            var documentProcessedText = _documentPreprocessor.ProcessDocuments(text1, text2);
 
             // Combine all preprocessed data (you can customize this logic based on your needs)
             return $"{wordProcessedText} | {sentenceProcessedText} | {documentProcessedText}";
@@ -96,23 +96,23 @@ namespace SemanticaAnalysisTextualData.Source.Services
         //}
 
         // Prepare the inputs for embedding generation
-        List<string> inputs = new() { text1, text2 };
+        //List<string> inputs = new() { text1, text2 };
 
         // Generate embeddings for the input texts
-        OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+        //OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
 
         //Sample Embedded Vales for Fun
         //float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
         //// Calculate similarity between the two embeddings
         ////Sample Embedded Vales for Fun
         //float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
-        var similarity = CalculateSimilarity(
-            collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray()
-        );
-            return similarity;
-            //}
-        
-}
+        // var similarity = CalculateSimilarity(
+        // collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray()
+        //);
+        //return similarity;
+        //}
+
+
 
         /// <summary>
         /// Calculates the cosine similarity between two embeddings.
@@ -126,6 +126,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             // Ensure the embeddings have the same length
             if (embedding1.Length != embedding2.Length)
             {
+
                 return 0; // Return 0 if lengths don't match
             }
 
@@ -144,8 +145,20 @@ namespace SemanticaAnalysisTextualData.Source.Services
             // Calculate magnitudes
             magnitude1 = Math.Sqrt(magnitude1);
             magnitude2 = Math.Sqrt(magnitude2);
+            if (magnitude1 == 0.0 || magnitude2 == 0.0)
+            {
+                throw new ArgumentException("Embedding vectors must not have zero magnitude.");
+            }
 
-            // Check for zero magnitude
+            // Compute cosine similarity
+            return dotProduct / (magnitude1 * magnitude2);
+
+        }
+    }
+}
+
+    /* DONT DELETE
+    // Check for zero magnitude
             if (magnitude1 == 0.0 || magnitude2 == 0.0)
             {
                 throw new ArgumentException("Embedding vectors must not have zero magnitude.");
@@ -188,3 +201,4 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
     }
 }
+    */
