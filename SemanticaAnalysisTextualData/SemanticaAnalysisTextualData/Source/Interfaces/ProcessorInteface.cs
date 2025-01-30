@@ -1,11 +1,11 @@
 ﻿public interface IWordPreprocessor
 {
-    int ProcessWord(string word);
+     string ProcessWords(string word, string word2);
 }
 
 public interface ISentencePreprocessor
 {
-    List<int> ProcessSentence(string sentence);
+    string ProcessSentences(string sentence1, string sentence2);
 }
 
 public interface IDocumentPreprocessor

@@ -9,7 +9,7 @@ public class DocumentPreprocessor : IDocumentPreprocessor
         _sentenceProcessor = new SentencePreprocessor();
     }
 
-    public string ProcessDocuments(string document1, string document2)
+    public string ProcessTwoDocuments(string document1, string document2)
     {
         string[] sentences1 = document1.Split(new[] { ".", "!", "?" }, StringSplitOptions.RemoveEmptyEntries);
         string[] sentences2 = document2.Split(new[] { ".", "!", "?" }, StringSplitOptions.RemoveEmptyEntries);

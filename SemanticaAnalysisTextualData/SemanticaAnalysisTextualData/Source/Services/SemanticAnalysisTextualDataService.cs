@@ -66,7 +66,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var sentenceProcessedText = _sentencePreprocessor.ProcessSentences(text1, text2);
 
             // Preprocess at document level
-            var documentProcessedText = _documentPreprocessor.ProcessDocuments(text1, text2);
+            var documentProcessedText = _documentPreprocessor.ProcessTwoDocuments(text1, text2);
 
             // Combine all preprocessed data (you can customize this logic based on your needs)
             return $"{wordProcessedText} | {sentenceProcessedText} | {documentProcessedText}";
