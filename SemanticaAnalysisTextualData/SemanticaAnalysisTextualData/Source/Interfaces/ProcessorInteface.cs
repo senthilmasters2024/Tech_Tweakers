@@ -10,5 +10,8 @@ public interface ISentencePreprocessor
 
 public interface IDocumentPreprocessor
 {
-    string ProcessTwoDocuments(string document1, string document2);
+
+    List<IDocument> LoadDocuments(string folderPath);
+    string PreprocessText(string text);
+    void ProcessAndSaveDocuments(string inputFolder, string outputFolder);
 }
