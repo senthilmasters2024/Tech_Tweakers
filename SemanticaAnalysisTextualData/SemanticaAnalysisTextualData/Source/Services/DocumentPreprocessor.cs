@@ -1,4 +1,6 @@
 ﻿
+using System.Text.RegularExpressions;
+
 public class DocumentPreprocessor : IDocumentPreprocessor
 {
     private readonly ISentencePreprocessor _sentencePreprocessor;
@@ -9,18 +11,32 @@ public class DocumentPreprocessor : IDocumentPreprocessor
         _sentenceProcessor = new SentencePreprocessor();
     }
 
-    public string ProcessTwoDocuments(string document1, string document2)
+    public string PreprocessText(string text)
     {
-        string[] sentences1 = document1.Split(new[] { ".", "!", "?" }, StringSplitOptions.RemoveEmptyEntries);
-        string[] sentences2 = document2.Split(new[] { ".", "!", "?" }, StringSplitOptions.RemoveEmptyEntries);
-        // Process each sentence from both documents
-        var sentenceTokens1 = sentences1.Select(sentence => _sentenceProcessor.ProcessSentences(sentence.Trim(), sentence.Trim())).ToList();
-        var sentenceTokens2 = sentences2.Select(sentence => _sentenceProcessor.ProcessSentences(sentence.Trim(), sentence.Trim())).ToList();
+        text = text.ToLower();
 
-        // Return the processed documents as combined strings
-        return $"{string.Join(" | ", sentenceTokens1)} | {string.Join(" | ", sentenceTokens2)}";
-       
+        // Remove special characters
+        text = Regex.Replace(text, @"[^a-zA-Z0-9\s]", "");
+
+        // Tokenization (split by whitespace)
+        string[] tokens = text.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+        // Stopword Removal (example list)
+        var stopwords = new HashSet<string> { "the", "is", "in", "at", "and", "a", "to", "of" };
+        tokens = tokens.Where(word => !stopwords.Contains(word)).ToArray();
+
+        return string.Join(" ", tokens); // Return cleaned text
+    }
+
+    public void ProcessAndSaveDocuments(string inputFolder, string outputFolder)
+    {
+        List<IDocument> documents = LoadDocuments(inputFolder);
+
+        foreach (var doc in documents)
+        {
+            string processedContent = PreprocessText(doc.Content);
+            File.WriteAllText(Path.Combine(outputFolder, doc.FileName), processedContent);
+            Console.WriteLine($"Processed and saved: {doc.FileName}");
+        }
     }
 }
 
-       
