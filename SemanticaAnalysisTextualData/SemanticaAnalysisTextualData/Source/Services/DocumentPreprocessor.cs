@@ -1,19 +1,24 @@
 ﻿
+using Microsoft.Office.Interop.Word;
 using System.Text.RegularExpressions;
 
 public class DocumentPreprocessor : IDocumentPreprocessor
 {
-    private readonly ISentencePreprocessor _sentencePreprocessor;
-    private readonly SentencePreprocessor _sentenceProcessor;
 
-    public DocumentPreprocessor()
-    {
-        _sentenceProcessor = new SentencePreprocessor();
-    }
+    List<IDocument> documents = new List<IDocument>(); private readonly ISentencePreprocessor _sentencePreprocessor;
+    foreach (var file in Directory.GetFiles(folderPath, "*.txt")) // Assuming .txt files
+        {
+            documents.Add(new Document(file));
+        }
+
+return documents;
+}
 
     public string PreprocessText(string text)
+
     {
-        text = text.ToLower();
+    // Convert to lowercase
+    text = text.ToLower();
 
         // Remove special characters
         text = Regex.Replace(text, @"[^a-zA-Z0-9\s]", "");

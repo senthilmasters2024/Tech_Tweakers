@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TiktokenSharp;
+using static App.Metrics.Health.HealthCheck;
 
 
 
@@ -39,25 +40,72 @@ namespace SemanticaAnalysisTextualData.Source.Services
             _sentencePreprocessor = sentencePreprocessor;
             _documentPreprocessor = documentPreprocessor;
         }
-
-        public async Task<double> CalculateSimilarityAsync(string text1, string text2)
-
+        //Processes all documents in the specified directories before similarity calculations
+        public void PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
-            // Preprocess the inputs at word , sentence and document levels before generating embeddings
-            var processedText1 = PreprocessText(text1, text2);
-            var processedText2 = PreprocessText(text2, text1);
+            Console.WriteLine("Preprocessing Job Descriptions...");
+            _documentPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
 
-            // Generate embeddings for the processed texts
-            EmbeddingClient client = new("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-            List<string> inputs = new() { processedText1, processedText2 };
+            Console.WriteLine("Preprocessing Resumes...");
+            _documentPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
 
-            OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
-
-            // Compute similarity using processed embeddings
-            return CalculateSimilarity(collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray());
+            Console.WriteLine("Preprocessing complete. All files are saved in respective output folders.");
+        }
+        // Loads preprocessed text from files
+        private List<string> LoadPreprocessedDocuments(string folderPath)
+        {
+            List<string> documents = new();
+            foreach (var file in Directory.GetFiles(folderPath, "*.txt"))
+            {
+                documents.Add(File.ReadAllText(file));
+            }
+            return documents;
         }
 
-        private string PreprocessText(string text1, string text2)
+        //Asynchronously calculates similarity between job descriptions and resumes
+        public async Task CalculateSimilarityForDocumentsAsync(string processedRequirementsFolder, string processedResumesFolder)
+
+        {
+
+            Console.WriteLine("Loading preprocessed documents...");
+            var processedJobDescriptions = LoadPreprocessedDocuments(processedRequirementsFolder);
+            var processedResumes = LoadPreprocessedDocuments(processedResumesFolder);
+
+            if (!processedJobDescriptions.Any() || !processedResumes.Any())
+            {
+                Console.WriteLine("No documents found in preprocessed folders.");
+                return;
+            }
+
+        }
+
+
+        //  Generate embeddings for each job description and resume
+        EmbeddingClient client = new("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+         foreach (var jobDescription in processedJobDescriptions)
+            {
+                foreach (var resume in processedResumes)
+                {
+                    List<string> inputs = new() { jobDescription, resume };
+        OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+
+        // Compute similarity
+        double similarity = CalculateSimilarity(collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray());
+
+        Console.WriteLine($"Similarity between Job Description and Resume: {similarity}");
+                }
+
+
+        }
+}
+
+
+
+
+
+           
+
+       /* private string PreprocessText(string text1, string text2)
         {
             // Preprocess at word level
             var wordProcessedText = _wordPreprocessor.ProcessWords(text1, text2);
@@ -120,42 +168,46 @@ namespace SemanticaAnalysisTextualData.Source.Services
         /// <param name="embedding1">The first embedding vector as an array of floats.</param>
         /// <param name="embedding2">The second embedding vector as an array of floats.</param>
         /// <returns>The cosine similarity score between the two embeddings.</returns>
-        /// <exception cref="ArgumentException">Thrown when the embeddings have different lengths or zero magnitude.</exception>
-        public double CalculateSimilarity(float[] embedding1, float[] embedding2)
-        {
-            // Ensure the embeddings have the same length
-            if (embedding1.Length != embedding2.Length)
-            {
+       /// <exception cref="ArgumentException">Thrown when the embeddings have different lengths or zero magnitude.</exception>
+       
 
-                return 0; // Return 0 if lengths don't match
-            }
+//Calculates the cosine similarity between two embeddings.
 
-            double dotProduct = 0.0;  // The dot product of the two vectors
-            double magnitude1 = 0.0; // The magnitude of the first vector
-            double magnitude2 = 0.0; // The magnitude of the second vector
+public double CalculateSimilarity(float[] embedding1, float[] embedding2)
 
-            // Compute dot product and magnitudes
-            for (int i = 0; i < embedding1.Length; i++)
-            {
-                dotProduct += embedding1[i] * embedding2[i];
-                magnitude1 += Math.Pow(embedding1[i], 2);
-                magnitude2 += Math.Pow(embedding2[i], 2);
-            }
 
-            // Calculate magnitudes
-            magnitude1 = Math.Sqrt(magnitude1);
-            magnitude2 = Math.Sqrt(magnitude2);
-            if (magnitude1 == 0.0 || magnitude2 == 0.0)
-            {
-                throw new ArgumentException("Embedding vectors must not have zero magnitude.");
-            }
 
-            // Compute cosine similarity
-            return dotProduct / (magnitude1 * magnitude2);
 
-        }
+    // Ensure the embeddings have the same length
+    if (embedding1.Length != embedding2.Length)
+    {
+
+        return 0; // Return 0 if lengths don't match
     }
-}
+
+    double dotProduct = 0.0;  // The dot product of the two vectors
+    double magnitude1 = 0.0; // The magnitude of the first vector
+    double magnitude2 = 0.0; // The magnitude of the second vector
+
+    // Compute dot product and magnitudes
+    for (int i = 0; i < embedding1.Length; i++)
+    {
+        dotProduct += embedding1[i] * embedding2[i];
+        magnitude1 += Math.Pow(embedding1[i], 2);
+        magnitude2 += Math.Pow(embedding2[i], 2);
+    }
+
+    // Calculate magnitudes
+    magnitude1 = Math.Sqrt(magnitude1);
+    magnitude2 = Math.Sqrt(magnitude2);
+
+    return (magnitude1 == 0.0 || magnitude2 == 0.0) ? 0 : dotProduct / (magnitude1 * magnitude2);
+
+
+
+
+
+
 
     /* DONT DELETE
     // Check for zero magnitude
@@ -197,8 +249,9 @@ namespace SemanticaAnalysisTextualData.Source.Services
             magnitudeB = Math.Sqrt(magnitudeB);
 
             return dotProduct / (magnitudeA * magnitudeB);
-        }
-
     }
-}
-    */
+    }
+    }
+
+/*
+        
