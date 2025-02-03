@@ -5,6 +5,7 @@ using SemanticaAnalysisTextualData.Source.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using TiktokenSharp;
@@ -40,6 +41,14 @@ namespace SemanticaAnalysisTextualData.Source.Services
             _sentencePreprocessor = sentencePreprocessor;
             _documentPreprocessor = documentPreprocessor;
         }
+        public void CalculateSimilarity(float[] vectorA, float[] vectorB)
+        {
+            // Your cosine similarity calculation logic here.
+            double similarity = ComputeCosineSimilarity(vectorA, vectorB);
+            Console.WriteLine($"Similarity between vectors: {similarity}");
+        }
+    
+
         //Processes all documents in the specified directories before similarity calculations
         public void PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
@@ -79,16 +88,25 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
             //Step 1: Generate embeddings for job descriptions
+
             Console.WriteLine("Generating embeddings for job descriptions...");
-            List<string> jobDescInputs = new List<string>(processedJobDescriptions);
-            OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(jobDescInputs);
-            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.ToFloat().Select(x => (double)x).ToArray()).ToList();
+            //List<string> jobDescInputs = new List<string>(processedJobDescriptions);
+            OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
+            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.Values.Select(x => (double)x).ToArray()).ToList();
+            
+           
 
             // Step 2: Generate embeddings for resumes
+
             Console.WriteLine("Generating embeddings for resumes...");
             List<string> resumeInputs = new List<string>(processedResumes);
-            OpenAIEmbeddingCollection resumeEmbeddings = await client.GenerateEmbeddingsAsync(resumeInputs);
-            var resumeEmbeddingsList = resumeEmbeddings.Select(e => e.ToFloats().Select(x => (double)x).ToArray()).ToList();
+            OpenAIEmbeddingCollection resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
+            var resumeEmbeddingsList = resumeEmbeddings.Select(e => e.Values.Select(x => (double)x).ToArray()).ToList();
+
+
+            // Step 3: Extract the correct embedding data (using `Values` here as an example)
+            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.Values.Select(x => (double)x).ToArray()).ToList();
+            
 
             // Step 3: Compute similarity between each job description and resume
 

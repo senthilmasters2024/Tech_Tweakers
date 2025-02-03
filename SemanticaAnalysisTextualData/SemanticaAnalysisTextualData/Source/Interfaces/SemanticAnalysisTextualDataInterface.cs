@@ -15,7 +15,8 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
         /// Method which accepts simple two different texts to do a semantic similarity between them
         /// </summary>
         /// <returns></returns>
-        double CalculateSimilarity(float[] embedding1, float[] embedding2);
+        Task CalculateSimilarityForDocumentsAsync(string processedRequirementsFolder, string processedResumesFolder);
+        void CalculateSimilarity(float[] vectorA, float[] vectorB);
 
 
         //Add Additional Method Definitions Here Based on our use case and problem scenario to be implemented
