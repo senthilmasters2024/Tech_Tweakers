@@ -17,6 +17,7 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
         /// <returns></returns>
         double CalculateSimilarity(float[] embedding1, float[] embedding2);
 
+
         //Add Additional Method Definitions Here Based on our use case and problem scenario to be implemented
     }
 }

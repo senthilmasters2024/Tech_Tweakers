@@ -1,24 +1,50 @@
 ﻿
+using Microsoft.Extensions.DependencyInjection;
+using OpenAI.Embeddings;
+using SemanticaAnalysisTextualData.Source.Interfaces;
+using SemanticaAnalysisTextualData.Source.Services;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using TiktokenSharp;
 using Microsoft.Office.Interop.Word;
 using System.Text.RegularExpressions;
 
 public class DocumentPreprocessor : IDocumentPreprocessor
 {
-
-    List<IDocument> documents = new List<IDocument>(); private readonly ISentencePreprocessor _sentencePreprocessor;
-    foreach (var file in Directory.GetFiles(folderPath, "*.txt")) // Assuming .txt files
+    private readonly ISentencePreprocessor _sentencePreprocessor;
+    public DocumentPreprocessor(ISentencePreprocessor sentencePreprocessor)
+    {
+        _sentencePreprocessor = sentencePreprocessor;
+    }
+    //Method to load documents from a folder
+    public List<IDocument> LoadDocuments(string folderPath)
+    {
+        List<IDocument> documents = new List<IDocument>();
+        foreach (var filePath in Directory.GetFiles(folderPath, "*.txt")) // Assuming .txt files
         {
-            documents.Add(new Document(file));
+            string content = File.ReadAllText(filePath);
+            documents.Add(new Document(Path.GetFileName(filePath), content));
         }
+        return documents;
+    }
+     
+   
 
-return documents;
-}
 
+
+
+    //Method to preprocess text
     public string PreprocessText(string text)
 
     {
-    // Convert to lowercase
-    text = text.ToLower();
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        // Convert to lowercase
+        text = text.ToLower();
 
         // Remove special characters
         text = Regex.Replace(text, @"[^a-zA-Z0-9\s]", "");
@@ -30,8 +56,9 @@ return documents;
         tokens = tokens.Where(word => !stopwords.Contains(word)).ToArray();
 
         return string.Join(" ", tokens); // Return cleaned text
-    }
 
+    }
+    // Method to process and save documents
     public void ProcessAndSaveDocuments(string inputFolder, string outputFolder)
     {
         List<IDocument> documents = LoadDocuments(inputFolder);
