@@ -1,11 +1,55 @@
-﻿using System.Threading.Tasks;
+﻿
+using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using SemanticaAnalysisTextualData.Source.Services;
+using SemanticaAnalysisTextualData.Source.Interfaces;
+
 
 namespace SemanticAnalysisTextualData.Source
 {
-    internal class Program
+
+
+    class Program
     {
+
+        static async Task Main(string[] args)
+        {
+
+            // Set up dependency injection
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<IWordPreprocessor, WordPreprocessor>()  // Replace with actual implementations
+                .AddSingleton<ISentencePreprocessor, SentencePreprocessor>()
+                .AddSingleton<IDocumentPreprocessor, DocumentPreprocessor>()
+                .AddSingleton<ISemanticAnalysisTextualDataInterface, SemanticAnalysisTextualDataService>()
+                .BuildServiceProvider();
+
+            var semanticService = serviceProvider.GetRequiredService<ISemanticAnalysisTextualDataInterface>();
+
+            // Define paths for document processing
+            string requirementsFolder = "path_to_job_descriptions";
+            string resumesFolder = "path_to_resumes";
+            string outputRequirements = "path_to_output_requirements";
+            string outputResumes = "path_to_output_resumes";
+
+            // Preprocess documents
+            Console.WriteLine("Starting document preprocessing...");
+            await Task.Run(() => semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes));
+
+            // Define processed document paths
+            string processedRequirementsFolder = "path_to_processed_requirements";
+            string processedResumesFolder = "path_to_processed_resumes";
+
+            // Perform similarity calculations
+            Console.WriteLine("Starting similarity calculations...");
+            await semanticService.CalculateSimilarityForDocumentsAsync(processedRequirementsFolder, processedResumesFolder);
+
+            Console.WriteLine("Process completed.");
+        }
+    }
+}
+
+
         /*static async Task Main(string[] args)
         {
             Console.WriteLine("Welcome to Semantic Text Analysis!");
@@ -52,5 +96,4 @@ namespace SemanticAnalysisTextualData.Source
                 }
             }
         }*/
-   }
-}
+   

@@ -44,31 +44,39 @@ namespace SemanticaAnalysisTextualData.Source.Services
         public void CalculateSimilarity(float[] vectorA, float[] vectorB)
         {
             // Your cosine similarity calculation logic here.
-            double similarity = ComputeCosineSimilarity(vectorA, vectorB);
-            Console.WriteLine($"Similarity between vectors: {similarity}");
+            double similarity = ComputeCosineSimilarity(
+                 Array.ConvertAll(vectorA, x => (double)x),
+                 Array.ConvertAll(vectorB, x => (double)x)
+                 );
+           
         }
     
 
         //Processes all documents in the specified directories before similarity calculations
-        public void PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
+        public async Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
-            Console.WriteLine("Preprocessing Job Descriptions...");
-            _documentPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
 
-            Console.WriteLine("Preprocessing Resumes...");
-            _documentPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
+             _documentPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
 
-            Console.WriteLine("Preprocessing complete. All files are saved in respective output folders.");
-        }
+
+           _documentPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
+
+            return ;     
+                
+         }
         // Loads preprocessed text from files
         private List<string> LoadPreprocessedDocuments(string folderPath)
         {
-            List<string> documents = new();
-            foreach (var file in Directory.GetFiles(folderPath, "*.txt"))
-            {
-                documents.Add(File.ReadAllText(file));
-            }
-            return documents;
+            return Directory.GetFiles(folderPath, "*.txt")
+               .Select(File.ReadAllText)
+               .ToList();
+            
+            //List<string> documents = new();
+                          //foreach (var file in Directory.GetFiles(folderPath, "*.txt"))
+                          //{
+                          //documents.Add(File.ReadAllText(file));
+                          //}
+                          //return documents;
         }
 
         //Asynchronously calculates similarity between job descriptions and resumes
@@ -76,37 +84,39 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
         {
 
-            Console.WriteLine("Loading preprocessed documents...");
+            // Console.WriteLine("Loading preprocessed documents...");
             var processedJobDescriptions = LoadPreprocessedDocuments(processedRequirementsFolder);
             var processedResumes = LoadPreprocessedDocuments(processedResumesFolder);
 
             if (!processedJobDescriptions.Any() || !processedResumes.Any())
             {
-                Console.WriteLine("No documents found in preprocessed folders.");
-                return;
+                throw new InvalidOperationException("No documents found in preprocessed folders.");
+                //Console.WriteLine("No documents found in preprocessed folders.");
+                //return;
             }
             var client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+            var jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
+            var resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
 
             //Step 1: Generate embeddings for job descriptions
 
-            Console.WriteLine("Generating embeddings for job descriptions...");
+            // Console.WriteLine("Generating embeddings for job descriptions...");
             //List<string> jobDescInputs = new List<string>(processedJobDescriptions);
-            OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
-            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.Values.Select(x => (double)x).ToArray()).ToList();
-            
-           
+            //OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
+            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.Embedding.Select(x => (double)x).ToArray()).ToList();
+
+
 
             // Step 2: Generate embeddings for resumes
 
-            Console.WriteLine("Generating embeddings for resumes...");
-            List<string> resumeInputs = new List<string>(processedResumes);
-            OpenAIEmbeddingCollection resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
-            var resumeEmbeddingsList = resumeEmbeddings.Select(e => e.Values.Select(x => (double)x).ToArray()).ToList();
+            // Console.WriteLine("Generating embeddings for resumes...");
+            //List<string> resumeInputs = new List<string>(processedResumes);
+            //OpenAIEmbeddingCollection resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
+            var resumeEmbeddingsList = resumeEmbeddings.Select(e => e.Embedding.Select(x => (double)x).ToArray()).ToList();
 
 
-            // Step 3: Extract the correct embedding data (using `Values` here as an example)
-            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.Values.Select(x => (double)x).ToArray()).ToList();
-            
+
+
 
             // Step 3: Compute similarity between each job description and resume
 
@@ -116,18 +126,25 @@ namespace SemanticaAnalysisTextualData.Source.Services
             {
                 for (int j = 0; j < resumeEmbeddingsList.Count(); j++)
                 {
-                    double similarity = ComputeCosineSimilarity(jobDescriptionEmbeddings[i], resumeEmbeddingsList[j]);
+                    double similarity = ComputeCosineSimilarity(
+                        Array.ConvertAll(jobDescriptionEmbeddings[i], x => (float)x),
+                Array.ConvertAll(resumeEmbeddingsList[j], x => (float)x)
+                );
+
                     results.Add((i, j, similarity));
-                    
+
+
+                    //(jobDescriptionEmbeddings[i], resumeEmbeddingsList[j])
                 }
             }
-            // STEP 4: Display the similarity results
-            Console.WriteLine("\nSimilarity Results:");
-            foreach (var result in results)
-            {
-                Console.WriteLine($"Job {result.jobIndex + 1} <-> Resume {result.resumeIndex + 1} | Similarity: {result.similarity}");
-            }
         }
+            // STEP 4: Display the similarity results
+            //Console.WriteLine("\nSimilarity Results:");
+            //foreach (var result in results)
+           // {
+                //Console.WriteLine($"Job {result.jobIndex + 1} <-> Resume {result.resumeIndex + 1} | Similarity: {result.similarity}");
+           // }
+       // }
 
 
         // Cosine Similarity Function

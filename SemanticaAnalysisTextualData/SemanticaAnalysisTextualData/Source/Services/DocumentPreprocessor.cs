@@ -23,10 +23,17 @@ public class DocumentPreprocessor : IDocumentPreprocessor
     public List<IDocument> LoadDocuments(string folderPath)
     {
         List<IDocument> documents = new List<IDocument>();
-        foreach (var filePath in Directory.GetFiles(folderPath, "*.txt")) // Assuming .txt files
+        try
         {
-            string content = File.ReadAllText(filePath);
-            documents.Add(new Document(Path.GetFileName(filePath), content));
+            foreach (var filePath in Directory.GetFiles(folderPath, "*.txt")) // Assuming .txt files
+            {
+                string content = File.ReadAllText(filePath);
+                documents.Add(new Document(filePath));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading documents: {ex.Message}");
         }
         return documents;
     }
