@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Plotly.NET;
 using Plotly.NET.TraceObjects;
 
@@ -23,6 +22,14 @@ class ScatterPlotSampleForSimilarityScore
             0.6276
         };
 
+        // Define domains
+        var domains = new List<string>
+        {
+            "DevOps",
+            "DataScience",
+            "FullStackDeveloper"
+        };
+
         // Create scatter plot
         var scatterPlot = Chart2D.Chart.Scatter<string, double, string>(
             x: documentNames,          // X-axis: Document names
@@ -34,7 +41,21 @@ class ScatterPlotSampleForSimilarityScore
         .WithXAxisStyle(title: Title.init(Text: "Document Name")) // Fixing the error by using Title.init
         .WithYAxisStyle(title: Title.init(Text: "Similarity Score")); // Fixing the error by using Title.init
 
-        // Display the chart
-        scatterPlot.Show();
+        // Create bar chart for domains
+        var barChart = Chart2D.Chart.Column<string, double, string>(
+            x: domains,                // X-axis: Domains
+            y: similarityScores,       // Y-axis: Similarity scores
+            Text: documentNames        // Text labels for bars
+        )
+        .WithMarker(Marker.init(Color: Color.fromString("red"), Size: 10)) // Styling
+        .WithTitle("Domain Similarity Scores")
+        .WithXAxisStyle(title: Title.init(Text: "Domain")) // Fixing the error by using Title.init
+        .WithYAxisStyle(title: Title.init(Text: "Similarity Score")); // Fixing the error by using Title.init
+
+        // Combine scatter and bar charts
+        var combinedChart = Chart.Combine(new[] { scatterPlot, barChart });
+
+        // Display the combined chart
+        combinedChart.Show();
     }
 }
