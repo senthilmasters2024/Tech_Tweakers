@@ -27,18 +27,18 @@ namespace SemanticAnalysisTextualData.Source
             var semanticService = serviceProvider.GetRequiredService<ISemanticAnalysisTextualDataInterface>();
 
             // Define paths for document processing
-            string requirementsFolder = "path_to_job_descriptions";
-            string resumesFolder = "path_to_resumes";
-            string outputRequirements = "path_to_output_requirements";
-            string outputResumes = "path_to_output_resumes";
+            string requirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder";
+            string resumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder";
+            string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Requirements Folder-output";
+            string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Resume Folder-output";
 
             // Preprocess documents
             Console.WriteLine("Starting document preprocessing...");
             await Task.Run(() => semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes));
 
             // Define processed document paths
-            string processedRequirementsFolder = "path_to_processed_requirements";
-            string processedResumesFolder = "path_to_processed_resumes";
+            string processedRequirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Requirements Folder-preprocessed";
+            string processedResumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Resume Folder-output-preprocessed";
 
             // Perform similarity calculations
             Console.WriteLine("Starting similarity calculations...");
