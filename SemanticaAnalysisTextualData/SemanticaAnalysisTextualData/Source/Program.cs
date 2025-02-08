@@ -29,20 +29,20 @@ namespace SemanticAnalysisTextualData.Source
             // Define paths for document processing
             string requirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder";
             string resumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder";
-            string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Requirements Folder-output";
-            string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Resume Folder-output";
+            string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-output";
+            string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output";
 
             // Preprocess documents
             Console.WriteLine("Starting document preprocessing...");
             await Task.Run(() => semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes));
 
             // Define processed document paths
-            string processedRequirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Requirements Folder-preprocessed";
-            string processedResumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\Data\\Resume Folder-output-preprocessed";
+            //string processedRequirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-preprocessed";
+            //string processedResumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output-preprocessed";
 
             // Perform similarity calculations
             Console.WriteLine("Starting similarity calculations...");
-            await semanticService.CalculateSimilarityForDocumentsAsync(processedRequirementsFolder, processedResumesFolder);
+            await semanticService.CalculateSimilarityForDocumentsAsync(outputRequirements, outputResumes);
 
             Console.WriteLine("Process completed.");
         }

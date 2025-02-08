@@ -98,12 +98,25 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
             var resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
 
+            // Debugging the properties of OpenAIEmbedding objects
+            foreach (var embedding in jobDescEmbeddings.Value)
+            {
+                Console.WriteLine($"Type: {embedding.GetType().Name}");
+                foreach (var prop in embedding.GetType().GetProperties())
+                {
+                    Console.WriteLine($"Property: {prop.Name}");
+                }
+            }
+
+            
+
             //Step 1: Generate embeddings for job descriptions
 
             // Console.WriteLine("Generating embeddings for job descriptions...");
             //List<string> jobDescInputs = new List<string>(processedJobDescriptions);
             //OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
-            var jobDescriptionEmbeddings = jobDescEmbeddings.Select(e => e.Embedding.Select(x => (double)x).ToArray()).ToList();
+            var jobDescriptionEmbeddings = jobDescEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+
 
 
 
@@ -112,7 +125,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
             // Console.WriteLine("Generating embeddings for resumes...");
             //List<string> resumeInputs = new List<string>(processedResumes);
             //OpenAIEmbeddingCollection resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
-            var resumeEmbeddingsList = resumeEmbeddings.Select(e => e.Embedding.Select(x => (double)x).ToArray()).ToList();
+            var resumeEmbeddingsList = resumeEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+
 
 
 
