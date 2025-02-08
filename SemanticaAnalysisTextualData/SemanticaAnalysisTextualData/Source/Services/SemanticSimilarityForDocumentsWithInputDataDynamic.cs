@@ -64,7 +64,7 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic
                         if (fileName1.StartsWith("JobProfile", StringComparison.OrdinalIgnoreCase))
                         {
                            
-                            phraseSimilarity.Phrase2 = "fileName2";
+                            phraseSimilarity.Phrase2 = fileName2;
                             phraseSimilarity.domain = "jobvacancy";
                         }
                         else if (fileName1.StartsWith("MedicalHistory", StringComparison.OrdinalIgnoreCase))
