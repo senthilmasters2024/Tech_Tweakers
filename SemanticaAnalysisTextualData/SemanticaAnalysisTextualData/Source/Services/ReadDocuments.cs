@@ -8,7 +8,7 @@
     {
         FilePath = filePath;
         FileName = Path.GetFileName(filePath);
-        LoadContent();
+        //LoadContent();
     }
 
     public void LoadContent()

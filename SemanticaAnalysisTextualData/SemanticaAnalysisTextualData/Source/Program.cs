@@ -19,7 +19,7 @@ namespace SemanticAnalysisTextualData.Source
             // Set up dependency injection
             var serviceProvider = new ServiceCollection()
                 .AddSingleton<IWordPreprocessor, WordPreprocessor>()  // Replace with actual implementations
-                .AddSingleton<ISentencePreprocessor, SentencePreprocessor>()
+                .AddSingleton<ISentencePreprocessor, PhrasePreprocessor>()
                 .AddSingleton<IDocumentPreprocessor, DocumentPreprocessor>()
                 .AddSingleton<ISemanticAnalysisTextualDataInterface, SemanticAnalysisTextualDataService>()
                 .BuildServiceProvider();
@@ -31,7 +31,8 @@ namespace SemanticAnalysisTextualData.Source
             string resumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder";
             string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-output";
             string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output";
-
+            //string processedRequirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-preprocessed";
+           // string processedResumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output-preprocessed";
             // Preprocess documents
             Console.WriteLine("Starting document preprocessing...");
             await Task.Run(() => semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes));
@@ -50,35 +51,37 @@ namespace SemanticAnalysisTextualData.Source
 }
 
 
-        /*static async Task Main(string[] args)
+
+
+/*static async Task Main(string[] args)
+{
+    Console.WriteLine("Welcome to Semantic Text Analysis!");
+
+    // Validate API key
+    var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+    if (string.IsNullOrEmpty(apiKey))
+        throw new InvalidOperationException("The API key environment variable is not set. Please configure it.");
+
+    // Set up dependency injection
+    var services = new ServiceCollection();
+    services.AddSingleton<SemanticAnalysisTextualDataService>(provider => new SemanticAnalysisTextualDataService());
+    var serviceProvider = services.BuildServiceProvider();
+
+    var textAnalysisService = serviceProvider.GetService<SemanticAnalysisTextualDataService>();
+
+    *//*while (true)
+    {
+        Console.WriteLine("Enter text 1: ");
+        var text1 = Console.ReadLine();
+
+        Console.WriteLine("Enter text 2: ");
+        var text2 = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(text1) || string.IsNullOrWhiteSpace(text2))
         {
-            Console.WriteLine("Welcome to Semantic Text Analysis!");
-
-            // Validate API key
-            var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-            if (string.IsNullOrEmpty(apiKey))
-                throw new InvalidOperationException("The API key environment variable is not set. Please configure it.");
-
-            // Set up dependency injection
-            var services = new ServiceCollection();
-            services.AddSingleton<SemanticAnalysisTextualDataService>(provider => new SemanticAnalysisTextualDataService());
-            var serviceProvider = services.BuildServiceProvider();
-
-            var textAnalysisService = serviceProvider.GetService<SemanticAnalysisTextualDataService>();
-
-            *//*while (true)
-            {
-                Console.WriteLine("Enter text 1: ");
-                var text1 = Console.ReadLine();
-
-                Console.WriteLine("Enter text 2: ");
-                var text2 = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(text1) || string.IsNullOrWhiteSpace(text2))
-                {
-                    Console.WriteLine("Both inputs must be non-empty. Please try again.");
-                    continue;
-                }
+            Console.WriteLine("Both inputs must be non-empty. Please try again.");
+            continue;
+        }
 *//*
                 try
                 {
@@ -96,4 +99,4 @@ namespace SemanticAnalysisTextualData.Source
                 }
             }
         }*/
-   
+

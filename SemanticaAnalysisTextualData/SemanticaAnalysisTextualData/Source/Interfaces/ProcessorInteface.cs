@@ -1,17 +1,21 @@
-﻿public interface IWordPreprocessor
+﻿using System;
+
+public interface IWordPreprocessor
 {
-     string ProcessWords(string word, string word2);
+     string ProcessWords(string word);//preprocess a single word
 }
 
-public interface ISentencePreprocessor
+public interface IPhrasePreprocessor
 {
-    string ProcessSentences(string sentence1, string sentence2);
+    string PreprocessPhrase(string phrase); //preprocess a single phrase
 }
 
 public interface IDocumentPreprocessor
 {
+                                             
+    List<IDocument> LoadDocuments(string folderPath);// Load documents from a folder
+    string PreprocessDocument(string document); //Preprocess a document
 
-    List<IDocument> LoadDocuments(string folderPath);
-    string PreprocessText(string text);
-    void ProcessAndSaveDocuments(string inputFolder, string outputFolder);
+    void ProcessAndSaveDocuments(string inputFolder, string outputFolder); // Process and save preprocessed documents
+
 }

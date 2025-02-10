@@ -29,12 +29,12 @@ namespace SemanticaAnalysisTextualData.Source.Services
         /// </summary>
 
         private readonly IWordPreprocessor _wordPreprocessor;
-        private readonly ISentencePreprocessor _sentencePreprocessor;
+        private readonly IPhrasePreprocessor _sentencePreprocessor;
         private readonly IDocumentPreprocessor _documentPreprocessor;
 
         public SemanticAnalysisTextualDataService(
             IWordPreprocessor wordPreprocessor,
-            ISentencePreprocessor sentencePreprocessor,
+            IPhrasePreprocessor sentencePreprocessor,
             IDocumentPreprocessor documentPreprocessor)
         {
             _wordPreprocessor = wordPreprocessor;
