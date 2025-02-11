@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CsvHelper;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Plotly.NET.LayoutObjects;
 using ScottPlot;
@@ -6,6 +7,7 @@ using ScottPlot.Colormaps;
 using SemanticaAnalysisTextualData.Source.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,14 +59,14 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic
                         {
                             //Phrase1 = sentence1,
                             //Phrase2 = sentence2,
-                            Phrase1 = fileName1,
-                            Phrase2 = fileName2,
+                            FileName1 = fileName1,
+                            FileName2 = fileName2,
                             SimilarityScore = similarity
                         };
                         if (fileName1.StartsWith("JobProfile", StringComparison.OrdinalIgnoreCase))
                         {
                            
-                            phraseSimilarity.Phrase2 = fileName2;
+                            phraseSimilarity.FileName2 = fileName2;
                             phraseSimilarity.domain = "jobvacancy";
                         }
                         else if (fileName1.StartsWith("MedicalHistory", StringComparison.OrdinalIgnoreCase))
@@ -82,8 +84,12 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic
 
                 // Save the results to a JSON file
                 string currentDir = Directory.GetCurrentDirectory();
-                string outputPath = Path.Combine(currentDir, "data", "output_dataset.json");
-                File.WriteAllText(outputPath, JsonConvert.SerializeObject(results, Formatting.Indented));
+                string outputPath = Path.Combine(currentDir, "data", "output_dataset.csv");
+                using (var writer = new StreamWriter(outputPath))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(results);
+                }
                 Console.WriteLine($"Results saved to {outputPath}.");
             }
             catch (Exception ex)
@@ -96,8 +102,8 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic
     // Model for PhraseSimilarity
     class PhraseSimilarity
     {
-        public string? Phrase1 { get; set; }
-        public string? Phrase2 { get; set; }
+        public string? FileName1 { get; set; }
+        public string? FileName2 { get; set; }
         
         public string? domain { get; set; }
 
