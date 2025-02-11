@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 public class DocumentPreprocessor : IDocumentPreprocessor
 {
     private readonly IPhrasePreprocessor _phrasePreprocessor;
-    public DocumentPreprocessor(IPhrasePreprocessor phrasePreprocessoror)
+    public DocumentPreprocessor(IPhrasePreprocessor phrasePreprocessor)
     {
         _phrasePreprocessor = phrasePreprocessor;
     }

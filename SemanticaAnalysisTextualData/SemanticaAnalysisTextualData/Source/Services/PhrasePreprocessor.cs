@@ -15,7 +15,7 @@ public class PhrasePreprocessor : IPhrasePreprocessor
 
         phrase = Regex.Replace(phrase, @"[^a-zA-Z0-9\s]", "");
         var words = phrase.Split(' ');
-        var processedWords = words.Select(word => WordPreprocessor.PreprocessWord(word)).ToList();
+        var processedWords = words.Select(word => WordPreprocessor.preprocessWord(word)).ToList();
 
 
         // Return the processed sentences as combined strings
