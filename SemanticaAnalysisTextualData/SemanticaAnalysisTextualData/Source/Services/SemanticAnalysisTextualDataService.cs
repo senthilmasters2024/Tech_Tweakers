@@ -27,20 +27,20 @@ namespace SemanticaAnalysisTextualData.Source.Services
         /// <summary>
         /// Asynchronous method to generate embeddings for two text inputs and calculate their similarity.
         /// </summary>
+        private readonly ITextPreprocessor _textPreprocessor;
 
-        private readonly IWordPreprocessor _wordPreprocessor;
-        private readonly IPhrasePreprocessor _sentencePreprocessor;
-        private readonly IDocumentPreprocessor _documentPreprocessor;
-
-        public SemanticAnalysisTextualDataService(
-            IWordPreprocessor wordPreprocessor,
-            IPhrasePreprocessor sentencePreprocessor,
-            IDocumentPreprocessor documentPreprocessor)
+        public SemanticAnalysisTextualDataService(ITextPreprocessor textPreprocessor)
         {
-            _wordPreprocessor = wordPreprocessor;
-            _sentencePreprocessor = sentencePreprocessor;
-            _documentPreprocessor = documentPreprocessor;
+            _textPreprocessor = textPreprocessor;
+        
         }
+        public async Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases)
+        {
+            _textPreprocessor.ProcessAndSaveDocuments(wordsFolder, outputWords);
+            _textPreprocessor.ProcessAndSaveDocuments(phrasesFolder, outputPhrases);
+            await Task.CompletedTask;
+        }
+
         public void CalculateSimilarity(float[] vectorA, float[] vectorB)
         {
             // Your cosine similarity calculation logic here.
@@ -56,15 +56,29 @@ namespace SemanticaAnalysisTextualData.Source.Services
         public async Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
 
-             _documentPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
+             _textPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
 
 
-           _documentPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
+           _textPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
 
             return ;     
                 
          }
         // Loads preprocessed text from files
+        private List<string> LoadWordsFromFolder(string folderPath)
+        {
+            return Directory.GetFiles(folderPath, "*.txt")
+                           .Select(File.ReadAllText)
+                           .ToList();
+        }
+
+        private List<string> LoadPhrasesFromFolder(string folderPath)
+        {
+            return Directory.GetFiles(folderPath, "*.txt")
+                           .Select(File.ReadAllText)
+                           .ToList();
+        }
+
         private List<string> LoadPreprocessedDocuments(string folderPath)
         {
             return Directory.GetFiles(folderPath, "*.txt")
@@ -98,23 +112,17 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
             var resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
 
-            // Debugging the properties of OpenAIEmbedding objects
-            foreach (var embedding in jobDescEmbeddings.Value)
-            {
-                Console.WriteLine($"Type: {embedding.GetType().Name}");
-                foreach (var prop in embedding.GetType().GetProperties())
-                {
-                    Console.WriteLine($"Property: {prop.Name}");
-                }
-            }
 
-            
+
+
 
             //Step 1: Generate embeddings for job descriptions
 
             // Console.WriteLine("Generating embeddings for job descriptions...");
             //List<string> jobDescInputs = new List<string>(processedJobDescriptions);
             //OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
+
+            //// Convert embeddings to double arrays
             var jobDescriptionEmbeddings = jobDescEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
 
 
@@ -152,13 +160,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 }
             }
         }
-            // STEP 4: Display the similarity results
-            //Console.WriteLine("\nSimilarity Results:");
-            //foreach (var result in results)
-           // {
-                //Console.WriteLine($"Job {result.jobIndex + 1} <-> Resume {result.resumeIndex + 1} | Similarity: {result.similarity}");
-           // }
-       // }
+        
+
 
 
         // Cosine Similarity Function
@@ -183,10 +186,74 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
             return dotProduct / (magnitudeA * magnitudeB);
         }
+        // Generate embeddings for words and phrases (useful if you want to calculate similarity between them)
+        public async Task GenerateEmbeddingsForWordsAndPhrases(string wordsFolder, string phrasesFolder)
+        {
+            var client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
+            // Load raw words and phrases
+            var rawWords = LoadWordsFromFolder(wordsFolder);
+            var rawPhrases = LoadPhrasesFromFolder(phrasesFolder);
+
+            // Preprocess words and phrases
+            var words = rawWords.Select(w => _textPreprocessor.PreprocessText(w, TextDataType.Word)).Where(w => !string.IsNullOrEmpty(w)).ToList();
+            var phrases = rawPhrases.Select(p => _textPreprocessor.PreprocessText(p, TextDataType.Phrase)).Where(p => !string.IsNullOrEmpty(p)).ToList();
+
+            // Generate embeddings for words and phrases
+            var wordEmbeddings = await client.GenerateEmbeddingsAsync(words);
+            var phraseEmbeddings = await client.GenerateEmbeddingsAsync(phrases);
+
+            // Convert embeddings to double arrays
+            var wordEmbeddingsList = wordEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+            var phraseEmbeddingsList = phraseEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+
+            // Now you have embeddings for words and phrases, ready to calculate similarity
+            CalculateSimilarityForWordsAndPhrases(wordEmbeddingsList, phraseEmbeddingsList);
+        }
+
+        // Calculate similarity for words and phrases
+        public void CalculateSimilarityForWordsAndPhrases(List<double[]> wordEmbeddingsList, List<double[]> phraseEmbeddingsList)
+        {
+            Console.WriteLine("Calculating similarity between words...");
+            for (int i = 0; i < wordEmbeddingsList.Count; i++)
+            {
+                for (int j = 0; j < wordEmbeddingsList.Count; j++)
+                {
+                    if (i != j)
+                    {
+                        double similarity = ComputeCosineSimilarity(wordEmbeddingsList[i], wordEmbeddingsList[j]);
+                        Console.WriteLine($"Word {i + 1} vs Word {j + 1} | Similarity: {similarity}");
+                    }
+                }
+            }
+
+            Console.WriteLine("Calculating similarity between phrases...");
+            for (int i = 0; i < phraseEmbeddingsList.Count; i++)
+            {
+                for (int j = 0; j < phraseEmbeddingsList.Count; j++)
+                {
+                    if (i != j)
+                    {
+                        double similarity = ComputeCosineSimilarity(phraseEmbeddingsList[i], phraseEmbeddingsList[j]);
+                        Console.WriteLine($"Phrase {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
+                    }
+                }
+            }
+
+            Console.WriteLine("Calculating similarity between words and phrases...");
+            for (int i = 0; i < wordEmbeddingsList.Count; i++)
+            {
+                for (int j = 0; j < phraseEmbeddingsList.Count; j++)
+                {
+                    double similarity = ComputeCosineSimilarity(wordEmbeddingsList[i], phraseEmbeddingsList[j]);
+                    Console.WriteLine($"Word {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
+                }
+            }
+        }
     }
 }
 
+  
 
 
 

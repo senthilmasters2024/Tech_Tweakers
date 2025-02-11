@@ -16,40 +16,46 @@ namespace SemanticAnalysisTextualData.Source
         static async Task Main(string[] args)
         {
 
+           
             // Set up dependency injection
             var serviceProvider = new ServiceCollection()
-                .AddSingleton<IWordPreprocessor, WordPreprocessor>()  // Replace with actual implementations
-                .AddSingleton<ISentencePreprocessor, PhrasePreprocessor>()
-                .AddSingleton<IDocumentPreprocessor, DocumentPreprocessor>()
+                .AddSingleton<ITextPreprocessor, TextPreprocessor>() // Registering the unified text preprocessor
                 .AddSingleton<ISemanticAnalysisTextualDataInterface, SemanticAnalysisTextualDataService>()
                 .BuildServiceProvider();
 
             var semanticService = serviceProvider.GetRequiredService<ISemanticAnalysisTextualDataInterface>();
 
             // Define paths for document processing
+            string wordsFolder = @"D:\path\to\wordsFolder";
+            string phrasesFolder = @"D:\path\to\phrasesFolder";
+            
+            string outputWords = @"D:\path\to\words-output";
+            string outputPhrases = @"D:\path\to\phrases-output";
+           
             string requirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder";
             string resumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder";
             string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-output";
             string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output";
-            //string processedRequirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-preprocessed";
-           // string processedResumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output-preprocessed";
-            // Preprocess documents
+            // Preprocess words and phrases
+            Console.WriteLine("Starting word and phrase preprocessing...");
+            await semanticService.PreprocessWordsAndPhrases(wordsFolder, phrasesFolder, outputWords, outputPhrases);
+
+            // Preprocess documents (if needed)
             Console.WriteLine("Starting document preprocessing...");
-            await Task.Run(() => semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes));
+            await semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes);
 
-            // Define processed document paths
-            //string processedRequirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-preprocessed";
-            //string processedResumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output-preprocessed";
+            // Perform similarity calculations for words and phrases
+            Console.WriteLine("Starting similarity calculations for words and phrases...");
+            await semanticService.CalculateSimilarityForWordsAndPhrasesAsync(outputWords, outputPhrases);
 
-            // Perform similarity calculations
-            Console.WriteLine("Starting similarity calculations...");
+            // Perform similarity calculations for documents (job descriptions vs resumes)
+            Console.WriteLine("Starting similarity calculations for documents...");
             await semanticService.CalculateSimilarityForDocumentsAsync(outputRequirements, outputResumes);
 
             Console.WriteLine("Process completed.");
         }
     }
 }
-
 
 
 
