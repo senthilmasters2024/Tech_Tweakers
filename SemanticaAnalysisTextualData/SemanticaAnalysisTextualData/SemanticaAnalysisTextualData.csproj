@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Google.Cloud.Language.V1" Version="3.7.0" />
     <PackageReference Include="App.Metrics.Health.Extensions.Configuration" Version="3.2.0" />
     <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
@@ -23,6 +24,7 @@
     <PackageReference Include="OpenAI-DotNet" Version="8.4.1" />
     <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
     <PackageReference Include="TiktokenSharp" Version="1.1.6" />
+	  <PackageReference Include="VaultSharp" Version="1.17.5.1" />
   </ItemGroup>
 
   <ItemGroup>
