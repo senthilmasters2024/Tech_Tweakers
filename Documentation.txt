@@ -1,4 +1,61 @@
 Semantic Similarity Analysis of Textual Data
+This project performs semantic analysis of textual data using .NET and C# in Visual Studio. The system processes text inputs at three levels: word, phrase, and document. Inputs are stored in designated folders and fetched for processing. The analysis is based on cosine similarity to measure text similarity.
+
+a) Technology Stack
+
+Programming Language: C#
+
+Development Environment: Visual Studio
+
+Framework: .NET Core/.NET Framework
+
+Libraries:
+
+System.IO for file handling
+
+ML.NET or custom implementations for cosine similarity
+
+Other NLP libraries if required
+
+b)Processing Steps are as follows:
+
+Data Fetching: The program scans the designated folder and reads text files.
+
+Preprocessing:
+
+Tokenization
+
+Stopword removal (if necessary)
+
+Normalization
+
+Feature Extraction:
+
+Vectorization of text using TF-IDF
+
+Cosine Similarity Computation:
+
+Converts text into vector space
+
+Computes similarity scores between input texts
+
+Output Generation:
+
+Stores results in a structured format (e.g., JSON, CSV, or database)
+
+c) Cosine Similarity Calculation is performed on the following basis:
+
+Cosine similarity is used to measure the similarity between text vectors:
+
+d(A, B) = (A • B) / (||A|| ||B||)
+
+Where:
+
+A and B are text vectors
+
+A • B represents the dot product of the vectors
+
+||A|| and ||B|| are the magnitudes of the vectors
 
 Based on the researches, the following steps has been decided to follow to implement the task succesfully:
 
