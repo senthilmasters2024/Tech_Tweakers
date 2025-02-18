@@ -77,18 +77,67 @@ The following are some of the easily available OpenAI's models used by GPT to ge
 Here, the  text-similarity-ada-001 is the popular one among others due to its simplicity and speed. The text-similarity-babbage-002 model is expensive than "ada models" . Its is preferred over "ada" for those tasks demanding a reasonable balance with less computationally such as keyword matching, basic semantic similarity analysis. The text-similarity-curie-001model is the one with better accuracy and performance as well as costly compared to ada. The model text-similarity-davinci-002 is the most advanced and hence the expensive. It can be integrated with, for applications which needs the highest precision with the ability to understand complex contextual relationships.  
  
 As mentioned once the vector space is obtained by Embeddings, we can extract the similarity by using the below metric models: 
+Cosine similarity is the measure of similarity between two non-zero vectors widely applied in many machine learning and data analysis applications. It actually measures the cosine of the angle between two vectors. As a result, an idea is given about how far the two vectors point in the same direction irrespective of their magnitudes. It can be found in popular usage in tasks of text analysis, such as comparison of similarity between documents, search queries, and even recommendation systems so that user preferences can be matched.
 
-a) Cosine Similarity : This method focuses more on the orientation or direction of the vectors rather than their magnitude. This is useful when comparing high-dimensional embeddings. The value can be in the range of [-1,1] or [0,1] depending on our apllication. 
+Similarity measure refers to distance with dimensions representing features of the data object, in a dataset. If this distance is less, there will be a high degree of similarity, but when the distance is large, there will be a low degree of similarity. Some of the popular similarity measures are given below:
 
-b) Euclidean Similarity: The absolute distances in the vector space is calculated if we are using Euclidean structure and this is  more sensitive to the magnitude of the vectors than simply the direction.
+Euclidean Distance
+Manhattan Distance
+Jaccard Similarity
+Minkowski Distance
+Cosine Similarity
+What is Cosine Similarity?
+Cosine similarity is a metric, helpful in determining, how similar the data objects are irrespective of their size. We can measure the similarity between two sentences in Python using Cosine Similarity. In cosine similarity, data objects in a dataset are treated as a vector. The formula to find the cosine similarity between two vectors is –
 
-c) Jaccard Similarity: Once the  intersection and union is compared , the model focuses on calculating the similarity between two sets.
+S
+C
+S 
+C
+​
+ (x, y) = x . y / ||x|| 
+×
+× ||y||
+where,
 
-d) Pearson/Sparman Correlation Correlation Coefficient- This measures the linear relationship between two variables.
+x . y = product (dot) of the vectors ‘x’ and ‘y’.
+||x|| and ||y|| = length (magnitude) of the two vectors ‘x’ and ‘y’.
+||x|| 
+×
+× ||y|| = regular product of the two vectors ‘x’ and ‘y’.
+Example
+Consider an example to find the similarity between two vectors – ‘x’ and ‘y’, using Cosine Similarity. The ‘x’ vector has values, x = { 3, 2, 0, 5 } The ‘y’ vector has values, y = { 1, 0, 0, 0 } The formula for calculating the cosine similarity is : 
+S
+C
+S 
+C
+​
+ (x, y) = x . y / ||x|| 
+×
+× ||y||
+
+x . y = 3*1 + 2*0 + 0*0 + 5*0 = 3
+
+||x|| = √ (3)^2 + (2)^2 + (0)^2 + (5)^2 = 6.16
+
+||y|| = √ (1)^2 + (0)^2 + (0)^2 + (0)^2 = 1
+
+∴ 
+S
+C
+S 
+C
+​
+ (x, y) = 3 / (6.16 * 1) = 0.49 
+
+ (x, y) = 1 - 0.49 = 0.51
+The cosine similarity between two vectors is measured in ‘θ’.
+If θ = 0°, the ‘x’ and ‘y’ vectors overlap, thus proving they are similar.
+If θ = 90°, the ‘x’ and ‘y’ vectors are dissimilar.
 
 Of these above mentioned similarity metric models, the Cosine and Euclidean methods are the widely followed and easily adapted one due to less computational complexity.
 
-
+Reference:
+https://www.geeksforgeeks.org/cosine-similarity/
 
 
 
