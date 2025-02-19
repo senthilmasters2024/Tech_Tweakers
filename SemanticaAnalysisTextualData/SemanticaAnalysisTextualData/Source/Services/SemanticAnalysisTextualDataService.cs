@@ -102,6 +102,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 throw new ArgumentException("Embedding vectors must not have zero magnitude.");
             }
 
+            Console.WriteLine("Magnitude 1 and 2 is" + magnitude1 + "and" + magnitude2);
             // Compute cosine similarity
             double cosineSimilarity = dotProduct / (magnitude1 * magnitude2);
 
