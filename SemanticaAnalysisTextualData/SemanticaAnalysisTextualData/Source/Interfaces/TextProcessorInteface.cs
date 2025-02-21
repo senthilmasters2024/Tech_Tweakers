@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OpenAI;
 using SemanticaAnalysisTextualData.Source.Enums;
 public enum TextDataType
 {
@@ -32,7 +33,24 @@ public interface ITextPreprocessor
         List<IDocument> LoadDocuments(string folderPath); // Load documents
         void ProcessAndSaveDocuments(string inputFolder, string outputFolder); // Process & save documents
     }
+    //sequentially
+    {
+            // Get all document files (e.g., .txt, .docx, etc.)
+            string[] files = Directory.GetFiles(inputFolderPath, "*.*", SearchOption.TopDirectoryOnly);
 
+            foreach (string filePath in files)
+            {
+                Console.WriteLine($"Processing file: {Path.GetFileName(filePath)}");
+
+                // Read the content of the file (example: text file)
+                string content = File.ReadAllText(filePath);
+
+    // Call your semantic analysis method here
+    ProcessDocument(content, filePath);
+}
+
+Console.WriteLine("All documents processed successfully.");
+        }
     {
         string folderPath = @"C:\Documents"; // Change to your folder path
 
