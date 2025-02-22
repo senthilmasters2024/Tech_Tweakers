@@ -136,8 +136,35 @@ If θ = 90°, the ‘x’ and ‘y’ vectors are dissimilar.
 
 Of these above mentioned similarity metric models, the Cosine and Euclidean methods are the widely followed and easily adapted one due to less computational complexity.
 
-Reference:
-https://www.geeksforgeeks.org/cosine-similarity/
+
+
+
+Embeddings:
+Dimensionality is the shape of the data. Embeddings are essential for enhancing performance since they are a potent strategy for machine learning applications such as natural language processing. Embeddings are significant for the following reasons:
+
+Semantic representation: Embeddings simplify comparing and analyzing input data by capturing semantic meaning. Many natural language processing activities can perform better, including text categorization and sentiment analysis.
+
+Lower dimensionality: Many machine learning methods become less computationally complex and operate more efficiently with big inputs because embeddings produce a lower-dimensional space representing high-dimensional vectors.
+
+Reusability: An embedding is a potent and practical data analysis approach since it may be applied to various models and applications once produced.
+
+Robustness: Embeddings are robust and useful for many industry applications because they can be trained on big datasets and capture the underlying patterns and relationships in the data.
+
+Some real world applications of embeddings are as fgollows:
+In real-world machine-learning applications, embedded systems are critical in boosting search engines, voice assistants, image recognition systems, and natural language processing, among other domains, by optimizing data representation and performance.
+
+Computer Vision
+ChatGPT embeddings are used in computer vision to bridge contexts and facilitate transfer learning for applications such as AI Art Machines and self-driving cars. Models can be trained with visuals created from video games instead of real-world images by converting them into embeddings. Multiple transformations, from text to image and vice versa, are possible with this method.
+
+Semantic Search
+By considering word context and meaning, BERT-based embeddings improve search results and help search engines understand subtle linguistic differences. To improve the relevance and accuracy of search results and user experience, a semantic search engine that uses BERT would be able to comprehend, for example, that a user was looking for directions on making pizza.
+
+Recommender System
+A recommender system uses content-based and collaborative filtering to anticipate user preferences and ratings for entities or items. While content-based filtering employs embeddings to create associations between people and items, collaborative filtering leverages user activities to teach suggestions. Comparable items can be recommended to similar consumers by multiplying user embeddings by item embeddings, which generates rating predictions.
+
+Reference :
+1)https://www.geeksforgeeks.org/cosine-similarity/
+2)https://www.debutinfotech.com/blog/understanding-the-role-of-embedding-in-models-like-chat-gpt
 
 
 
