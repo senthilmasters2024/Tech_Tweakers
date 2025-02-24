@@ -32,6 +32,9 @@ public interface ITextPreprocessor
         string PreprocessText(string text, TextDataType dataType); // Unified preprocessing for all text types
         List<IDocument> LoadDocuments(string folderPath); // Load documents
         void ProcessAndSaveDocuments(string inputFolder, string outputFolder); // Process & save documents
+                                                                               // New Methods for Stemming
+        string StemText(string text); // Stems a single text
+        Task StemDocumentsInFolderAsync(string inputFolder, string outputFolder); // Stems all documents in a folder asynchronously
     }
     //sequentially
     {

@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SemanticaAnalysisTextualData.Source.Enums;
+using Porter2Stemmer;
+
 
 namespace SemanticaAnalysisTextualData.Source.Services
 {
@@ -14,6 +16,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
     {
         "the", "is", "in", "at", "of", "am", "pm", "one", "to", "a", "an", "and"
     };
+        private readonly EnglishPorter2Stemmer _stemmer = new EnglishPorter2Stemmer(); // Stemming Library
 
         public string PreprocessText(string text, TextDataType dataType)
         {
@@ -52,12 +55,53 @@ namespace SemanticaAnalysisTextualData.Source.Services
         public void ProcessAndSaveDocuments(string inputFolder, string outputFolder)
         {
             var documents = LoadDocuments(inputFolder);
+
             foreach (var document in documents)
             {
                 document.LoadContent();
                 string preprocessedContent = PreprocessText(document.Content, TextDataType.Document);
-                document.SaveProcessedContent(outputFolder);
+
+                // Apply stemming after preprocessing
+                string stemmedContent = StemText(preprocessedContent);
+
+                // Save the final output
+                File.WriteAllText(Path.Combine(outputFolder, Path.GetFileName(document.FilePath)), stemmedContent);
             }
+        }
+
+        /// <summary>
+        /// Stems each word in the input text using Porter2 stemming.
+        /// </summary>
+        public string StemText(string text)
+        {
+            var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var stemmedWords = words.Select(word => _stemmer.Stem(word).Value);
+            return string.Join(" ", stemmedWords);
+        }
+
+        /// <summary>
+        /// Asynchronously applies stemming to all text files in a folder and saves the output.
+        /// </summary>
+        public async Task StemDocumentsInFolderAsync(string inputFolder, string outputFolder)
+        {
+            var documents = LoadDocuments(inputFolder);
+
+            List<Task> tasks = new List<Task>();
+
+            foreach (var document in documents)
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    document.LoadContent();
+                    string stemmedContent = StemText(document.Content);
+
+                    File.WriteAllText(Path.Combine(outputFolder, Path.GetFileName(document.FilePath)), stemmedContent);
+                }));
+            }
+
+            await Task.WhenAll(tasks);
         }
     }
 }
+               
+            
