@@ -136,11 +136,21 @@ If θ = 90°, the ‘x’ and ‘y’ vectors are dissimilar.
 
 Of these above mentioned similarity metric models, the Cosine and Euclidean methods are the widely followed and easily adapted one due to less computational complexity.
 
+In GPT models, vector representation refers to the numerical encoding of text (such as words, phrases, or entire documents) as dense vectors in a high-dimensional space. These vectors capture semantic relationships and contextual information, enabling tasks like similarity measurement, clustering, and classification. Embeddings are essential for enhancing performance since they are a potent strategy for machine learning applications such as natural language processing.Here’s a breakdown of key concepts related to vector representations in GPT:
 
+Token Embeddings:GPT processes text by first breaking it into tokens (subwords or characters), each mapped to an embedding vector.Embeddings are learned during training and represent each token’s meaning in context.Typical embedding dimensions range from 512 to 4096 depending on the model size.
 
+ Positional Embeddings: Since GPT models lack inherent sequence awareness, positional embeddings are added to token embeddings to encode word order.This helps maintain contextual relationships in sequential data.
 
-Embeddings:
-Dimensionality is the shape of the data. Embeddings are essential for enhancing performance since they are a potent strategy for machine learning applications such as natural language processing. Embeddings are significant for the following reasons:
+Hidden Layer Representations: As tokens pass through multiple transformer layers, their vector representations are updated.Each layer encodes increasingly abstract semantic features, with deeper layers capturing more complex patterns.
+These hidden states can be extracted for downstream tasks.
+
+Sentence and Document-Level Representations: To represent entire sentences or documents, you can pool token embeddings (e.g., averaging or using the embedding of the [CLS] token in models like BERT).
+In GPT, pooling the final layer’s embeddings or using specific tokens can generate document-level vectors.
+OpenAI Embeddings API: OpenAI offers dedicated embedding models (e.g., text-embedding-ada-002) that produce vector representations optimized for tasks like similarity search and classification.
+Cosine Similarity and Distance Metrics: Vector comparisons typically use cosine similarity, which measures the cosine of the angle between vectors. Values range from -1 (opposite) to 1 (identical), with 0 indicating no similarity. These embeddings are often used with cosine similarity to measure the distance between vectors.
+
+The significance of embeddings are significant for the following reasons:
 
 Semantic representation: Embeddings simplify comparing and analyzing input data by capturing semantic meaning. Many natural language processing activities can perform better, including text categorization and sentiment analysis.
 
@@ -165,6 +175,7 @@ A recommender system uses content-based and collaborative filtering to anticipat
 Reference :
 1)https://www.geeksforgeeks.org/cosine-similarity/
 2)https://www.debutinfotech.com/blog/understanding-the-role-of-embedding-in-models-like-chat-gpt
+3)https://chatgpt.com/g/g-p-67ad06354b688191a9934c9a1b681939-semantic-analysis-of-textual-data/c/67be23c5-37b8-8000-afd4-eb9f80a78d06
 
 
 
