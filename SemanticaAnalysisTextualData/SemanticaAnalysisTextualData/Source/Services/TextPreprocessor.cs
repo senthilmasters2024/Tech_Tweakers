@@ -52,7 +52,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return documents;
         }
 
-        public void ProcessAndSaveDocuments(string inputFolder, string outputFolder)
+        public void ProcessandSaveDocuments(string inputFolder, string outputFolder)
         {
             var documents = LoadDocuments(inputFolder);
 
