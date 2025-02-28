@@ -52,7 +52,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return documents;
         }
 
-        public void ProcessandSaveDocuments(string inputFolder, string outputFolder)
+        public async Task ProcessAndSaveDocuments(string inputFolder, string outputFolder)
         {
             var documents = LoadDocuments(inputFolder);
 
@@ -65,7 +65,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 string stemmedContent = StemText(preprocessedContent);
 
                 // Save the final output
-                File.WriteAllText(Path.Combine(outputFolder, Path.GetFileName(document.FilePath)), stemmedContent);
+                string outputFilePath = Path.Combine(outputFolder, Path.GetFileName(document.FilePath));
+                await File.WriteAllTextAsync(outputFilePath, stemmedContent);
             }
         }
 

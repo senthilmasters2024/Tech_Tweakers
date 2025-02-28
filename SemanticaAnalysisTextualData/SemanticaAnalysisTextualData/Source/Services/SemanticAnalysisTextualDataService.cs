@@ -36,61 +36,66 @@ namespace SemanticaAnalysisTextualData.Source.Services
         }
         public async Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases)
         {
-            _textPreprocessor.ProcessAndSaveDocuments(wordsFolder, outputWords);
-            _textPreprocessor.ProcessAndSaveDocuments(phrasesFolder, outputPhrases);
-            await Task.CompletedTask;
+            await _textPreprocessor.ProcessAndSaveDocuments(wordsFolder, outputWords);
+            await _textPreprocessor.ProcessAndSaveDocuments(phrasesFolder, outputPhrases);
         }
 
-        public void CalculateSimilarity(float[] vectorA, float[] vectorB)
-        {
+        //public void CalculateSimilarity(float[] vectorA, float[] vectorB)
+       // {
             // Your cosine similarity calculation logic here.
-            double similarity = ComputeCosineSimilarity(
-                 Array.ConvertAll(vectorA, x => (double)x),
-                 Array.ConvertAll(vectorB, x => (double)x)
-                 );
+           // double similarity = ComputeCosineSimilarity(
+               //  Array.ConvertAll(vectorA, x => (double)x),
+                // Array.ConvertAll(vectorB, x => (double)x)
+                // );
            
-        }
+       // }
     
 
         //Processes all documents in the specified directories before similarity calculations
         public async Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
 
-             _textPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
+             await _textPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
 
 
-           _textPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
+           await _textPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
 
             return ;     
                 
          }
         // Loads preprocessed text from files
-        private List<string> LoadWordsFromFolder(string folderPath)
+        private List<string> LoadTextFilesFromFolder(string folderPath)
         {
-            return Directory.GetFiles(folderPath, "*.txt")
-                           .Select(File.ReadAllText)
-                           .ToList();
+            var files = Directory.GetFiles(folderPath, "*.txt");
+            if (!files.Any())
+            {
+                throw new InvalidOperationException($"No text files found in {folderPath}");
+            }
+            return files.Select(File.ReadAllText).ToList();
         }
 
-        private List<string> LoadPhrasesFromFolder(string folderPath)
+        public async Task GenerateEmbeddingsForWordsAndPhrases(string wordsFolder, string phrasesFolder)
         {
-            return Directory.GetFiles(folderPath, "*.txt")
-                           .Select(File.ReadAllText)
-                           .ToList();
-        }
+            var client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        private List<string> LoadPreprocessedDocuments(string folderPath)
-        {
-            return Directory.GetFiles(folderPath, "*.txt")
-               .Select(File.ReadAllText)
-               .ToList();
-            
-            //List<string> documents = new();
-                          //foreach (var file in Directory.GetFiles(folderPath, "*.txt"))
-                          //{
-                          //documents.Add(File.ReadAllText(file));
-                          //}
-                          //return documents;
+            // Load raw words and phrases
+            var rawWords = LoadTextFilesFromFolder(wordsFolder);
+            var rawPhrases = LoadTextFilesFromFolder(phrasesFolder);
+
+            // Preprocess words and phrases
+            var words = rawWords.Select(w => _textPreprocessor.PreprocessText(w, TextDataType.Word)).Where(w => !string.IsNullOrEmpty(w)).ToList();
+            var phrases = rawPhrases.Select(p => _textPreprocessor.PreprocessText(p, TextDataType.Phrase)).Where(p => !string.IsNullOrEmpty(p)).ToList();
+
+            // Generate embeddings for words and phrases
+            var wordEmbeddings = await client.GenerateEmbeddingsAsync(words);
+            var phraseEmbeddings = await client.GenerateEmbeddingsAsync(phrases);
+
+            // Convert embeddings to double arrays
+            var wordEmbeddingsList = wordEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+            var phraseEmbeddingsList = phraseEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+
+            // Calculate similarity
+            CalculateSimilarityForWordsAndPhrases(wordEmbeddingsList, phraseEmbeddingsList);
         }
 
         //Asynchronously calculates similarity between job descriptions and resumes
@@ -99,18 +104,12 @@ namespace SemanticaAnalysisTextualData.Source.Services
         {
 
             // Console.WriteLine("Loading preprocessed documents...");
-            var processedJobDescriptions = LoadPreprocessedDocuments(processedRequirementsFolder);
-            var processedResumes = LoadPreprocessedDocuments(processedResumesFolder);
+            var jobDescriptions = LoadTextFilesFromFolder(processedRequirementsFolder);
+            var resumes = LoadTextFilesFromFolder(processedResumesFolder);
 
-            if (!processedJobDescriptions.Any() || !processedResumes.Any())
-            {
-                throw new InvalidOperationException("No documents found in preprocessed folders.");
-                //Console.WriteLine("No documents found in preprocessed folders.");
-                //return;
-            }
             var client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-            var jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
-            var resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
+            var jobDescEmbeddings = await client.GenerateEmbeddingsAsync(jobDescriptions);
+            var resumeEmbeddings = await client.GenerateEmbeddingsAsync(resumes);
 
 
 
@@ -148,15 +147,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
             {
                 for (int j = 0; j < resumeEmbeddingsList.Count(); j++)
                 {
-                    double similarity = ComputeCosineSimilarity(
-                        Array.ConvertAll(jobDescriptionEmbeddings[i], x => (float)x),
-                Array.ConvertAll(resumeEmbeddingsList[j], x => (float)x)
-                );
-
+                    double similarity = ComputeCosineSimilarity(jobDescriptionEmbeddings[i], resumeEmbeddingsList[j]);
                     results.Add((i, j, similarity));
-
-
-                    //(jobDescriptionEmbeddings[i], resumeEmbeddingsList[j])
                 }
             }
         }
@@ -187,29 +179,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return dotProduct / (magnitudeA * magnitudeB);
         }
         // Generate embeddings for words and phrases (useful if you want to calculate similarity between them)
-        public async Task GenerateEmbeddingsForWordsAndPhrases(string wordsFolder, string phrasesFolder)
-        {
-            var client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
-            // Load raw words and phrases
-            var rawWords = LoadWordsFromFolder(wordsFolder);
-            var rawPhrases = LoadPhrasesFromFolder(phrasesFolder);
-
-            // Preprocess words and phrases
-            var words = rawWords.Select(w => _textPreprocessor.PreprocessText(w, TextDataType.Word)).Where(w => !string.IsNullOrEmpty(w)).ToList();
-            var phrases = rawPhrases.Select(p => _textPreprocessor.PreprocessText(p, TextDataType.Phrase)).Where(p => !string.IsNullOrEmpty(p)).ToList();
-
-            // Generate embeddings for words and phrases
-            var wordEmbeddings = await client.GenerateEmbeddingsAsync(words);
-            var phraseEmbeddings = await client.GenerateEmbeddingsAsync(phrases);
-
-            // Convert embeddings to double arrays
-            var wordEmbeddingsList = wordEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
-            var phraseEmbeddingsList = phraseEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
-
-            // Now you have embeddings for words and phrases, ready to calculate similarity
-            CalculateSimilarityForWordsAndPhrases(wordEmbeddingsList, phraseEmbeddingsList);
-        }
+       
 
         // Calculate similarity for words and phrases
         public void CalculateSimilarityForWordsAndPhrases(List<double[]> wordEmbeddingsList, List<double[]> phraseEmbeddingsList)

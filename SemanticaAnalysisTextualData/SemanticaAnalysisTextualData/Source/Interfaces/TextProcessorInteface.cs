@@ -12,11 +12,13 @@ public enum TextDataType
 public interface ITextPreprocessor
 {
     /// Preprocesses text based on the specified data type (Word, Phrase, or Document).
-    string PreprocessText(string text, TextDataType dataType);
+    string PreprocessText(string text, TextDataType type);
     /// Loads documents from a specified folder.
     List<IDocument> LoadDocuments(string folderPath);
     // Call your semantic analysis method here
-    void ProcessandSaveDocument(string content, string filePath);
+    Task ProcessAndSaveDocuments(string inputFolder, string outputFolder);
+   
+
 
     /// Applies stemming to the text
     string StemText(string text);

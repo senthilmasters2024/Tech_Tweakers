@@ -36,7 +36,7 @@
     }
 }
 
-public enum TextDataType
+public enum MyTextDataType
 {
     Word,
     Phrase,

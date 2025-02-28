@@ -16,9 +16,11 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
         /// </summary>
         /// <returns></returns>
         Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases);
+        
         Task CalculateSimilarityForWordsAndPhrasesAsync(string outputWords, string outputPhrases);
         Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes);
         Task CalculateSimilarityForDocumentsAsync(string processedRequirementsFolder, string processedResumesFolder);
+        Task GenerateEmbeddingsForWordsAndPhrases(string wordsFolder, string phrasesFolder);
 
         //Add Additional Method Definitions Here Based on our use case and problem scenario to be implemented
     }
