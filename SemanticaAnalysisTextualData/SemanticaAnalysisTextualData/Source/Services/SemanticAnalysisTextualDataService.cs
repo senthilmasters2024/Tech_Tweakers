@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Embeddings;
 using SemanticaAnalysisTextualData.Source.Interfaces;
 using SemanticaAnalysisTextualData.Source.Services;
@@ -69,10 +69,26 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var files = Directory.GetFiles(folderPath, "*.txt");
             if (!files.Any())
             {
-                throw new InvalidOperationException($"No text files found in {folderPath}");
+                Console.WriteLine($" No text files found in {folderPath}");
+                return new List<string>();  // Return empty list instead of throwing an error
+                //throw new InvalidOperationException($"No text files found in {folderPath}");
             }
-            return files.Select(File.ReadAllText).ToList();
-        }
+            // return files.Select(File.ReadAllText).ToList();
+            Console.WriteLine($" Found {files.Length} text files in {folderPath}");
+
+            List<string> fileContents = new List<string>();
+
+            foreach (var file in files)
+            {
+                Console.WriteLine($"Reading file: {file}");
+                string content = File.ReadAllText(file);
+                Console.WriteLine($" File Content (first 100 chars): {content.Substring(0, Math.Min(content.Length, 100))}...");
+                fileContents.Add(content);
+            }
+
+            return fileContents;
+        
+       }
 
         public async Task GenerateEmbeddingsForWordsAndPhrases(string wordsFolder, string phrasesFolder)
         {
@@ -89,6 +105,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             // Generate embeddings for words and phrases
             var wordEmbeddings = await client.GenerateEmbeddingsAsync(words);
             var phraseEmbeddings = await client.GenerateEmbeddingsAsync(phrases);
+
 
             // Convert embeddings to double arrays
             var wordEmbeddingsList = wordEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
@@ -112,7 +129,11 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var resumeEmbeddings = await client.GenerateEmbeddingsAsync(resumes);
 
 
+            Console.WriteLine("Job Description Embeddings Response:");
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(jobDescEmbeddings, Newtonsoft.Json.Formatting.Indented));
 
+            Console.WriteLine("Resume Embeddings Response:");
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(resumeEmbeddings, Newtonsoft.Json.Formatting.Indented));
 
 
             //Step 1: Generate embeddings for job descriptions

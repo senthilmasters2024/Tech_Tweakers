@@ -25,28 +25,60 @@ namespace SemanticAnalysisTextualData.Source
 
             var semanticService = serviceProvider.GetRequiredService<ISemanticAnalysisTextualDataInterface>();
 
+
             // Define paths for document processing
-            string wordsFolder = @"D:\path\to\wordsFolder";
-            string phrasesFolder = @"D:\path\to\phrasesFolder";
-            
-            string outputWords = @"D:\path\to\words-output";
-            string outputPhrases = @"D:\path\to\phrases-output";
-           
-            string requirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder";
-            string resumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder";
-            string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Requirements Folder-output";
-            string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Data\\Resume Folder-output";
+            //string wordsFolder = @"D:\path\to\wordsFolder";
+            //string phrasesFolder = @"D:\path\to\phrasesFolder";
+
+            //string outputWords = @"D:\path\to\words-output";
+            //string outputPhrases = @"D:\path\to\phrases-output";
+            // Check if documents exist before processing
+            Console.WriteLine("Checking document files...");
+            string requirementsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\docstobecompared\\Requirements Folder";
+            string resumesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\docstobecompared\\Resume Folder";
+
+            // Check if files exist in the given folders
+            CheckAndReadFiles(requirementsFolder);
+            CheckAndReadFiles(resumesFolder);
+            static void CheckAndReadFiles(string folderPath)
+            {
+                if (!Directory.Exists(folderPath))
+                {
+                    Console.WriteLine($"❌ Directory not found: {folderPath}");
+                    return;
+                }
+
+                var files = Directory.GetFiles(folderPath, "*.txt");
+                if (!files.Any())
+                {
+                    Console.WriteLine($"No text files found in {folderPath}");
+                    return;
+                }
+
+                Console.WriteLine($" Found {files.Length} text files in {folderPath}");
+
+                foreach (var file in files)
+                {
+                    Console.WriteLine($" Reading file: {file}");
+                    string content = File.ReadAllText(file);
+                    Console.WriteLine($" File Content (first 200 chars): {content.Substring(0, Math.Min(content.Length, 200))}...\n");
+                }
+            }
+
+
+            string outputRequirements = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\docstobecompared\\Requirements Folder";
+            string outputResumes = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\docstobecompared\\Resume Folder";
             // Preprocess words and phrases
-            Console.WriteLine("Starting word and phrase preprocessing...");
-            await semanticService.PreprocessWordsAndPhrases(wordsFolder, phrasesFolder, outputWords, outputPhrases);
+           // Console.WriteLine("Starting word and phrase preprocessing...");
+            //await semanticService.PreprocessWordsAndPhrases(wordsFolder, phrasesFolder, outputWords, outputPhrases);
 
             // Preprocess documents (if needed)
             Console.WriteLine("Starting document preprocessing...");
             await semanticService.PreprocessAllDocuments(requirementsFolder, resumesFolder, outputRequirements, outputResumes);
 
             // Perform similarity calculations for words and phrases
-            Console.WriteLine("Starting similarity calculations for words and phrases...");
-            await semanticService.CalculateSimilarityForWordsAndPhrasesAsync(outputWords, outputPhrases);
+            //Console.WriteLine("Starting similarity calculations for words and phrases...");
+           // await semanticService.CalculateSimilarityForWordsAndPhrasesAsync(outputWords, outputPhrases);
 
             // Perform similarity calculations for documents (job descriptions vs resumes)
             Console.WriteLine("Starting similarity calculations for documents...");
