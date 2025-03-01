@@ -8,7 +8,12 @@ public enum TextDataType
     Phrase,
     Document
 }
-
+public interface IDocument
+{
+    string FilePath { get; }
+    string Content { get; set; }
+    void LoadContent();
+}
 public interface ITextPreprocessor
 {
     /// Preprocesses text based on the specified data type (Word, Phrase, or Document).

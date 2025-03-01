@@ -102,7 +102,28 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
             await Task.WhenAll(tasks);
         }
+        // **Nested Document Class**
+        private class Document : IDocument
+        {
+            public string FilePath { get; }
+            public string Content { get; set; }
+
+            public Document(string filePath)
+            {
+                FilePath = filePath;
+            }
+
+            public void LoadContent()
+            {
+                if (File.Exists(FilePath))
+                {
+                    Content = File.ReadAllText(FilePath);
+                }
+            }
+        }
     }
 }
+    
+
                
             

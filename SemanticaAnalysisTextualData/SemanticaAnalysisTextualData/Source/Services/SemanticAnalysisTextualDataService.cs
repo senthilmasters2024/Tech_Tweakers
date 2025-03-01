@@ -32,7 +32,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
         public SemanticAnalysisTextualDataService(ITextPreprocessor textPreprocessor)
         {
             _textPreprocessor = textPreprocessor;
-        
+
         }
         public async Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases)
         {
@@ -41,28 +41,28 @@ namespace SemanticaAnalysisTextualData.Source.Services
         }
 
         //public void CalculateSimilarity(float[] vectorA, float[] vectorB)
-       // {
-            // Your cosine similarity calculation logic here.
-           // double similarity = ComputeCosineSimilarity(
-               //  Array.ConvertAll(vectorA, x => (double)x),
-                // Array.ConvertAll(vectorB, x => (double)x)
-                // );
-           
-       // }
-    
+        // {
+        // Your cosine similarity calculation logic here.
+        // double similarity = ComputeCosineSimilarity(
+        //  Array.ConvertAll(vectorA, x => (double)x),
+        // Array.ConvertAll(vectorB, x => (double)x)
+        // );
+
+        // }
+
 
         //Processes all documents in the specified directories before similarity calculations
         public async Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
 
-             await _textPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
+            await _textPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
 
 
-           await _textPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
+            await _textPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
 
-            return ;     
-                
-         }
+            return;
+
+        }
         // Loads preprocessed text from files
         private List<string> LoadTextFilesFromFolder(string folderPath)
         {
@@ -95,7 +95,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var phraseEmbeddingsList = phraseEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
 
             // Calculate similarity
-            CalculateSimilarityForWordsAndPhrases(wordEmbeddingsList, phraseEmbeddingsList);
+            CalculateSimilarityForWordsAndPhrasesAsync(wordEmbeddingsList, phraseEmbeddingsList);
         }
 
         //Asynchronously calculates similarity between job descriptions and resumes
@@ -152,7 +152,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 }
             }
         }
-        
+
 
 
 
@@ -179,49 +179,96 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return dotProduct / (magnitudeA * magnitudeB);
         }
         // Generate embeddings for words and phrases (useful if you want to calculate similarity between them)
-       
+
 
         // Calculate similarity for words and phrases
-        public void CalculateSimilarityForWordsAndPhrases(List<double[]> wordEmbeddingsList, List<double[]> phraseEmbeddingsList)
+        public async Task CalculateSimilarityForWordsAndPhrasesAsync(string outputWords, string outputPhrases)
         {
-            Console.WriteLine("Calculating similarity between words...");
-            for (int i = 0; i < wordEmbeddingsList.Count; i++)
-            {
-                for (int j = 0; j < wordEmbeddingsList.Count; j++)
-                {
-                    if (i != j)
-                    {
-                        double similarity = ComputeCosineSimilarity(wordEmbeddingsList[i], wordEmbeddingsList[j]);
-                        Console.WriteLine($"Word {i + 1} vs Word {j + 1} | Similarity: {similarity}");
-                    }
-                }
-            }
 
-            Console.WriteLine("Calculating similarity between phrases...");
-            for (int i = 0; i < phraseEmbeddingsList.Count; i++)
-            {
-                for (int j = 0; j < phraseEmbeddingsList.Count; j++)
-                {
-                    if (i != j)
-                    {
-                        double similarity = ComputeCosineSimilarity(phraseEmbeddingsList[i], phraseEmbeddingsList[j]);
-                        Console.WriteLine($"Phrase {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
-                    }
-                }
-            }
 
-            Console.WriteLine("Calculating similarity between words and phrases...");
-            for (int i = 0; i < wordEmbeddingsList.Count; i++)
+            // Load embeddings asynchronously
+            List<double[]> wordEmbeddingsList = await LoadEmbeddingsFromFileAsync(outputWords);
+            List<double[]> phraseEmbeddingsList = await LoadEmbeddingsFromFileAsync(outputPhrases);
+
+            await Task.Run(async () =>
+
             {
-                for (int j = 0; j < phraseEmbeddingsList.Count; j++)
+                Console.WriteLine("Calculating similarity between words...");
+                Parallel.For(0, wordEmbeddingsList.Count, i =>
                 {
-                    double similarity = ComputeCosineSimilarity(wordEmbeddingsList[i], phraseEmbeddingsList[j]);
-                    Console.WriteLine($"Word {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
-                }
-            }
+
+                    for (int j = 0; j < wordEmbeddingsList.Count; j++)
+                    {
+                        if (i != j)
+                        {
+                            double similarity = ComputeCosineSimilarity(wordEmbeddingsList[i], wordEmbeddingsList[j]);
+                            Console.WriteLine($"Word {i + 1} vs Word {j + 1} | Similarity: {similarity}");
+                        }
+                    }
+                });
+                Console.WriteLine("Calculating similarity between phrases...");
+                Parallel.For(0, phraseEmbeddingsList.Count, i =>
+                {
+                    for (int j = 0; j < phraseEmbeddingsList.Count; j++)
+                    {
+                        if (i != j)
+                        {
+                            double similarity = ComputeCosineSimilarity(phraseEmbeddingsList[i], phraseEmbeddingsList[j]);
+                            Console.WriteLine($"Word {i + 1} vs Word {j + 1} | Similarity: {similarity}");
+                        }
+                    }
+                });
+
+                Console.WriteLine("Calculating similarity between words and phrases...");
+                Parallel.For(0, wordEmbeddingsList.Count, i =>
+                {
+                    for (int j = 0; j < phraseEmbeddingsList.Count; j++)
+                    {
+
+                        {
+                            double similarity = ComputeCosineSimilarity(phraseEmbeddingsList[i], phraseEmbeddingsList[j]);
+                            Console.WriteLine($"Phrase {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
+                        }
+                    }
+                });
+
+            });
         }
+
+
+            /// <summary>
+            /// Loads embeddings from a file asynchronously and converts them into a list of double arrays.
+            /// </summary>
+        private async Task<List<double[]>> LoadEmbeddingsFromFileAsync(string filePath)
+        {
+            var embeddings = new List<double[]>();
+
+            if (File.Exists(filePath))
+            {
+                var lines = await File.ReadAllLinesAsync(filePath);
+                foreach (var line in lines)
+                {
+                    double[] vector = line.Split(',')
+                                          .Select(x => double.TryParse(x, out double value) ? value : 0.0)
+                                          .ToArray();
+                    embeddings.Add(vector);
+                }
+            }
+            else
+            {
+                throw new FileNotFoundException($"Embedding file not found: {filePath}");
+            }
+
+            return embeddings;
+        }
+
+        // Other methods...
     }
 }
+        
+    
+
+
 
   
 
