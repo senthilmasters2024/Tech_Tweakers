@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Embeddings;
+using ScottPlot.Palettes;
+using Microsoft.Extensions.DependencyInjection;
 using SemanticaAnalysisTextualData.Source.Interfaces;
 using SemanticaAnalysisTextualData.Source.Services;
 using System;
@@ -21,9 +22,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
     /// </summary>
     public class SemanticAnalysisTextualDataService : ISemanticAnalysisTextualDataInterface
     {
-
+        // Create a constructor if needed to initialize anything
         //Create a constructor If needed to Initialise Anything
-
         /// <summary>
         /// Asynchronous method to generate embeddings for two text inputs and calculate their similarity.
         /// </summary>
@@ -41,44 +41,39 @@ namespace SemanticaAnalysisTextualData.Source.Services
             EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */,
                 Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
+            // Prepare the inputs for embedding generation
+            List<string> inputs = new() { text1, text2 };
 
-            // Infinite loop to allow repeated similarity calculations
-            //while (true)
-            //{
-                // Prompt the user to input the first text
-                //Console.WriteLine("Enter text 1: ");
-                //var inp1 = Console.ReadLine();
+            // Generate embeddings for the input texts
+            OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
 
-                //// Prompt the user to input the second text
-                //Console.WriteLine("Enter text 2: ");
-                //var inp2 = Console.ReadLine();
+            // Extract embeddings for each text
+            float[] embedding1 = collection[0].ToFloats().ToArray();
+            float[] embedding2 = collection[1].ToFloats().ToArray();
 
-                // Validate user input
-                //if (string.IsNullOrWhiteSpace(inp1) || string.IsNullOrWhiteSpace(inp2))
-                //{
-                //    Console.WriteLine("Both inputs must be non-empty. Please try again.");
-                //    continue;
-                //}
+            // Print scalar values of the embeddings to the console
+            Console.WriteLine("Scalar values for text1:");
+            PrintScalarValues(embedding1);
 
-                // Prepare the inputs for embedding generation
-               List<string> inputs = new() { text1, text2 };
+            Console.WriteLine("Scalar values for text2:");
+            PrintScalarValues(embedding2);
 
-                // Generate embeddings for the input texts
-                OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
-            // Extract all embedding vectors as float arrays
-               //List<float[]> allEmbeddings = collection.Select(embedding => embedding.ToFloats().ToArray()).ToList();
-
-            //Sample Embedded Vales for Fun
-            //float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
-            //// Calculate similarity between the two embeddings
-            ////Sample Embedded Vales for Fun
-            //float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
-            var similarity = CalculateSimilarity(
-                    collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray()
-                );
-            Console.WriteLine($"Embedding1 length: {collection[0].ToFloats().ToArray().Length}, Embedding2 length: {collection[1].ToFloats().ToArray().Length}");
+            // Calculate similarity between the two embeddings
+            var similarity = CalculateSimilarity(embedding1, embedding2);
+            Console.WriteLine($"Embedding1 length: {embedding1.Length}, Embedding2 length: {embedding2.Length}");
             return similarity;
-            //}
+        }
+
+        /// <summary>
+        /// Prints the scalar values of the embedding to the console.
+        /// </summary>
+        /// <param name="embedding">The embedding vector as an array of floats.</param>
+        private void PrintScalarValues(float[] embedding)
+        {
+            for (int i = 0; i < embedding.Length; i++)
+            {
+                Console.WriteLine($"Word {i + 1}: {embedding[i]}");
+            }
         }
 
         //public void CalculateSimilarity(float[] vectorA, float[] vectorB)
@@ -217,6 +212,9 @@ namespace SemanticaAnalysisTextualData.Source.Services
             }
         }
 
+            Console.WriteLine("Magnitude 1 and 2 is" + magnitude1 + "and" + magnitude2);
+            // Compute cosine similarity
+            double cosineSimilarity = dotProduct / (magnitude1 * magnitude2);
 
 
 
@@ -242,6 +240,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
             return dotProduct / (magnitudeA * magnitudeB);
         }
+    }
+}
         // Generate embeddings for words and phrases (useful if you want to calculate similarity between them)
 
 
@@ -320,15 +320,4 @@ namespace SemanticaAnalysisTextualData.Source.Services
         // Other methods...
     }
 }
-        
-    
-
-
-
-  
-
-
-
-
-
-
+     
