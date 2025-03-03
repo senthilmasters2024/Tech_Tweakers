@@ -15,8 +15,15 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
         /// Method which accepts simple two different texts to do a semantic similarity between them
         /// </summary>
         /// <returns></returns>
-        double CalculateSimilarity(float[] embedding1, float[] embedding2);
+        Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases);
+
+        Task CalculateSimilarityForWordsAndPhrasesAsync(List<double[]> wordEmbeddings, List<double[]> phraseEmbeddings);
+        Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes);
+        Task CalculateSimilarityForDocumentsAsync(string processedRequirementsFolder, string processedResumesFolder);
+        Task GenerateEmbeddingsForWordsAndPhrases(string wordsFolder, string phrasesFolder);
 
         //Add Additional Method Definitions Here Based on our use case and problem scenario to be implemented
     }
+  
+    
 }
