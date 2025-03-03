@@ -26,11 +26,27 @@
     <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
     <PackageReference Include="TiktokenSharp" Version="1.1.6" />
 	  <PackageReference Include="VaultSharp" Version="1.17.5.1" />
+    <PackageReference Include="VaultSharp" Version="1.17.5.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Images\" />
     <Folder Include="ErrorsWarningFacedScreenshots\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="data\InputPhrases50DataSet.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\InputPhrasesDataSet.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\output_dataset.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\phrase_pairs_dataset.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

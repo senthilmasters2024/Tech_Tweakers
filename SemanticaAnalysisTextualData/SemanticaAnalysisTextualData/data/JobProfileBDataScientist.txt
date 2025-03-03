@@ -1,0 +1,41 @@
+﻿Michael Johnson
+789 Oak Street
+Anytown, USA 12345
+(555) 123-4567
+michael.johnson@example.com
+
+Objective:
+To obtain a position as a Data Scientist where I can apply my analytical skills and experience in data analysis to drive business insights.
+
+Education:
+Master of Science in Data Science
+University of Anytown, Anytown, USA
+Graduated: May 2019
+
+Experience:
+Data Scientist
+Data Insights Inc., Anytown, USA
+June 2019 - Present
+- Analyzed large datasets using Python, R, and SQL to extract meaningful insights.
+- Developed machine learning models to predict customer behavior and improve marketing strategies.
+- Created data visualizations using Tableau and Power BI to present findings to stakeholders.
+
+Intern
+Analytics Solutions, Anytown, USA
+June 2018 - August 2018
+- Assisted in data cleaning and preprocessing for various projects.
+- Conducted exploratory data analysis and created reports using Python and R.
+- Participated in team meetings and contributed to project planning.
+
+Skills:
+- Programming Languages: Python, R, SQL
+- Data Analysis: Pandas, NumPy, Scikit-learn
+- Data Visualization: Tableau, Power BI
+- Tools: Jupyter Notebook, Git, Docker
+
+Certifications:
+- Certified Data Scientist
+- Microsoft Certified: Azure Data Scientist Associate
+
+References:
+Available upon request.

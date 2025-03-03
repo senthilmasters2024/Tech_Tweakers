@@ -32,12 +32,53 @@ namespace SemanticaAnalysisTextualData.Source.Services
         public SemanticAnalysisTextualDataService(ITextPreprocessor textPreprocessor)
         {
             _textPreprocessor = textPreprocessor;
-
         }
         public async Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases)
         {
             await _textPreprocessor.ProcessAndSaveDocuments(wordsFolder, outputWords);
             await _textPreprocessor.ProcessAndSaveDocuments(phrasesFolder, outputPhrases);
+            // Create an EmbeddingClient instance using the OpenAI API key
+            EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */,
+                Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+
+            // Infinite loop to allow repeated similarity calculations
+            //while (true)
+            //{
+                // Prompt the user to input the first text
+                //Console.WriteLine("Enter text 1: ");
+                //var inp1 = Console.ReadLine();
+
+                //// Prompt the user to input the second text
+                //Console.WriteLine("Enter text 2: ");
+                //var inp2 = Console.ReadLine();
+
+                // Validate user input
+                //if (string.IsNullOrWhiteSpace(inp1) || string.IsNullOrWhiteSpace(inp2))
+                //{
+                //    Console.WriteLine("Both inputs must be non-empty. Please try again.");
+                //    continue;
+                //}
+
+                // Prepare the inputs for embedding generation
+               List<string> inputs = new() { text1, text2 };
+
+                // Generate embeddings for the input texts
+                OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+            // Extract all embedding vectors as float arrays
+               //List<float[]> allEmbeddings = collection.Select(embedding => embedding.ToFloats().ToArray()).ToList();
+
+            //Sample Embedded Vales for Fun
+            //float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
+            //// Calculate similarity between the two embeddings
+            ////Sample Embedded Vales for Fun
+            //float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
+            var similarity = CalculateSimilarity(
+                    collection[0].ToFloats().ToArray(), collection[1].ToFloats().ToArray()
+                );
+            Console.WriteLine($"Embedding1 length: {collection[0].ToFloats().ToArray().Length}, Embedding2 length: {collection[1].ToFloats().ToArray().Length}");
+            return similarity;
+            //}
         }
 
         //public void CalculateSimilarity(float[] vectorA, float[] vectorB)
