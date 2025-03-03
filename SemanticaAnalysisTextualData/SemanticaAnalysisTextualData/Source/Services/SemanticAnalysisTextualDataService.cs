@@ -108,11 +108,13 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
 
             // Convert embeddings to double arrays
-            var wordEmbeddingsList = wordEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
-            var phraseEmbeddingsList = phraseEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+            var wordEmbeddingsList = wordEmbeddings.Value .Select(e => e.ToFloats().ToArray().Select(x => (double)x).ToArray()).ToList();
+
+            var phraseEmbeddingsList = phraseEmbeddings.Value .Select(e => e.ToFloats().ToArray().Select(x => (double)x).ToArray()) .ToList();
+
 
             // Calculate similarity
-            CalculateSimilarityForWordsAndPhrasesAsync(wordEmbeddingsList, phraseEmbeddingsList);
+           await CalculateSimilarityForWordsAndPhrasesAsync(wordEmbeddingsList, phraseEmbeddingsList);
         }
 
         //Asynchronously calculates similarity between job descriptions and resumes
@@ -143,7 +145,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             //OpenAIEmbeddingCollection jobDescEmbeddings = await client.GenerateEmbeddingsAsync(processedJobDescriptions);
 
             //// Convert embeddings to double arrays
-            var jobDescriptionEmbeddings = jobDescEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+            var jobDescriptionEmbeddings = jobDescEmbeddings.Value.Select(e => e.ToFloats().ToArray().Select(x => (double)x).ToArray()).ToList();
 
 
 
@@ -153,7 +155,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             // Console.WriteLine("Generating embeddings for resumes...");
             //List<string> resumeInputs = new List<string>(processedResumes);
             //OpenAIEmbeddingCollection resumeEmbeddings = await client.GenerateEmbeddingsAsync(processedResumes);
-            var resumeEmbeddingsList = resumeEmbeddings.Value.Select(e => e.Vector.Select(x => (double)x).ToArray()).ToList();
+            var resumeEmbeddingsList = resumeEmbeddings.Value .Select(e => e.ToFloats().ToArray().Select(x => (double)x).ToArray()).ToList();
 
 
 
@@ -203,63 +205,54 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
 
         // Calculate similarity for words and phrases
-        public async Task CalculateSimilarityForWordsAndPhrasesAsync(string outputWords, string outputPhrases)
+        public async Task CalculateSimilarityForWordsAndPhrasesAsync(List<double[]> wordEmbeddings, List<double[]> phraseEmbeddings)
         {
-
-
-            // Load embeddings asynchronously
-            List<double[]> wordEmbeddingsList = await LoadEmbeddingsFromFileAsync(outputWords);
-            List<double[]> phraseEmbeddingsList = await LoadEmbeddingsFromFileAsync(outputPhrases);
-
-            await Task.Run(async () =>
-
+            await Task.Run(() =>
             {
                 Console.WriteLine("Calculating similarity between words...");
-                Parallel.For(0, wordEmbeddingsList.Count, i =>
+                Parallel.For(0, wordEmbeddings.Count, i =>
                 {
-
-                    for (int j = 0; j < wordEmbeddingsList.Count; j++)
+                    for (int j = 0; j < wordEmbeddings.Count; j++)
                     {
                         if (i != j)
                         {
-                            double similarity = ComputeCosineSimilarity(wordEmbeddingsList[i], wordEmbeddingsList[j]);
+                            double similarity = ComputeCosineSimilarity(wordEmbeddings[i], wordEmbeddings[j]);
                             Console.WriteLine($"Word {i + 1} vs Word {j + 1} | Similarity: {similarity}");
                         }
                     }
                 });
+
                 Console.WriteLine("Calculating similarity between phrases...");
-                Parallel.For(0, phraseEmbeddingsList.Count, i =>
+                Parallel.For(0, phraseEmbeddings.Count, i =>
                 {
-                    for (int j = 0; j < phraseEmbeddingsList.Count; j++)
+                    for (int j = 0; j < phraseEmbeddings.Count; j++)
                     {
                         if (i != j)
                         {
-                            double similarity = ComputeCosineSimilarity(phraseEmbeddingsList[i], phraseEmbeddingsList[j]);
-                            Console.WriteLine($"Word {i + 1} vs Word {j + 1} | Similarity: {similarity}");
-                        }
-                    }
-                });
-
-                Console.WriteLine("Calculating similarity between words and phrases...");
-                Parallel.For(0, wordEmbeddingsList.Count, i =>
-                {
-                    for (int j = 0; j < phraseEmbeddingsList.Count; j++)
-                    {
-
-                        {
-                            double similarity = ComputeCosineSimilarity(phraseEmbeddingsList[i], phraseEmbeddingsList[j]);
+                            double similarity = ComputeCosineSimilarity(phraseEmbeddings[i], phraseEmbeddings[j]);
                             Console.WriteLine($"Phrase {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
                         }
                     }
                 });
 
+                Console.WriteLine("Calculating similarity between words and phrases...");
+                Parallel.For(0, wordEmbeddings.Count, i =>
+                {
+                    for (int j = 0; j < phraseEmbeddings.Count; j++)
+                    {
+                        double similarity = ComputeCosineSimilarity(wordEmbeddings[i], phraseEmbeddings[j]);
+                        Console.WriteLine($"Word {i + 1} vs Phrase {j + 1} | Similarity: {similarity}");
+                    }
+                });
             });
-        }
 
+         }   
+            
+        
 
-            /// <summary>
-            /// Loads embeddings from a file asynchronously and converts them into a list of double arrays.
-            /// </summary>
+        /// <summary>
+        /// Loads embeddings from a file asynchronously and converts them into a list of double arrays.
+        /// </summary>
         private async Task<List<double[]>> LoadEmbeddingsFromFileAsync(string filePath)
         {
             var embeddings = new List<double[]>();
