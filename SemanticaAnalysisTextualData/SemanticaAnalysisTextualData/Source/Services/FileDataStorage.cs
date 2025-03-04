@@ -10,42 +10,93 @@ namespace SemanticaAnalysisTextualData.Source.Services
     {
         private readonly string _storagePath;
 
-        public FileDataStorage(string storagePath)
+        public FileDataStorage()
         {
-            _storagePath = storagePath;
+            _storagePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
+            Console.WriteLine($"Storage Path: {_storagePath}"); // Debugging output
             Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
         }
 
-        public void SaveWord(string word, string preprocessedWord)
+       
+            public async Task SaveWordsAsync(string domainName, IEnumerable<string> words)
         {
-            File.WriteAllText(Path.Combine(_storagePath, $"word_{word}.txt"), preprocessedWord);
+            string outputPath = Path.Combine(_storagePath, "Words");
+            Directory.CreateDirectory(outputPath); // Ensure the subfolder exists
+
+            string filePath = Path.Combine(outputPath, "preprocessed_words.txt");
+
+            Console.WriteLine($"Saving words to: {filePath}"); // Debugging output
+
+            await File.WriteAllLinesAsync(filePath, words);
+            Console.WriteLine($"Successfully saved {words.Count()} words to {filePath}");
         }
 
-        public void SavePhrase(string phrase, string preprocessedPhrase)
+
+
+        
+
+
+        public async Task SavePhrasesAsync(IEnumerable<string> phrases)
         {
-            File.WriteAllText(Path.Combine(_storagePath, $"phrase_{phrase.GetHashCode()}.txt"), preprocessedPhrase);
+           
+            string outputPath = Path.Combine(_storagePath, "Phrases");
+            Directory.CreateDirectory(outputPath);
+            string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt");
+            Console.WriteLine($"Saving phrases to: {filePath}"); // Debugging output
+            await File.WriteAllLinesAsync(filePath, phrases);
+
         }
 
-        public void SaveDocument(string documentPath, string preprocessedDocument)
+
+        public async Task SaveDocumentsAsync(IEnumerable<string> documents)
         {
-            string fileName = Path.GetFileName(documentPath);
-            File.WriteAllText(Path.Combine(_storagePath, fileName), preprocessedDocument);
+            
+            string outputPath = Path.Combine(_storagePath, "Documents");
+            Directory.CreateDirectory(outputPath);
+            string filePath = Path.Combine(outputPath, "preprocessed_documents.txt");
+            Console.WriteLine($"Saving documents to: {filePath}"); // Debugging output
+            await File.WriteAllLinesAsync(filePath, documents);
+
+
         }
 
-        public string GetPreprocessedWord(string word)
+        // <summary>
+        /// Loads all preprocessed words for a given domain.
+        /// </summary>
+        public async Task<IEnumerable<string>> LoadPreprocessedWordsAsync(string domainName)
         {
-            return File.ReadAllText(Path.Combine(_storagePath, $"word_{word}.txt"));
+            string filePath = Path.Combine(_storagePath, $"{domainName}_preprocessed_words.txt");
+
+            if (!File.Exists(filePath))
+                return Enumerable.Empty<string>(); // Return empty if file does not exist
+
+            return await File.ReadAllLinesAsync(filePath);
         }
 
-        public string GetPreprocessedPhrase(string phrase)
+        /// <summary>
+        /// Loads all preprocessed phrases.
+        /// </summary>
+        public async Task<IEnumerable<string>> LoadPreprocessedPhrasesAsync()
         {
-            return File.ReadAllText(Path.Combine(_storagePath, $"phrase_{phrase.GetHashCode()}.txt"));
+            string filePath = Path.Combine(_storagePath, "preprocessed_phrases.txt");
+
+            if (!File.Exists(filePath))
+                return Enumerable.Empty<string>(); // Return empty if file does not exist
+
+            return await File.ReadAllLinesAsync(filePath);
         }
 
-        public string GetPreprocessedDocument(string documentPath)
+        /// <summary>
+        /// Loads all preprocessed documents.
+        /// </summary>
+        public async Task<IEnumerable<string>> LoadPreprocessedDocumentsAsync()
         {
-            string fileName = Path.GetFileName(documentPath);
-            return File.ReadAllText(Path.Combine(_storagePath, fileName));
+            string filePath = Path.Combine(_storagePath, "preprocessed_documents.txt");
+
+            if (!File.Exists(filePath))
+                return Enumerable.Empty<string>(); // Return empty if file does not exist
+
+            return await File.ReadAllLinesAsync(filePath);
         }
     }
 }

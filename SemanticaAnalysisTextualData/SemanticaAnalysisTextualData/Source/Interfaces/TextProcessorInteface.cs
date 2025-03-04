@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using OpenAI;
 using SemanticaAnalysisTextualData.Source.Enums;
 public enum TextDataType
@@ -19,10 +20,13 @@ public interface ITextPreprocessor
     /// Preprocesses text based on the specified data type (Word, Phrase, or Document).
     string PreprocessText(string text, TextDataType type);
     /// Loads documents from a specified folder.
-    List<IDocument> LoadDocuments(string folderPath);
-    // Call your semantic analysis method here
-    Task ProcessAndSaveDocuments(string inputFolder, string outputFolder);
-   
+   // List<IDocument> LoadDocuments(string folderPath);
+    Task ProcessAndSaveWordsAsync(string wordsFolder); // Processes and saves preprocessed words per domain in a common file.
+    Task ProcessAndSavePhrasesAsync(string phrasesFolder); // Processes and saves all preprocessed phrases in a common file.
+
+
+    Task ProcessAndSaveDocumentsAsync(string inputFolder, string outputFolder);//Processes and saves all preprocessed documents in a common file.
+
 
 
     /// Applies stemming to the text

@@ -17,16 +17,29 @@ namespace SemanticaAnalysisTextualData.Source.Services
         "the", "is", "in", "at", "of", "am", "pm", "one", "to", "a", "an", "and"
     };
         private readonly EnglishPorter2Stemmer _stemmer = new EnglishPorter2Stemmer(); // Stemming Library
+        private readonly IDataStorage _dataStorage;
+        public TextPreprocessor(IDataStorage dataStorage)
+        {
+            _dataStorage = dataStorage;
+        }
 
         public string PreprocessText(string text, TextDataType dataType)
         {
+
             text = text.ToLower().Trim();
             text = Regex.Replace(text, @"[^a-zA-Z0-9\s]", ""); // Remove special characters
+            Console.WriteLine($"Preprocessing Word: {text}"); // Debugging output
 
             if (dataType == TextDataType.Word)
             {
-                return StopWords.Contains(text) ? string.Empty : text; // Remove stopwords for words
+                if (StopWords.Contains(text))
+                {
+                    Console.WriteLine($"Skipping Stopword: {text}");
+                    return string.Empty;
+                }
+                return text;
             }
+
             else if (dataType == TextDataType.Phrase)
             {
                 var words = text.Split(' ').Select(word => PreprocessText(word, TextDataType.Word));
@@ -42,7 +55,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
             return text;
         }
 
-        public List<IDocument> LoadDocuments(string folderPath)
+        /*public List<IDocument> LoadDocuments(string folderPath)
         {
             var documents = new List<IDocument>();
             foreach (var filePath in Directory.GetFiles(folderPath, "*.txt"))
@@ -51,24 +64,74 @@ namespace SemanticaAnalysisTextualData.Source.Services
             }
             return documents;
         }
+        */
 
-        public async Task ProcessAndSaveDocuments(string inputFolder, string outputFolder)
+        /// <summary>
+        /// Processes words from different domain folders and stores each domain’s words in a single file.
+        /// </summary>
+        public async Task ProcessAndSaveWordsAsync(string wordsFolder)
         {
-            var documents = LoadDocuments(inputFolder);
+            Console.WriteLine($"Processing words from folder: {wordsFolder}");
 
-            foreach (var document in documents)
+            var wordFiles = Directory.GetFiles(wordsFolder, "*.txt"); // Fetch word files directly
+
+            if (!wordFiles.Any())
             {
-                document.LoadContent();
-                string preprocessedContent = PreprocessText(document.Content, TextDataType.Document);
+                Console.WriteLine("No word files found.");
+                return;
+            }
 
-                // Apply stemming after preprocessing
-                string stemmedContent = StemText(preprocessedContent);
+            var processedWords = wordFiles
+                .SelectMany(file => File.ReadLines(file))
+                .Select(word => PreprocessText(word, TextDataType.Word))
+                .Where(word => !string.IsNullOrEmpty(word))
+                .Distinct()
+                .ToList();
 
-                // Save the final output
-                string outputFilePath = Path.Combine(outputFolder, Path.GetFileName(document.FilePath));
-                await File.WriteAllTextAsync(outputFilePath, stemmedContent);
+            Console.WriteLine($"Processed {processedWords.Count} words.");
+
+            if (processedWords.Any())
+            {
+                await _dataStorage.SaveWordsAsync("words", processedWords);
             }
         }
+
+
+
+        /// <summary>
+        /// Processes all phrases and stores them in a single file.
+        /// </summary>
+        public async Task ProcessAndSavePhrasesAsync(string phrasesFolder)
+        {
+            var phraseFiles = Directory.GetFiles(phrasesFolder, "*.txt");
+
+            var processedPhrases = phraseFiles
+                .SelectMany(file => File.ReadLines(file))
+                .Select(phrase => PreprocessText(phrase, TextDataType.Phrase))
+                .Where(phrase => !string.IsNullOrEmpty(phrase));
+
+            await _dataStorage.SavePhrasesAsync(processedPhrases);
+        }
+
+        /// <summary>
+        /// Processes all documents, applies stemming, and stores them in a single file.
+        /// </summary>
+        public async Task ProcessAndSaveDocumentsAsync(string inputFolder, string outputFolder)
+        {
+            
+                var documentFiles = Directory.GetFiles(inputFolder, "*.txt"); //  Fetches .txt files directly
+                List<string> processedDocuments = new();
+
+                foreach (var documentPath in documentFiles)
+                {
+                    string content = await File.ReadAllTextAsync(documentPath);
+                    string preprocessedContent = PreprocessText(content, TextDataType.Document);
+                    string stemmedContent = StemText(preprocessedContent);
+                    processedDocuments.Add(stemmedContent);
+                }
+
+                await _dataStorage.SaveDocumentsAsync(processedDocuments);
+            }
 
         /// <summary>
         /// Stems each word in the input text using Porter2 stemming.
@@ -85,45 +148,21 @@ namespace SemanticaAnalysisTextualData.Source.Services
         /// </summary>
         public async Task StemDocumentsInFolderAsync(string inputFolder, string outputFolder)
         {
-            var documents = LoadDocuments(inputFolder);
-
+            var documentFiles = Directory.GetFiles(inputFolder, "*.txt"); //  Updated to fetch all .txt files directly
             List<Task> tasks = new List<Task>();
 
-            foreach (var document in documents)
+            foreach (var documentPath in documentFiles)
             {
-                tasks.Add(Task.Run(() =>
+                tasks.Add(Task.Run(async () =>
                 {
-                    document.LoadContent();
-                    string stemmedContent = StemText(document.Content);
-
-                    File.WriteAllText(Path.Combine(outputFolder, Path.GetFileName(document.FilePath)), stemmedContent);
+                    string content = await File.ReadAllTextAsync(documentPath);
+                    string stemmedContent = StemText(content);
+                    string outputFile = Path.Combine(outputFolder, Path.GetFileName(documentPath));
+                    await File.WriteAllTextAsync(outputFile, stemmedContent);
                 }));
             }
 
             await Task.WhenAll(tasks);
         }
-        // **Nested Document Class**
-        private class Document : IDocument
-        {
-            public string FilePath { get; }
-            public string Content { get; set; }
-
-            public Document(string filePath)
-            {
-                FilePath = filePath;
-            }
-
-            public void LoadContent()
-            {
-                if (File.Exists(FilePath))
-                {
-                    Content = File.ReadAllText(FilePath);
-                }
-            }
-        }
     }
 }
-    
-
-               
-            

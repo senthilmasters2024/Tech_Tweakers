@@ -4,6 +4,103 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using SemanticaAnalysisTextualData.Source.Services;
 using SemanticaAnalysisTextualData.Source.Interfaces;
+
+namespace SemanticAnalysisTextualData.Source
+{
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            // Set up dependency injection
+         
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<IDataStorage, FileDataStorage>()
+
+                .AddSingleton<ITextPreprocessor, TextPreprocessor>()
+                .BuildServiceProvider();
+
+            var textPreprocessor = serviceProvider.GetRequiredService<ITextPreprocessor>();
+
+            // **Step 1: Define Input and Output Folders**
+            string wordsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Input Data\\Words";
+            string phrasesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Input Data\\Phrases";
+            string documentsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Input Data\\Documents";
+
+            string outputFolder = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
+            Console.WriteLine($"Using Output Folder: {outputFolder}"); // Debugging output
+
+
+            // Ensure output folders exist
+            EnsureDirectoryExists(outputFolder);
+            EnsureDirectoryExists(Path.Combine(outputFolder, "Words"));
+            EnsureDirectoryExists(Path.Combine(outputFolder, "Phrases"));
+            EnsureDirectoryExists(Path.Combine(outputFolder, "Documents"));
+
+            //  Preprocess Words
+            Console.WriteLine("Preprocessing words...");
+            await textPreprocessor.ProcessAndSaveWordsAsync(wordsFolder);
+
+            // Preprocess Phrases
+            Console.WriteLine("Preprocessing phrases...");
+            await textPreprocessor.ProcessAndSavePhrasesAsync(phrasesFolder);
+
+            // Preprocess Documents
+            Console.WriteLine("Preprocessing documents...");
+            await textPreprocessor.ProcessAndSaveDocumentsAsync(documentsFolder, outputFolder);
+
+            //  Display Preprocessed Data
+            Console.WriteLine("\nPreprocessed Words:");
+            DisplayPreprocessedFiles(outputFolder, "Words");
+
+            Console.WriteLine("\nPreprocessed Phrases:");
+            DisplayPreprocessedFiles(outputFolder, "Phrases");
+
+            Console.WriteLine("\nPreprocessed Documents:");
+            DisplayPreprocessedFiles(outputFolder, "Documents");
+
+            Console.WriteLine("Preprocessing completed.");
+        }
+        // **Helper method to ensure a directory exists**
+        static void EnsureDirectoryExists(string path)
+        {
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+        }
+
+        // **Helper method to display preprocessed files**
+        static void DisplayPreprocessedFiles(string folderPath, string category)
+        {
+            string categoryPath = Path.Combine(folderPath, category);
+            if (!Directory.Exists(categoryPath))
+            {
+                Console.WriteLine($"No preprocessed files found in {categoryPath}");
+                return;
+            }
+
+            var files = Directory.GetFiles(categoryPath, "*.txt");
+            if (!files.Any())
+            {
+                Console.WriteLine($"No preprocessed files found in {categoryPath}");
+                return;
+            }
+
+            foreach (var file in files)
+            {
+                Console.WriteLine($"File: {Path.GetFileName(file)}");
+                string content = File.ReadAllText(file);
+                Console.WriteLine($"Content: {content}\n");
+            }
+        }
+    }
+}
+/* 
+
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using SemanticaAnalysisTextualData.Source.Services;
+using SemanticaAnalysisTextualData.Source.Interfaces;
 using Newtonsoft.Json;
 
 namespace SemanticAnalysisTextualData.Source
@@ -19,7 +116,7 @@ namespace SemanticAnalysisTextualData.Source
             // Set up dependency injection
             var serviceProvider = new ServiceCollection()
                 .AddSingleton<ITextPreprocessor, TextPreprocessor>() // Register text preprocessor
-                .AddSingleton<ISemanticAnalysisTextualDataInterface, SemanticAnalysisTextualDataService>()
+                //..AddSingleton<ISemanticAnalysisTextualDataInterface, SemanticAnalysisTextualDataService>()
                 .BuildServiceProvider();
 
             var semanticService = serviceProvider.GetRequiredService<ISemanticAnalysisTextualDataInterface>();
@@ -31,55 +128,61 @@ namespace SemanticAnalysisTextualData.Source
 
             CheckAndReadFiles(wordsFolder);
             CheckAndReadFiles(phrasesFolder);
+*/
 
-            // **Step 2: Generate Embeddings**
-            Console.WriteLine("Generating embeddings for fetched data...");
-            await semanticService.GenerateEmbeddingsForWordsAndPhrases(wordsFolder, phrasesFolder);
+/*
 
-            Console.WriteLine("Embedding analysis completed.");
-        }
+  // **Step 2: Generate Embeddings**
+  Console.WriteLine("Generating embeddings for fetched data...");
+  await semanticService.GenerateEmbeddingsForWordsAndPhrases(wordsFolder, phrasesFolder);
 
-        // **Ensure `output_dataset.json` Exists**
-        static void EnsureOutputJsonExists(string filePath)
-        {
-            if (!File.Exists(filePath))
-            {
-                Console.WriteLine($"⚠️ `output_dataset.json` not found. Creating an empty JSON file...");
-                File.WriteAllText(filePath, "{}"); // Creates an empty JSON file
-            }
-            else
-            {
-                Console.WriteLine($"✅ `output_dataset.json` found. Proceeding...");
-            }
-        }
-
-        // **Helper method to check and read files**
-        static void CheckAndReadFiles(string folderPath)
-        {
-            if (!Directory.Exists(folderPath))
-            {
-                Console.WriteLine($"❌ Directory not found: {folderPath}");
-                return;
-            }
-
-            var files = Directory.GetFiles(folderPath, "*.txt");
-            if (!files.Any())
-            {
-                Console.WriteLine($"No text files found in {folderPath}");
-                return;
-            }
-
-            Console.WriteLine($" Found {files.Length} text files in {folderPath}");
-
-            foreach (var file in files)
-            {
-                Console.WriteLine($" Reading file: {file}");
-                string content = File.ReadAllText(file);
-                Console.WriteLine($" File Content (first 200 chars): {content.Substring(0, Math.Min(content.Length, 200))}...\n");
-            }
-        }
-    }
+  Console.WriteLine("Embedding analysis completed.");
 }
+
+// **Ensure `output_dataset.json` Exists**
+static void EnsureOutputJsonExists(string filePath)
+{
+  if (!File.Exists(filePath))
+  {
+      Console.WriteLine($"⚠️ `output_dataset.json` not found. Creating an empty JSON file...");
+      File.WriteAllText(filePath, "{}"); // Creates an empty JSON file
+  }
+  else
+  {
+      Console.WriteLine($"✅ `output_dataset.json` found. Proceeding...");
+  }
+}
+
+// **Helper method to check and read files**
+static void CheckAndReadFiles(string folderPath)
+{
+  if (!Directory.Exists(folderPath))
+  {
+      Console.WriteLine($"❌ Directory not found: {folderPath}");
+      return;
+  }
+
+  var files = Directory.GetFiles(folderPath, "*.txt");
+  if (!files.Any())
+  {
+      Console.WriteLine($"No text files found in {folderPath}");
+      return;
+  }
+
+  Console.WriteLine($" Found {files.Length} text files in {folderPath}");
+
+  foreach (var file in files)
+  {
+      Console.WriteLine($" Reading file: {file}");
+      string content = File.ReadAllText(file);
+      Console.WriteLine($" File Content (first 200 chars): {content.Substring(0, Math.Min(content.Length, 200))}...\n");
+  }
+}
+}
+}
+
+
+  */
 
 /*using System;
 using System.Threading.Tasks;

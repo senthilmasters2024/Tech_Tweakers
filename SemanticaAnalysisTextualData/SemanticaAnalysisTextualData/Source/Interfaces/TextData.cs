@@ -5,4 +5,5 @@
 
     void LoadContent();  // Load content (for documents, from a file; for words/phrases, directly from input)
     void SaveProcessedContent(string outputFolder);  // Save processed data
+
 }
