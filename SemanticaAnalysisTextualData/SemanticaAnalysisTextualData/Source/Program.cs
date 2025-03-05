@@ -10,7 +10,7 @@ namespace SemanticAnalysisTextualData.Source
 {
     class Program
     {
-        static async Task Main(string[] args)
+       /* static async Task Main(string[] args)
         {
             // Ensure output JSON exists
             string outputJsonPath = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\bin\\Debug\\net8.0\\output_dataset.json";
@@ -37,7 +37,7 @@ namespace SemanticAnalysisTextualData.Source
             await semanticService.GenerateEmbeddingsForWordsAndPhrases(wordsFolder, phrasesFolder);
 
             Console.WriteLine("Embedding analysis completed.");
-        }
+        }*/
 
         // **Ensure `output_dataset.json` Exists**
         static void EnsureOutputJsonExists(string filePath)

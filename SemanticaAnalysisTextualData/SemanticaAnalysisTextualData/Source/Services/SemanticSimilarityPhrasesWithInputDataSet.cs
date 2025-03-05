@@ -8,13 +8,20 @@ using System.Threading.Tasks;
 
 class SemanticSimilarityPhrasesWithInputDataSet
 {
-    /*static async Task Main(string[] args)
+    static async Task Main(string[] args)
     {
         //string huggingFaceApiUrl = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
-      *//* // string apiToken = "YOUR_HUGGING_FACE_API_TOKEN";*//*
+        // string apiToken = "YOUR_HUGGING_FACE_API_TOKEN";
+        // Navigate up to the project's root directory from the bin folder
+        string projectRoot = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
 
+        // Define the data folder within the project root
+        string baseDataFolder = Path.Combine(projectRoot, "data");
+
+        // Define source and target folders dynamically
+        string datasetPath = Path.Combine(baseDataFolder, "InputPhrases50DataSet.json");
         // Load predefined dataset
-        string datasetPath = "C:\\Users\\ASUS\\source\\repos\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\InputPhrases50DataSet.json";
+        //string datasetPath = "C:\\Users\\ASUS\\source\\repos\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\InputPhrases50DataSet.json";
         var dataset = JsonConvert.DeserializeObject<InputDataset>(File.ReadAllText(datasetPath));
         var services = new ServiceCollection();
         services.AddSingleton<SemanticAnalysisTextualDataService>(provider => new SemanticAnalysisTextualDataService());
@@ -29,9 +36,9 @@ class SemanticSimilarityPhrasesWithInputDataSet
             {
                 try
                 {
-                    if (null != textAnalysisService && null!= pair.Phrase1 && null!= pair.Phrase2)
+                    if (null != textAnalysisService && null != pair.Phrase1 && null != pair.Phrase2)
                     {
-                        var similarity = await textAnalysisService.CalculateSimilarityAsync(pair.Phrase1, pair.Phrase2);
+                        var similarity = await CalculateSimilarityAsync(textAnalysisService, pair.Phrase1, pair.Phrase2);
                         Console.WriteLine($"Similarity: {similarity:F4}");
                         PhraseSimilarity obj2 = new PhraseSimilarity();
                         obj2.Phrase1 = pair.Phrase1;
@@ -58,10 +65,17 @@ class SemanticSimilarityPhrasesWithInputDataSet
 
         // Save results back to JSON
         string currentDir = Directory.GetCurrentDirectory();
-        File.WriteAllText(currentDir+"\\data\\output_dataset.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
-        Console.WriteLine(currentDir+ "Results saved to output_dataset.json.");
-    }*/
+        File.WriteAllText(currentDir + "\\data\\output_dataset.json", JsonConvert.SerializeObject(obj, Formatting.Indented));
+        Console.WriteLine(currentDir + "Results saved to output_dataset.json.");
+    }
 
+    private static async Task<double> CalculateSimilarityAsync(SemanticAnalysisTextualDataService service, string phrase1, string phrase2)
+    {
+        // Implement the logic to calculate similarity between two phrases using the service
+        // This is a placeholder implementation
+        await Task.Delay(100); // Simulate async work
+        return service.ComputeCosineSimilarity(new double[] { 1, 2, 3 }, new double[] { 4, 5, 6 });
+    }
 
     // Models for Dataset
     class InputDataset

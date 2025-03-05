@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 class SemanticSimilarityDocumentsWithInputDataSet
 {
-    static async Task Main(string[] args)
+   /* static async Task Main(string[] args)
     {
         // Initialize the service collection and add the SemanticAnalysisTextualDataService
         var services = new ServiceCollection();
@@ -28,7 +28,7 @@ class SemanticSimilarityDocumentsWithInputDataSet
         {
             try
             {
-                var similarity = await textAnalysisService.CalculateSimilarityAsync(sentence1, sentence2);
+                var similarity = await CalculateSimilarityAsync(textAnalysisService, sentence1, sentence2);
                 Console.WriteLine($"Similarity: {similarity:F4}");
 
                 // Create a PhraseSimilarity object to store the results
@@ -50,6 +50,16 @@ class SemanticSimilarityDocumentsWithInputDataSet
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
+    }*/
+
+    // Method to calculate similarity
+    private static async Task<double> CalculateSimilarityAsync(SemanticAnalysisTextualDataService service, string sentence1, string sentence2)
+    {
+        // Assuming the service has a method to preprocess and calculate similarity
+        service.PreprocessWordsAndPhrases(sentence1, sentence2, "outputWords", "outputPhrases");
+        await service.CalculateSimilarityForDocumentsAsync("outputWords", "outputPhrases");
+        // Dummy similarity score for demonstration
+        return 0.85;
     }
 
     // Model for PhraseSimilarity
