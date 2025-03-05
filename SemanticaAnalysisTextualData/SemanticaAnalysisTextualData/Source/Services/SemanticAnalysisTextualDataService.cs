@@ -1,6 +1,6 @@
 ﻿
 
-/*using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Embeddings;
 using SemanticaAnalysisTextualData.Source.Interfaces;
 using SemanticaAnalysisTextualData.Source.Services;
@@ -29,21 +29,24 @@ namespace SemanticaAnalysisTextualData.Source.Services
         /// <summary>
         /// Asynchronous method to generate embeddings for two text inputs and calculate their similarity.
         /// </summary>
-        private readonly ITextPreprocessor _textPreprocessor;
+        private readonly IPreprocessor _preprocessor;
 
-        public SemanticAnalysisTextualDataService(ITextPreprocessor textPreprocessor)
+        public SemanticAnalysisTextualDataService(IPreprocessor preprocessor)
         {
-            _textPreprocessor = textPreprocessor;
+            _preprocessor = preprocessor;
         }
         public async Task PreprocessWordsAndPhrases(string wordsFolder, string phrasesFolder, string outputWords, string outputPhrases)
         {
-            await _textPreprocessor.ProcessAndSaveDocuments(wordsFolder, outputWords);
-            await _textPreprocessor.ProcessAndSaveDocuments(phrasesFolder, outputPhrases);
+            await _preprocessor.ProcessAndSaveWordsAsync(wordsFolder, outputWords);
+            await _preprocessor.ProcessAndSavePhrasesAsync(phrasesFolder, outputPhrases);
+
+
             // Create an EmbeddingClient instance using the OpenAI API key
-            EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */
+            //EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */
 
 
-                //UNCOMMENT Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+               // Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        }
 
 
             // Infinite loop to allow repeated similarity calculations
@@ -67,29 +70,29 @@ namespace SemanticaAnalysisTextualData.Source.Services
                 // Prepare the inputs for embedding generation
               
 
-               //UNCOMMENT List<string> inputs = new() { text1, text2 };
+               // List<string> inputs = new() { text1, text2 };
 
                 // Generate embeddings for the input texts
                 
-                //UNCOMMENT OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
+                // OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
             // Extract all embedding vectors as float arrays
-               //List<float[]> allEmbeddings = collection.Select(embedding => embedding.ToFloats().ToArray()).ToList();
+              // List<float[]> allEmbeddings = collection.Select(embedding => embedding.ToFloats().ToArray()).ToList();
 
             //Sample Embedded Vales for Fun
             //float[] fun = [0.25f, 0.85f,-0.12f, 0.56f, 0.47f];
             //// Calculate similarity between the two embeddings
             ////Sample Embedded Vales for Fun
             //float[] joy = [0.27f, 0.81f, -0.10f, 0.60f, 0.50f];
-            //UNCOMMENT
-            /*var similarity = ComputeCosineSimilarity(
-                    collection[0].ToFloats().ToArray().Select(x => (double)x).ToArray(),
-                    collection[1].ToFloats().ToArray().Select(x => (double)x).ToArray()
+            
+           // var similarity = ComputeCosineSimilarity(
+                  //  collection[0].ToFloats().ToArray().Select(x => (double)x).ToArray(),
+                    //collection[1].ToFloats().ToArray().Select(x => (double)x).ToArray()
 
-                );
-            Console.WriteLine($"Embedding1 length: {collection[0].ToFloats().ToArray().Length}, Embedding2 length: {collection[1].ToFloats().ToArray().Length}");
-            return similarity;
+               // );
+            //Console.WriteLine($"Embedding1 length: {collection[0].ToFloats().ToArray().Length}, Embedding2 length: {collection[1].ToFloats().ToArray().Length}");
+            //return similarity;
             //}
-        }
+        
 
         //public void CalculateSimilarity(float[] vectorA, float[] vectorB)
         // {
@@ -106,10 +109,10 @@ namespace SemanticaAnalysisTextualData.Source.Services
         public async Task PreprocessAllDocuments(string requirementsFolder, string resumesFolder, string outputRequirements, string outputResumes)
         {
 
-            await _textPreprocessor.ProcessAndSaveDocuments(requirementsFolder, outputRequirements);
+            await _preprocessor.ProcessAndSaveDocumentsAsync(requirementsFolder, outputRequirements);
 
 
-            await _textPreprocessor.ProcessAndSaveDocuments(resumesFolder, outputResumes);
+            await _preprocessor.ProcessAndSaveDocumentsAsync(resumesFolder, outputResumes);
 
             return;
 
@@ -150,8 +153,8 @@ namespace SemanticaAnalysisTextualData.Source.Services
             var rawPhrases = LoadTextFilesFromFolder(phrasesFolder);
 
             // Preprocess words and phrases
-            var words = rawWords.Select(w => _textPreprocessor.PreprocessText(w, TextDataType.Word)).Where(w => !string.IsNullOrEmpty(w)).ToList();
-            var phrases = rawPhrases.Select(p => _textPreprocessor.PreprocessText(p, TextDataType.Phrase)).Where(p => !string.IsNullOrEmpty(p)).ToList();
+            var words = rawWords.Select(w => _preprocessor.PreprocessText(w, TextDataType.Word)).Where(w => !string.IsNullOrEmpty(w)).ToList();
+            var phrases = rawPhrases.Select(p => _preprocessor.PreprocessText(p, TextDataType.Phrase)).Where(p => !string.IsNullOrEmpty(p)).ToList();
 
             // Generate embeddings for words and phrases
             var wordEmbeddings = await client.GenerateEmbeddingsAsync(words);
@@ -334,7 +337,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
     
 
 
-*/
+
   
 
 

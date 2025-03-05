@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using SemanticaAnalysisTextualData.Source.Services;
 using SemanticaAnalysisTextualData.Source.Interfaces;
+using Google.Apis.Util.Store;
 
 namespace SemanticAnalysisTextualData.Source
 {
@@ -13,13 +15,13 @@ namespace SemanticAnalysisTextualData.Source
         {
             // Set up dependency injection
          
+           
             var serviceProvider = new ServiceCollection()
-                .AddSingleton<IDataStorage, FileDataStorage>()
-
-                .AddSingleton<ITextPreprocessor, TextPreprocessor>()
+                .AddSingleton<IPreprocessor, TextPreprocessor>() // Use IPreprocessor and TextPreprocessor
                 .BuildServiceProvider();
 
-            var textPreprocessor = serviceProvider.GetRequiredService<ITextPreprocessor>();
+
+            var textPreprocessor = serviceProvider.GetRequiredService<IPreprocessor>();
 
             // **Step 1: Define Input and Output Folders**
             string wordsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Input Data\\Words";
@@ -37,6 +39,8 @@ namespace SemanticAnalysisTextualData.Source
             EnsureDirectoryExists(Path.Combine(outputFolder, "Documents"));
 
             //  Preprocess Words
+            // Preprocess Words
+           
             Console.WriteLine("Preprocessing words...");
             await textPreprocessor.ProcessAndSaveWordsAsync(wordsFolder);
 
@@ -49,14 +53,14 @@ namespace SemanticAnalysisTextualData.Source
             await textPreprocessor.ProcessAndSaveDocumentsAsync(documentsFolder, outputFolder);
 
             //  Display Preprocessed Data
-            Console.WriteLine("\nPreprocessed Words:");
-            DisplayPreprocessedFiles(outputFolder, "Words");
+            //Console.WriteLine("\nPreprocessed Words:");
+            //DisplayPreprocessedFiles(outputFolder, "Words");
 
-            Console.WriteLine("\nPreprocessed Phrases:");
-            DisplayPreprocessedFiles(outputFolder, "Phrases");
+            //Console.WriteLine("\nPreprocessed Phrases:");
+            //DisplayPreprocessedFiles(outputFolder, "Phrases");
 
-            Console.WriteLine("\nPreprocessed Documents:");
-            DisplayPreprocessedFiles(outputFolder, "Documents");
+            //Console.WriteLine("\nPreprocessed Documents:");
+            //DisplayPreprocessedFiles(outputFolder, "Documents");
 
             Console.WriteLine("Preprocessing completed.");
         }
