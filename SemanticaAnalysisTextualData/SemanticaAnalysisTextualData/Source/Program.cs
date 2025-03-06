@@ -14,7 +14,7 @@ namespace SemanticAnalysisTextualData.Source
 {
     class Program
     {
-        static async Task Main(string[] args)
+       /* static async Task Main(string[] args)
         {
             // Set up dependency injection
          
@@ -111,6 +111,7 @@ namespace SemanticAnalysisTextualData.Source
         }
     }
 }
+
 /* 
 
 using System;
