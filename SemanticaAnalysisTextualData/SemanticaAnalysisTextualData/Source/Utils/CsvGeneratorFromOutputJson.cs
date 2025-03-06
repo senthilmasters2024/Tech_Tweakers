@@ -62,7 +62,7 @@ namespace CsvGenerator
 
     public class CsvGeneratorFromOutputJson
     {
-        static void Main(string[] args)
+       /* static void Main(string[] args)
         {
             string currentDir = Directory.GetCurrentDirectory();
             // Define relative paths
@@ -89,7 +89,7 @@ namespace CsvGenerator
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-        }
+        }*/
 
         public static List<PhrasePair> ReadJsonFile(string jsonFilePath)
         {
