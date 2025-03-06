@@ -1,4 +1,4 @@
-﻿/*using CsvGenerator;
+﻿using CsvGenerator;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -62,7 +62,7 @@ namespace CsvGenerator
 
     public class CsvGeneratorFromOutputJson
     {
-       /* static void Main(string[] args)
+        /*static void Main(string[] args)
         {
             string currentDir = Directory.GetCurrentDirectory();
             // Define relative paths
@@ -89,8 +89,13 @@ namespace CsvGenerator
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-        }*/
-
+        }
+*/
+        /// <summary>
+        /// Reads the JSON file and parses it into a list of PhrasePair objects.
+        /// </summary>
+        /// <param name="jsonFilePath">The path to the JSON file.</param>
+        /// <returns>A list of PhrasePair objects parsed from the JSON file.</returns>
         public static List<PhrasePair> ReadJsonFile(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
@@ -100,7 +105,6 @@ namespace CsvGenerator
             {
                 throw new InvalidOperationException("The JSON file is either empty or invalid.");
             }
-
 
             return data.PhrasePairs;
         }
@@ -123,5 +127,3 @@ namespace CsvGenerator
         }
     }
 }
-
-*/

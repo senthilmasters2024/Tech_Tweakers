@@ -5,7 +5,7 @@ using OpenAI.Embeddings;
 using Plotly.NET.LayoutObjects;
 using ScottPlot;
 using ScottPlot.Colormaps;
-using SemanticaAnalysisTextualData.Source.Services;
+using SemanticaAnalysisTextualData.Source.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,15 +13,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-class SemanticSimilarityForDocumentsWithInputDataDynamic
+class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IEmbedding
 {
-   /* public static async Task Main(string[] args)
+    public async Task InvokeDocumentComparsion(string[] args)
     {
         // Initialize the service collection and add the SemanticAnalysisTextualDataService
         var services = new ServiceCollection();
-        services.AddSingleton<SemanticAnalysisTextualDataService>(provider => new SemanticAnalysisTextualDataService());
+        services.AddSingleton<SemanticSimilarityForDocumentsWithInputDataDynamic>(provider => new SemanticSimilarityForDocumentsWithInputDataDynamic());
         var serviceProvider = services.BuildServiceProvider();
-        var textAnalysisService = serviceProvider.GetService<SemanticAnalysisTextualDataService>();
+        var textAnalysisService = serviceProvider.GetService<SemanticSimilarityForDocumentsWithInputDataDynamic>();
 
         // Navigate up to the project's root directory from the bin folder
         string projectRoot = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
@@ -105,7 +105,7 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
-    }*/
+    }
 
     // Model for PhraseSimilarity
     class PhraseSimilarity
