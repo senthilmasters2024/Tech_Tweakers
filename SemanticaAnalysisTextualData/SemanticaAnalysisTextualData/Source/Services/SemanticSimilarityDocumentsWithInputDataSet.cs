@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿/*using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SemanticaAnalysisTextualData.Source.Services;
 using System;
@@ -70,3 +70,4 @@ class SemanticSimilarityDocumentsWithInputDataSet
         public double SimilarityScore { get; set; }
     }
 }
+*/

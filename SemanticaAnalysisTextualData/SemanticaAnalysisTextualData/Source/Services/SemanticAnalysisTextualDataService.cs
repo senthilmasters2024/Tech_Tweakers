@@ -1,3 +1,4 @@
+
 using OpenAI.Embeddings;
 using ScottPlot.Palettes;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,14 +22,7 @@ namespace SemanticaAnalysisTextualData.Source.Services
 
     public class SemanticAnalysisTextualDataService : ISemanticAnalysisTextualDataInterface
     {
-        public Task CalculateSimilarityForDocumentsAsync(string processedRequirementsFolder, string processedResumesFolder)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task CalculateSimilarityForWordsAndPhrasesAsync(List<double[]> wordEmbeddings, List<double[]> phraseEmbeddings)
-        {
-            throw new NotImplementedException();
         }
 
         // Existing code...

@@ -1,4 +1,4 @@
-﻿using CsvGenerator;
+﻿/*using CsvGenerator;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -94,13 +94,13 @@ namespace CsvGenerator
         public static List<PhrasePair> ReadJsonFile(string jsonFilePath)
         {
             string jsonContent = File.ReadAllText(jsonFilePath);
-            
+
             var data = System.Text.Json.JsonSerializer.Deserialize<JsonData>(jsonContent);
             if (data == null || data.PhrasePairs == null || data.PhrasePairs.Count == 0)
             {
                 throw new InvalidOperationException("The JSON file is either empty or invalid.");
             }
-        
+
 
             return data.PhrasePairs;
         }
@@ -123,3 +123,5 @@ namespace CsvGenerator
         }
     }
 }
+
+*/
