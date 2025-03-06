@@ -10,22 +10,22 @@
     string StemText(string text);
 
     // Data Storage Methods
-    Task SaveWordsAsync(string domainName, IEnumerable<string> words);
-    Task SavePhrasesAsync(IEnumerable<string> phrases);
-    Task SaveDocumentsAsync(IEnumerable<string> documents);
+    Task SaveWordsAsync(string domainName, IEnumerable<string> words, string outputFolder);
+    Task SavePhrasesAsync(string domainName,IEnumerable<string> phrases, string outputFolder);
+    Task SaveDocumentsAsync(string documentType, IEnumerable<string> documents, string outputFolder);
 
-    Task<IEnumerable<string>> LoadPreprocessedWordsAsync(string domainName);
-    Task<IEnumerable<string>> LoadPreprocessedPhrasesAsync();
-    Task<IEnumerable<string>> LoadPreprocessedDocumentsAsync();
+    Task<IEnumerable<string>> LoadPreprocessedWordsAsync(string domainName, string outputFolder);
+    Task<IEnumerable<string>> LoadPreprocessedPhrasesAsync(string domainName, string outputFolder);
+    Task<IEnumerable<string>> LoadPreprocessedDocumentsAsync(string documentType, string outputFolder);
 
     // Text Data Methods
     void LoadContent();  // Load content from FilePath (for documents)
     void SaveProcessedContent(string outputFolder);  // Save processed content to a file
 
     // Batch Processing Methods
-    Task ProcessAndSaveWordsAsync(string inputFolder, string outputFolder);
-    Task ProcessAndSavePhrasesAsync(string inputFolder, string outputFolder);
-    Task ProcessAndSaveDocumentsAsync(string documentsFolder, string outputFolde);
+    Task ProcessAndSaveWordsAsync(string domainName, string wordsFolder, string outputFolder);
+    Task ProcessAndSavePhrasesAsync(string domainName, string wordsFolder, string outputFolder);
+    Task ProcessAndSaveDocumentsAsync(string documentType, string documentsFolder, string outputFolder);
 }
 
 public enum TextDataType

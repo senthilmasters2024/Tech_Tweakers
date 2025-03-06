@@ -70,48 +70,49 @@ public class TextPreprocessor : IPreprocessor
     }
 
     // Data Storage Methods
-    public async Task SaveWordsAsync(string domainName, IEnumerable<string> words)
+    public async Task SaveWordsAsync(string domainName, IEnumerable<string> words, string outputFolder)
     {
-        string outputPath = Path.Combine(_storagePath, "Words");
-        Directory.CreateDirectory(outputPath);
+        string domainPath = Path.Combine(outputFolder, "Words");
+        Directory.CreateDirectory(domainPath);// Ensure the Words folder exists
 
-        string filePath = Path.Combine(outputPath, $"{domainName}_preprocessed_words.txt");
+        string filePath = Path.Combine(domainPath, "preprocessed_words.txt");
         await File.WriteAllLinesAsync(filePath, words);
     }
 
-    public async Task SavePhrasesAsync(IEnumerable<string> phrases)
+    public async Task SavePhrasesAsync(string domainName, IEnumerable<string> phrases, string outputFolder)
     {
-        string outputPath = Path.Combine(_storagePath, "Phrases");
-        Directory.CreateDirectory(outputPath);
+        string outputPath = Path.Combine(outputFolder, "Phrases", domainName);
+        Directory.CreateDirectory(outputPath); // ✅ Corrected
 
-        string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt");
+        string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt"); // ✅ Corrected
         await File.WriteAllLinesAsync(filePath, phrases);
     }
 
-    public async Task SaveDocumentsAsync(IEnumerable<string> documents)
+    public async Task SaveDocumentsAsync(string documentType, IEnumerable<string> documents, string outputFolder)
     {
-        string outputPath = Path.Combine(_storagePath, "Documents");
-        Directory.CreateDirectory(outputPath);
+        string documentPath = Path.Combine(outputFolder, "Documents");
+        Directory.CreateDirectory(documentPath);// Ensure the Documents folder exists
 
-        string filePath = Path.Combine(outputPath, "preprocessed_documents.txt");
+        string filePath = Path.Combine(documentPath, "preprocessed_documents.txt");
         await File.WriteAllLinesAsync(filePath, documents);
     }
 
-    public async Task<IEnumerable<string>> LoadPreprocessedWordsAsync(string domainName)
+    // Data Loading Methods
+    public async Task<IEnumerable<string>> LoadPreprocessedWordsAsync(string domainName, string outputFolder)
     {
-        string filePath = Path.Combine(_storagePath, "Words", $"{domainName}_preprocessed_words.txt");
+        string filePath = Path.Combine(outputFolder, "Words", domainName, "preprocessed_words.txt");
         return File.Exists(filePath) ? await File.ReadAllLinesAsync(filePath) : Enumerable.Empty<string>();
     }
 
-    public async Task<IEnumerable<string>> LoadPreprocessedPhrasesAsync()
+    public async Task<IEnumerable<string>> LoadPreprocessedPhrasesAsync(string domainName, string outputFolder)
     {
-        string filePath = Path.Combine(_storagePath, "Phrases", "preprocessed_phrases.txt");
+        string filePath = Path.Combine(outputFolder, "Phrases", domainName, "preprocessed_phrases.txt");
         return File.Exists(filePath) ? await File.ReadAllLinesAsync(filePath) : Enumerable.Empty<string>();
     }
 
-    public async Task<IEnumerable<string>> LoadPreprocessedDocumentsAsync()
+    public async Task<IEnumerable<string>> LoadPreprocessedDocumentsAsync(string documentType, string outputFolder)
     {
-        string filePath = Path.Combine(_storagePath, "Documents", "preprocessed_documents.txt");
+        string filePath = Path.Combine(outputFolder, "Documents", documentType, "preprocessed_documents.txt");
         return File.Exists(filePath) ? await File.ReadAllLinesAsync(filePath) : Enumerable.Empty<string>();
     }
 
@@ -134,37 +135,58 @@ public class TextPreprocessor : IPreprocessor
     }
 
     // Batch Processing Methods
-    public async Task ProcessAndSaveWordsAsync(string wordsFolder, string outputFolder)
+    public async Task ProcessAndSaveWordsAsync(string domainName, string wordsFolder, string outputFolder)
     {
-        var wordFiles = Directory.GetFiles(wordsFolder, "*.txt");
-        var processedWords = wordFiles
+        string domainPath = Path.Combine(wordsFolder, domainName);
+        if (!Directory.Exists(domainPath))
+        {
+            Console.WriteLine($"Domain '{domainName}' not found in Words folder.");
+            return;
+        }
+
+        var processedWords = Directory.GetFiles(domainPath, "*.txt")
             .SelectMany(file => File.ReadLines(file))
             .Select(word => PreprocessText(word, TextDataType.Word))
             .Where(word => !string.IsNullOrEmpty(word))
             .Distinct()
             .ToList();
 
-        await SaveWordsAsync("words", processedWords);
+        await SaveWordsAsync(domainName, processedWords, outputFolder);
     }
 
-    public async Task ProcessAndSavePhrasesAsync(string phrasesFolder, string outputFolder)
+    public async Task ProcessAndSavePhrasesAsync(string domainName,string phrasesFolder, string outputFolder)
     {
-        var phraseFiles = Directory.GetFiles(phrasesFolder, "*.txt");
-        var processedPhrases = phraseFiles
+        string domainPath = Path.Combine(phrasesFolder, domainName);
+        if (!Directory.Exists(domainPath))
+        {
+            Console.WriteLine($"Domain '{domainName}' not found in Phrases folder.");
+            return;
+        }
+
+        var processedPhrases = Directory.GetFiles(domainPath, "*.txt")
             .SelectMany(file => File.ReadLines(file))
             .Select(phrase => PreprocessText(phrase, TextDataType.Phrase))
             .Where(phrase => !string.IsNullOrEmpty(phrase));
 
-        await SavePhrasesAsync(processedPhrases);
+        await SavePhrasesAsync(domainName, processedPhrases, outputFolder);
     }
 
-    public async Task ProcessAndSaveDocumentsAsync(string documentsFolder, string outputFolder)
+
+
+    public async Task ProcessAndSaveDocumentsAsync(string documentType, string documentsFolder, string outputFolder)
     {
-        var documentFiles = Directory.GetFiles(documentsFolder, "*.txt");
-        var processedDocuments = documentFiles
+        string documentPath = Path.Combine(documentsFolder, documentType); // Select the document type folder
+
+        if (!Directory.Exists(documentPath))
+        {
+            Console.WriteLine($"Document type '{documentType}' not found in Documents folder.");
+            return;
+        }
+
+        var processedDocuments = Directory.GetFiles(documentPath, "*.txt")
             .Select(file => PreprocessText(File.ReadAllText(file), TextDataType.Document))
             .ToList();
 
-        await SaveDocumentsAsync(processedDocuments);
+        await SaveDocumentsAsync(documentType, processedDocuments, outputFolder);
     }
 }

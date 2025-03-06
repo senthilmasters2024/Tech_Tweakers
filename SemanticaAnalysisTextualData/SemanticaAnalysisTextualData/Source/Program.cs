@@ -7,6 +7,9 @@ using SemanticaAnalysisTextualData.Source.Services;
 using SemanticaAnalysisTextualData.Source.Interfaces;
 using Google.Apis.Util.Store;
 
+using System.ComponentModel;
+using System.Diagnostics;
+
 namespace SemanticAnalysisTextualData.Source
 {
     class Program
@@ -40,17 +43,28 @@ namespace SemanticAnalysisTextualData.Source
 
             //  Preprocess Words
             // Preprocess Words
-           
-            Console.WriteLine("Preprocessing words...");
-            await textPreprocessor.ProcessAndSaveWordsAsync(wordsFolder);
 
-            // Preprocess Phrases
-            Console.WriteLine("Preprocessing phrases...");
-            await textPreprocessor.ProcessAndSavePhrasesAsync(phrasesFolder);
+            // Preprocess Words (Process each domain inside Words folder)
+            foreach (var domainFolder in Directory.GetDirectories(wordsFolder))
+            {
+                string domainName = new DirectoryInfo(domainFolder).Name;
+                Console.WriteLine($"Preprocessing words for domain: {domainName}...");
+                await textPreprocessor.ProcessAndSaveWordsAsync(domainName, wordsFolder, outputFolder);
+            }
+            // Preprocess Phrases(Process each domain inside Phrases folder)
+              foreach (var domainFolder in Directory.GetDirectories(phrasesFolder))
+            {
+                string domainName = new DirectoryInfo(domainFolder).Name;
+                Console.WriteLine($"Preprocessing phrases for domain: {domainName}...");
+                await textPreprocessor.ProcessAndSavePhrasesAsync(domainName, phrasesFolder, outputFolder);
+            }
+            
 
             // Preprocess Documents
             Console.WriteLine("Preprocessing documents...");
-            await textPreprocessor.ProcessAndSaveDocumentsAsync(documentsFolder, outputFolder);
+            await textPreprocessor.ProcessAndSaveDocumentsAsync("Requirement", documentsFolder, outputFolder);
+            await textPreprocessor.ProcessAndSaveDocumentsAsync("Resume", documentsFolder, outputFolder);
+
 
             //  Display Preprocessed Data
             //Console.WriteLine("\nPreprocessed Words:");
