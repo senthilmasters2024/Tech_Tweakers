@@ -52,6 +52,7 @@ class SemanticSimilarityDocumentsWithInputDataSet
         }
     }*/
 
+
     // Method to calculate similarity
     private static async Task<double> CalculateSimilarityAsync(SemanticAnalysisTextualDataService service, string sentence1, string sentence2)
     {
@@ -69,5 +70,3 @@ class SemanticSimilarityDocumentsWithInputDataSet
         public string? Phrase2 { get; set; }
         public double SimilarityScore { get; set; }
     }
-}
-*/

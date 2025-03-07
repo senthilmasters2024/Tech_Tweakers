@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-﻿
-using Microsoft.Extensions.DependencyInjection;
-=======
 
->>>>>>> ad426ba5a9cd734def0d2eb28efb46ca5a5f4bcc
 using OpenAI.Embeddings;
 using ScottPlot.Palettes;
 using Microsoft.Extensions.DependencyInjection;
