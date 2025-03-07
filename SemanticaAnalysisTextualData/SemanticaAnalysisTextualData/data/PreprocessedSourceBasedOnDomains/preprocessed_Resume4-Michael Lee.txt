@@ -1,0 +1,11 @@
+name michael lee
+address 101 health ave boston ma
+email michaelleeemailcom
+phone 555 6549876
+
+objective
+as medical research scientist i aim contribute advancing medical research treatments improve patient outcomes
+
+experience medical researcher biohealth labs 2020present conducted research cancer treatments published findings peerreviewed journals research assistant boston university 20182020 assisted clinical trials analyzed patient data
+
+education phd biological sciences harvard university

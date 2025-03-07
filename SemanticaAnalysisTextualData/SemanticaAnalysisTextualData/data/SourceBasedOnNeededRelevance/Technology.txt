@@ -1,20 +1,16 @@
-Job Title: Software Engineer (Backend)
-
-Job Description:We are seeking a highly skilled Backend Software Engineer to develop and maintain scalable backend systems. The ideal candidate will have strong experience in backend technologies, database management, and cloud infrastructure.
-
-Responsibilities:
-
-Develop, test, and maintain backend services and APIs.
-
-Collaborate with frontend developers, product managers, and other stakeholders.
-
-Optimize application performance and ensure security best practices.
-
-Work with databases and ensure data integrity and scalability.
-
-Deploy and monitor services in cloud environments.
-
-Debug and troubleshoot production issues.
+Job Title: Software Engineer
+Description:
+- Design, develop, and maintain software applications.
+- Write clean, maintainable, and efficient code.
+- Collaborate with cross-functional teams to define and implement new features.
+- Strong knowledge of Java, Python, and cloud technologies such as AWS.
+- BS in Computer Science or related field required.
+-Develop, test, and maintain backend services and APIs.
+-Collaborate with frontend developers, product managers, and other stakeholders.
+-Optimize application performance and ensure security best practices.
+-Work with databases and ensure data integrity and scalability.
+-Deploy and monitor services in cloud environments.
+-Debug and troubleshoot production issues.
 
 Required Skills:
 
@@ -47,15 +43,3 @@ Bachelor's/Master’s degree in Computer Science, Engineering, or a related fiel
 3+ years of experience in backend development.
 
 Strong problem-solving skills and ability to work independently.
-
-Benefits:
-
-Competitive salary and performance-based incentives.
-
-Health insurance and wellness programs.
-
-Remote work flexibility.
-
-Learning and development opportunities.
-
-Collaborative and innovative work environment.

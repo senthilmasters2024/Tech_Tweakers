@@ -1,0 +1,21 @@
+job title full stack developer
+
+company tech solutions inc
+
+location anytown usa
+
+job description
+tech solutions inc seeking highly skilled full stack developer join our dynamic team ideal candidate will have strong background web development with experience both frontend backend technologies you will be responsible for developing maintaining web applications collaborating with crossfunctional teams ensuring delivery highquality software solutions
+
+responsibilities develop maintain web applications using javascript react nodejs mongodb collaborate with designers backend developers create seamless user experiences implement restful apis integrate thirdparty services participate code reviews contribute improvement coding standards conduct testing debugging applications ensure optimal performance
+
+requirements bachelors degree computer science information technology or related field proven experience as full stack developer or similar role proficiency javascript react nodejs mongodb strong understanding web technologies including html css javascript experience with version control systems such as git excellent problemsolving skills attention detail strong communication teamwork abilities
+
+preferred qualifications experience with typescript angular familiarity with cloud platforms such as aws or azure knowledge cicd pipelines devops practices certification relevant technologies or frameworks
+
+benefits competitive salary benefits package opportunities for professional growth development collaborative innovative work environment flexible work hours remote work options
+
+how apply
+interested candidates should submit their resume cover letter hrtechsolutionscom please include full stack developer application subject line
+
+tech solutions inc equal opportunity employer we celebrate diversity are committed creating inclusive environment for all employees

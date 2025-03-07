@@ -1,0 +1,11 @@
+name john doe
+address 123 main street new york ny
+email johndoeemailcom
+phone 555 1234567
+
+objective
+seeking position healthcare data analyst apply my expertise data analysis improve patient care hospital management
+
+experience data analyst healthtech inc 2019present analyzed healthcare data collaborated with healthcare professionals improve data accuracy research assistant public health institute 20172019 assisted analysis public health data for national studies
+
+education ms public health university new york bs healthcare management university california

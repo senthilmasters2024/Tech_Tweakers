@@ -8,7 +8,7 @@ using SemanticaAnalysisTextualData.Source.Enums;
 using Porter2Stemmer;
 
 
-public class TextPreprocessor :IPreprocessor
+public class TextPreprocessor : IPreprocessor
 {
     // Properties from ITextData
     public string Name { get; private set; }
@@ -82,9 +82,9 @@ public class TextPreprocessor :IPreprocessor
     public async Task SavePhrasesAsync(string domainName, IEnumerable<string> phrases, string outputFolder)
     {
         string outputPath = Path.Combine(outputFolder, "Phrases", domainName);
-        Directory.CreateDirectory(outputPath); // ✅ Corrected
+        Directory.CreateDirectory(outputPath); //  Corrected
 
-        string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt"); // ✅ Corrected
+        string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt"); // Corrected
         await File.WriteAllLinesAsync(filePath, phrases);
     }
 
@@ -154,7 +154,7 @@ public class TextPreprocessor :IPreprocessor
         await SaveWordsAsync(domainName, processedWords, outputFolder);
     }
 
-    public async Task ProcessAndSavePhrasesAsync(string domainName,string phrasesFolder, string outputFolder)
+    public async Task ProcessAndSavePhrasesAsync(string domainName, string phrasesFolder, string outputFolder)
     {
         string domainPath = Path.Combine(phrasesFolder, domainName);
         if (!Directory.Exists(domainPath))
@@ -179,14 +179,39 @@ public class TextPreprocessor :IPreprocessor
 
         if (!Directory.Exists(documentPath))
         {
-            Console.WriteLine($"Document type '{documentType}' not found in Documents folder.");
+            Console.WriteLine($"Document type '{documentType}' not found in '{documentsFolder}'. Skipping.");
             return;
         }
 
-        var processedDocuments = Directory.GetFiles(documentPath, "*.txt")
-            .Select(file => PreprocessText(File.ReadAllText(file), TextDataType.Document))
-            .ToList();
+        string outputDocumentPath = Path.Combine(outputFolder, "Documents", documentType);
+        Directory.CreateDirectory(outputDocumentPath); // Ensure the output folder exists
 
-        await SaveDocumentsAsync(documentType, processedDocuments, outputFolder);
+        var files = Directory.GetFiles(documentPath, "*.txt");
+
+        if (files.Length == 0)
+        {
+            Console.WriteLine($" No text files found in '{documentPath}'. Skipping.");
+            return;
+        }
+
+        Console.WriteLine($"📂 Processing {files.Length} documents from {documentPath}...");
+
+        foreach (var file in files)
+        {
+            string fileName = Path.GetFileName(file);
+            string fileContent = await File.ReadAllTextAsync(file);
+
+            if (string.IsNullOrWhiteSpace(fileContent))
+            {
+                Console.WriteLine($"Skipping empty document: {fileName}");
+                continue;
+            }
+
+            string preprocessedContent = PreprocessText(fileContent, TextDataType.Document);
+            string outputFilePath = Path.Combine(outputDocumentPath, fileName); // Save as same filename
+
+            await File.WriteAllTextAsync(outputFilePath, preprocessedContent);
+            Console.WriteLine($"Preprocessed and saved: {outputFilePath}");
+        }
     }
 }
