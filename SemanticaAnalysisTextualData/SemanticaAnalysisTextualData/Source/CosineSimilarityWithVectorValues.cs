@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SemanticaAnalysisTextualData.Source.Interfaces;
-using SemanticaAnalysisTextualData.Source.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

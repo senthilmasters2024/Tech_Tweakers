@@ -8,7 +8,7 @@ using SemanticaAnalysisTextualData.Source.Enums;
 using Porter2Stemmer;
 
 
-public class TextPreprocessor : IPreprocessor
+public class TextPreprocessor :IPreprocessor
 {
     // Properties from ITextData
     public string Name { get; private set; }
