@@ -5,7 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SemanticaAnalysisTextualData.Source.Enums;
-using Porter2Stemmer;
+using edu.stanford.nlp.pipeline;
+using java.util;
 
 
 public class TextPreprocessor : IPreprocessor
@@ -15,19 +16,58 @@ public class TextPreprocessor : IPreprocessor
     public string Content { get; private set; }
     public string FilePath { get; private set; }
 
-    private static readonly HashSet<string> StopWords = new()
-    {
-        "the", "is", "in", "at", "of", "am", "pm", "one", "to", "a", "an", "and"
-    };
+    //private readonly StanfordCoreNLP _pipeline;
 
-    private readonly EnglishPorter2Stemmer _stemmer = new();
+    private static readonly HashSet<string> StopWords = new()
+{
+    "the", "is", "in", "at", "of", "am", "pm", "one", "to", "a", "an", "and",
+    "for", "on", "with", "but", "or", "as", "by", "from", "that", "this", "it",
+    "are", "be", "was", "were", "have", "has", "had", "will", "would", "should",
+    "can", "could", "which", "what", "when", "where", "who", "whom", "whose",
+    "how", "why", "if", "then", "else", "while", "because", "until", "about",
+    "into", "over", "under", "again", "further", "once", "here", "there", "all",
+    "any", "both", "each", "few", "more", "most", "other", "some", "such", "no",
+    "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t",
+    "just", "now", "out", "up", "down", "also", "been", "being", "did", "does",
+    "doing", "during", "before", "after", "above", "below", "between", "through"
+};
+
+    private static readonly Dictionary<string, string> LemmaDictionary = new()
+{
+    { "running", "run" },
+    { "better", "good" },
+    { "went", "go" },
+    { "is", "be" },
+    { "are", "be" },
+    { "were", "be" },
+    { "has", "have" },
+    { "had", "have" },
+    { "doing", "do" },
+    { "does", "do" },
+    { "did", "do" },
+    // Add more mappings as needed
+};
     private readonly string _storagePath;
 
     public TextPreprocessor()
+
     {
+        /*
+        // Initialize Stanford CoreNLP pipeline
+        var props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        _pipeline = new StanfordCoreNLP(props);
+
         _storagePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
         Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
+        */
+        
+            _storagePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
+            Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
+        
+
     }
+
 
     // Initialize Name, Content, and FilePath for a specific text data
     public void InitializeTextData(string name, string content, string filePath = null)
@@ -38,10 +78,38 @@ public class TextPreprocessor : IPreprocessor
     }
 
     // Text Preprocessing Methods
+ 
     public string PreprocessText(string text, TextDataType type)
     {
+        // Convert to lowercase
         text = text.ToLower().Trim();
-        text = Regex.Replace(text, @"[^a-zA-Z0-9\s]", "");
+
+       
+        text = Regex.Replace(text, @"<[^>]+>|http[^\s]+", "");// // Remove HTML tags and URLs
+
+       
+
+        // Normalize contractions and abbreviations
+        text = Regex.Replace(text, @"\b(can't|won't|don't|i'm|you're)\b", match =>
+        {
+            switch (match.Value)
+            {
+                case "can't": return "cannot";
+                case "won't": return "will not";
+                case "don't": return "do not";
+                case "i'm": return "i am";
+                case "you're": return "you are";
+                default: return match.Value;
+            }
+        });
+
+        // Remove special characters and punctuation
+        text = Regex.Replace(text, @"[^a-zA-Z0-9\s'-]", "");
+
+        // Handle numbers and dates
+        //text = Regex.Replace(text, @"\b\d+\b", "number");
+        //text = Regex.Replace(text, @"\b\d{4}-\d{2}-\d{2}\b", "date");
+        text = LemmatizeText(text); // Apply lemmatization
 
         if (type == TextDataType.Word)
         {
@@ -54,21 +122,71 @@ public class TextPreprocessor : IPreprocessor
         }
         else if (type == TextDataType.Document)
         {
-            var sentences = text.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+            // Use a better sentence tokenizer
+            var sentences = Regex.Split(text, @"(?<=[.!?])\s+(?=[A-Z])");
             var processedSentences = sentences.Select(sentence => PreprocessText(sentence, TextDataType.Phrase));
             return string.Join(". ", processedSentences);
         }
 
         return text;
     }
-
-    public string StemText(string text)
+    // Lemmatize a single word using the dictionary
+    public string LemmatizeWord(string word)
     {
-        var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var stemmedWords = words.Select(word => _stemmer.Stem(word).Value);
-        return string.Join(" ", stemmedWords);
-    }
+       
+        // Check if the word exists in the lemma dictionary
+        if (LemmaDictionary.TryGetValue(word, out var lemma))
+        {
+            return lemma; // Return the lemma if found
+        }
+        return word; // Return the original word if no lemma is found
 
+    }
+    // Lemmatize an entire text
+    public string LemmatizeText(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text; // Return empty or whitespace text as-is
+        }
+
+        // Split the text into words, lemmatize each word, and join them back
+        var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var lemmatizedWords = words.Select(LemmatizeWord);
+        return string.Join(" ", lemmatizedWords);
+        /*
+         
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return text; // Return empty or whitespace text as-is
+        }
+
+        // Create an annotation object with the input text
+        var annotation = new Annotation(text);
+
+        // Run the pipeline on the annotation
+        _pipeline.annotate(annotation);
+
+        // Extract lemmas from the annotation
+        var lemmas = new List<string>();
+        var tokens = annotation.get(typeof(CoreAnnotations.TokensAnnotation)) as ArrayList;
+        if (tokens != null)
+        {
+            foreach (CoreLabel token in tokens)
+            {
+                string lemma = token.get(typeof(CoreAnnotations.LemmaAnnotation))?.ToString();
+                if (!string.IsNullOrEmpty(lemma))
+                {
+                    lemmas.Add(lemma);
+                }
+            }
+        }
+
+        // Join the lemmas into a single string
+        return string.Join(" ", lemmas);
+        
+        */
+    }
     // Data Storage Methods
     public async Task SaveWordsAsync(string domainName, IEnumerable<string> words, string outputFolder)
     {
@@ -194,7 +312,7 @@ public class TextPreprocessor : IPreprocessor
             return;
         }
 
-        Console.WriteLine($"📂 Processing {files.Length} documents from {documentPath}...");
+        Console.WriteLine($" Processing {files.Length} documents from {documentPath}...");
 
         foreach (var file in files)
         {

@@ -7,7 +7,7 @@
 
     // Text Preprocessing Methods
     string PreprocessText(string text, TextDataType type);
-    string StemText(string text);
+   
 
     // Data Storage Methods
     Task SaveWordsAsync(string domainName, IEnumerable<string> words, string outputFolder);

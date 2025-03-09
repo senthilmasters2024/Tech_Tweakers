@@ -1,11 +1,14 @@
 name jane smith
 address 456 tech road san francisco ca
 email janesmithemailcom
-phone 555 9876543
+phone 555 987-6543
 
 objective
-to contribute leading technology company by developing scalable highperformance applications as software engineer
+to contribute leading technology company developing scalable high-performance applications software engineer
 
-experience software developer codeworks 2020present developed maintained web applications wrote efficient code java python junior developer webdev inc 20182020 assisted designing optimizing backend systems for web applications
+experience
+- software developer codeworks 2020present developed maintained web applications wrote efficient code java python
+- junior developer webdev inc 20182020 assisted designing optimizing backend systems web applications
 
-education bs computer science stanford university
+education
+- bs computer science stanford university

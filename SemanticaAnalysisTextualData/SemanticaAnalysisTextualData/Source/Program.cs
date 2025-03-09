@@ -1,9 +1,13 @@
-﻿using System;
+﻿
+
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SemanticaAnalysisTextualData.Source.Interfaces;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace SemanticAnalysisTextualData.Source
 {
@@ -11,26 +15,30 @@ namespace SemanticAnalysisTextualData.Source
     {
         static async Task Main(string[] args)
         {
-            //  Set up dependency injection
+            // Load configuration from appsettings.json
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path to the project directory
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // Load the JSON file
+                .Build();
+
+            // Get folder paths from configuration
+            string sourceDomainsFolder = config["Folders:SourceDomains"];
+            string sourceRelevanceFolder = config["Folders:SourceRelevance"];
+            string outputDomainsFolder = config["Folders:OutputDomains"];
+            string outputRelevanceFolder = config["Folders:OutputRelevance"];
+
+            // Set up dependency injection
             var serviceProvider = new ServiceCollection()
                 .AddSingleton<IPreprocessor, TextPreprocessor>()
                 .BuildServiceProvider();
 
             var textPreprocessor = serviceProvider.GetRequiredService<IPreprocessor>();
 
-            //  Define Input Folders
-            string sourceDomainsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\SourceBasedOnDomains";
-            string sourceRelevanceFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\SourceBasedOnNeededRelevance";
-
-            //  Define Output Folders
-            string outputDomainsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\PreprocessedSourceBasedOnDomains";
-            string outputRelevanceFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\PreprocessedSourceBasedOnNeededRelevance";
-
-            //  Ensure output folders exist
+            // Ensure output folders exist
             EnsureDirectoryExists(outputDomainsFolder);
             EnsureDirectoryExists(outputRelevanceFolder);
 
-            //  Process both source folders
+            // Process both source folders
             await ProcessTextFilesInFolderAsync(textPreprocessor, sourceDomainsFolder, outputDomainsFolder);
             await ProcessTextFilesInFolderAsync(textPreprocessor, sourceRelevanceFolder, outputRelevanceFolder);
 
@@ -49,7 +57,6 @@ namespace SemanticAnalysisTextualData.Source
 
             Console.WriteLine($" Source folder exists: {sourceFolder}");
 
-
             // Ensure output folder exists
             EnsureDirectoryExists(outputFolder);
 
@@ -61,7 +68,7 @@ namespace SemanticAnalysisTextualData.Source
                 return;
             }
 
-            Console.WriteLine($" Found {textFiles.Length} text files in '{{sourceFolder}}'. Processing...\");");
+            Console.WriteLine($" Found {textFiles.Length} text files in '{sourceFolder}'. Processing...");
 
             foreach (var file in textFiles)
             {
