@@ -30,8 +30,8 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IE
         string baseDataFolder = Path.Combine(projectRoot, "data");
 
         // Define source and target folders dynamically
-        string sourceFolder = Path.Combine(baseDataFolder, "SourceBasedOnDomains");
-        string targetFolder = Path.Combine(baseDataFolder, "SourceBasedOnNeededRelevance");
+        string sourceFolder = Path.Combine(baseDataFolder, "PreprocessedSourceBasedOnDomains");
+        string targetFolder = Path.Combine(baseDataFolder, "PreprocessedSourceBasedOnNeededRelevance");
 
         // Get all files from the source and target folders
         var sourceFiles = Directory.GetFiles(sourceFolder, "*.txt");
@@ -71,13 +71,13 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IE
                             FileName2 = fileName2,
                             SimilarityScore = similarity
                         };
-                        if (fileName1.StartsWith("JobProfile", StringComparison.OrdinalIgnoreCase))
+                        if (fileName1.StartsWith("preprocessed_JobProfile", StringComparison.OrdinalIgnoreCase))
                         {
 
                             phraseSimilarity.FileName2 = fileName2;
                             phraseSimilarity.domain = "jobvacancy";
                         }
-                        else if (fileName1.StartsWith("MedicalHistory", StringComparison.OrdinalIgnoreCase))
+                        else if (fileName1.StartsWith("preprocessed_MedicalHistory", StringComparison.OrdinalIgnoreCase))
                         {
                             phraseSimilarity.domain = "Medical-MedicationSuggestion";
                         }
