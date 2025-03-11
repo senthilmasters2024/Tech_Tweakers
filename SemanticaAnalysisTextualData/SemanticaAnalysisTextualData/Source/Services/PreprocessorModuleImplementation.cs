@@ -5,8 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using SemanticaAnalysisTextualData.Source.Enums;
-using edu.stanford.nlp.pipeline;
-using java.util;
+
 
 
 public class TextPreprocessor : IPreprocessor
