@@ -25,6 +25,13 @@
     // Batch Processing Methods
     Task ProcessAndSaveWordsAsync(string domainName, string wordsFolder, string outputFolder);
     Task ProcessAndSavePhrasesAsync(string domainName, string wordsFolder, string outputFolder);
+    /// <summary>
+    /// Processes and saves documents asynchronously.
+    /// </summary>
+    /// <param name="documentType">The type of the document.</param>
+    /// <param name="documentsFolder">The folder containing the documents.</param>
+    /// <param name="outputFolder">The folder to save the processed documents.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task ProcessAndSaveDocumentsAsync(string documentType, string documentsFolder, string outputFolder);
 }
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SemanticaAnalysisTextualData.Source.Enums;
 
 
-
 public class TextPreprocessor : IPreprocessor
 {
     // Properties from ITextData
@@ -60,10 +59,10 @@ public class TextPreprocessor : IPreprocessor
         _storagePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
         Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
         */
-        
-            _storagePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
-            Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
-        
+
+        _storagePath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
+        Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
+
 
     }
 
@@ -77,16 +76,16 @@ public class TextPreprocessor : IPreprocessor
     }
 
     // Text Preprocessing Methods
- 
+
     public string PreprocessText(string text, TextDataType type)
     {
         // Convert to lowercase
         text = text.ToLower().Trim();
 
-       
+
         text = Regex.Replace(text, @"<[^>]+>|http[^\s]+", "");// // Remove HTML tags and URLs
 
-       
+
 
         // Normalize contractions and abbreviations
         text = Regex.Replace(text, @"\b(can't|won't|don't|i'm|you're)\b", match =>
@@ -132,7 +131,7 @@ public class TextPreprocessor : IPreprocessor
     // Lemmatize a single word using the dictionary
     public string LemmatizeWord(string word)
     {
-       
+
         // Check if the word exists in the lemma dictionary
         if (LemmaDictionary.TryGetValue(word, out var lemma))
         {
@@ -332,3 +331,5 @@ public class TextPreprocessor : IPreprocessor
         }
     }
 }
+
+ss
