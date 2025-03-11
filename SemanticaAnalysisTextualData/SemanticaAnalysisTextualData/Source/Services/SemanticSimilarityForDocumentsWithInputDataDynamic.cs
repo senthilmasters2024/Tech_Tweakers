@@ -59,7 +59,7 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IE
                         string sentence2 = await File.ReadAllTextAsync(targetFile);
 
                         // Calculate the similarity between the two sentences
-                        var similarity = await similarityService.CalculateSimilarityAsync(sentence1, sentence2);
+                        var similarity = await similarityService.CalculateSimilarityAsync(sentence1, sentence2,fileName1,fileName2);
                         Console.WriteLine($"Similarity between {Path.GetFileName(sourceFile)} and {Path.GetFileName(targetFile)}: {similarity:F4}");
 
                         // Create a PhraseSimilarity object to store the results
@@ -118,7 +118,7 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IE
         public double SimilarityScore { get; set; }
     }
 
-    public async Task<double> CalculateSimilarityAsync(string text1, string text2)
+    public async Task<double> CalculateSimilarityAsync(string text1, string text2,String fileName1, String fileName2)
     {
         // Create an EmbeddingClient instance using the OpenAI API key
         EmbeddingClient client = new("text-embedding-3-large" /* Optional: Replace with "text-embedding-3-small" */,
@@ -135,8 +135,8 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IE
         float[] embedding2 = collection[1].ToFloats().ToArray();
 
         // Fix: Convert ReadOnlyMemory<float> to array before using LINQ methods
-        File.WriteAllLines("embedding_values.csv", collection[0].ToFloats().ToArray().Select(v => v.ToString()));
-        File.WriteAllLines("embedding_values1.csv", collection[1].ToFloats().ToArray().Select(v => v.ToString()));
+        File.WriteAllLines(fileName1+"embedding_values.csv", collection[0].ToFloats().ToArray().Select(v => v.ToString()));
+        File.WriteAllLines(fileName2+"embedding_values1.csv", collection[1].ToFloats().ToArray().Select(v => v.ToString()));
 
         // Print scalar values of the embeddings to the console
         Console.WriteLine("Scalar values for text1:");
@@ -208,4 +208,8 @@ class SemanticSimilarityForDocumentsWithInputDataDynamic: ISimilarityService, IE
         return cosineSimilarity;
     }
 
+    public Task<double> CalculateSimilarityAsync(string text1, string text2)
+    {
+        throw new NotImplementedException();
+    }
 }
