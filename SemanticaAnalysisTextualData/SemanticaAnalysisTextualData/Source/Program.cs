@@ -27,17 +27,6 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
             var similarityService = serviceProvider.GetRequiredService<ISimilarityService>();
             var embeddingService = serviceProvider.GetRequiredService<IEmbedding>();
 
-            // Define Input and Output Folders
-            //string phrasesFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Input Data\\Phrases";
-            //string documentsFolder = "D:\\OPEN PROJECT HERE\\Tech_Tweakers\\SemanticaAnalysisTextualData\\SemanticaAnalysisTextualData\\data\\Input Data\\Documents";
-            //string outputFolder = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "data", "Output Data"));
-            //Console.WriteLine($"Using Output Folder: {outputFolder}"); // Debugging output
-
-            //// Ensure output folders exist
-            //EnsureDirectoryExists(outputFolder);
-            //EnsureDirectoryExists(Path.Combine(outputFolder, "Words"));
-            //EnsureDirectoryExists(Path.Combine(outputFolder, "Phrases"));
-            //EnsureDirectoryExists(Path.Combine(outputFolder, "Documents"));
 
             // User options
             Console.WriteLine("Choose an option:");
@@ -62,7 +51,7 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
                 else if (preprocessChoice == "2")
                 {
                     // Navigate up to the project's root directory from the bin folder
-                    string projectRoot = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
+                    string projectRoot = Directory.GetParent(AppContext.BaseDirectory)?.Parent?.Parent?.Parent?.FullName ?? throw new InvalidOperationException("Unable to determine project root directory.");
 
                     // Define the data folder within the project root
                     string baseDataFolder = Path.Combine(projectRoot, "data");
@@ -116,7 +105,7 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
             else if (processChoice == "2")
             {
                 // Example: Calculate similarity between two sample phrases
-                await invokePhrases.invokeProcessPhrases(args);
+                await invokePhrases.InvokeProcessPhrases(args);
                 Console.WriteLine("Phrases comparison completed.");
             }
             else

@@ -30,7 +30,7 @@
     <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
     <PackageReference Include="TiktokenSharp" Version="1.1.6" />
 	  <PackageReference Include="VaultSharp" Version="1.17.5.1" />
-    <PackageReference Include="VaultSharp" Version="1.17.5.1" />
+ 
   </ItemGroup>
 
   <ItemGroup>
