@@ -4,14 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SemanticaAnalysisTextualData.Source.Enums;
 
 
-public class TextPreprocessor : IPreprocessor
+class TextPreprocessor : IPreprocessor
 {
     // Properties from ITextData
     public string Name { get; private set; }
+    /// <summary>
+    /// Gets the content of the text data.
+    /// </summary>
     public string Content { get; private set; }
+    /// <summary>
+    /// Gets the file path of the text data.
+    /// </summary>
     public string FilePath { get; private set; }
 
     //private readonly StanfordCoreNLP _pipeline;
@@ -67,172 +72,215 @@ public class TextPreprocessor : IPreprocessor
     }
 
 
-    // Initialize Name, Content, and FilePath for a specific text data
-    public void InitializeTextData(string name, string content, string filePath = null)
+    /// <summary>
+    /// Initialize Name, Content, and FilePath for a specific text data.
+    /// </summary>
+    /// <param name="name">The name of the text data.</param>
+    /// <param name="content">The content of the text data.</param>
+    /// <param name="filePath">The file path of the text data.</param>
+    public void InitializeTextData(string name, string content, string? filePath = null)
     {
         Name = name;
         Content = content;
-        FilePath = filePath;
+        FilePath = filePath ?? string.Empty;
     }
 
-    // Text Preprocessing Methods
-
+    /// <summary>
+    /// Preprocesses the given text based on the specified type.
+    /// </summary>
+    /// <param name="text">The text to preprocess.</param>
+    /// <param name="type">The type of text data (Word, Phrase, Document).</param>
+    /// <returns>The preprocessed text.</returns>
     public string PreprocessText(string text, TextDataType type)
     {
+
         // Convert to lowercase
         text = text.ToLower().Trim();
-
-
         text = Regex.Replace(text, @"<[^>]+>|http[^\s]+", "");// // Remove HTML tags and URLs
-
-
-
         // Normalize contractions and abbreviations
         text = Regex.Replace(text, @"\b(can't|won't|don't|i'm|you're)\b", match =>
         {
             switch (match.Value)
             {
                 case "can't": return "cannot";
-                case "won't": return "will not";
-                case "don't": return "do not";
-                case "i'm": return "i am";
-                case "you're": return "you are";
-                default: return match.Value;
-            }
-        });
 
+                case "won't": return "will not";
+
+                case "don't": return "do not";
+
+                case "i'm": return "i am";
+
+                case "you're": return "you are";
+
+                default: return match.Value;
+
+            }
+
+        });
         // Remove special characters and punctuation
         text = Regex.Replace(text, @"[^a-zA-Z0-9\s'-]", "");
-
         // Handle numbers and dates
         //text = Regex.Replace(text, @"\b\d+\b", "number");
         //text = Regex.Replace(text, @"\b\d{4}-\d{2}-\d{2}\b", "date");
         text = LemmatizeText(text); // Apply lemmatization
 
-        if (type == TextDataType.Word)
-        {
+        if (type == TextDataType.Word){
+
             return StopWords.Contains(text) ? string.Empty : text;
+
         }
+
         else if (type == TextDataType.Phrase)
-        {
+{
+
             var words = text.Split(' ').Select(word => PreprocessText(word, TextDataType.Word));
+
             return string.Join(" ", words.Where(w => !string.IsNullOrEmpty(w)));
+
         }
+
         else if (type == TextDataType.Document)
+
         {
+
             // Use a better sentence tokenizer
+
             var sentences = Regex.Split(text, @"(?<=[.!?])\s+(?=[A-Z])");
+
             var processedSentences = sentences.Select(sentence => PreprocessText(sentence, TextDataType.Phrase));
+
             return string.Join(". ", processedSentences);
+
         }
+
+
 
         return text;
-    }
-    // Lemmatize a single word using the dictionary
-    public string LemmatizeWord(string word)
-    {
 
+    }
+    /// <summary>
+    /// Lemmatize a single word using the dictionary.
+    /// </summary>
+    /// <param name="word">The word to lemmatize.</param>
+    /// <returns>The lemmatized form of the word.</returns>
+    public static string LemmatizeWord(string word)
+    {
         // Check if the word exists in the lemma dictionary
         if (LemmaDictionary.TryGetValue(word, out var lemma))
         {
             return lemma; // Return the lemma if found
         }
         return word; // Return the original word if no lemma is found
-
     }
-    // Lemmatize an entire text
-    public string LemmatizeText(string text)
+    /// <summary>
+    /// Lemmatize an entire text using the dictionary.
+    /// </summary>
+    /// <param name="text">The text to lemmatize.</param>
+    /// <returns>The lemmatized form of the text.</returns>
+    public static string LemmatizeText(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
-            return text; // Return empty or whitespace text as-is
+            return string.Empty; // Return empty or whitespace text as-is
         }
 
         // Split the text into words, lemmatize each word, and join them back
         var words = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var lemmatizedWords = words.Select(LemmatizeWord);
         return string.Join(" ", lemmatizedWords);
-        /*
-         
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return text; // Return empty or whitespace text as-is
-        }
-
-        // Create an annotation object with the input text
-        var annotation = new Annotation(text);
-
-        // Run the pipeline on the annotation
-        _pipeline.annotate(annotation);
-
-        // Extract lemmas from the annotation
-        var lemmas = new List<string>();
-        var tokens = annotation.get(typeof(CoreAnnotations.TokensAnnotation)) as ArrayList;
-        if (tokens != null)
-        {
-            foreach (CoreLabel token in tokens)
-            {
-                string lemma = token.get(typeof(CoreAnnotations.LemmaAnnotation))?.ToString();
-                if (!string.IsNullOrEmpty(lemma))
-                {
-                    lemmas.Add(lemma);
-                }
-            }
-        }
-
-        // Join the lemmas into a single string
-        return string.Join(" ", lemmas);
-        
-        */
     }
-    // Data Storage Methods
+    /// <summary>
+    /// Saves the preprocessed words asynchronously.
+    /// </summary>
+    /// <param name="domainName">The name of the domain.</param>
+    /// <param name="words">The words to save.</param>
+    /// <param name="outputFolder">The folder to save the preprocessed words.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task SaveWordsAsync(string domainName, IEnumerable<string> words, string outputFolder)
     {
         string domainPath = Path.Combine(outputFolder, "Words");
         Directory.CreateDirectory(domainPath);// Ensure the Words folder exists
-
         string filePath = Path.Combine(domainPath, "preprocessed_words.txt");
         await File.WriteAllLinesAsync(filePath, words);
-    }
+    }
 
+    /// <summary>
+    /// Saves the processed phrases asynchronously.
+    /// </summary>
+    /// <param name="domainName">The name of the domain.</param>
+    /// <param name="phrases">The phrases to save.</param>
+    /// <param name="outputFolder">The folder to save the processed phrases.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task SavePhrasesAsync(string domainName, IEnumerable<string> phrases, string outputFolder)
     {
+
         string outputPath = Path.Combine(outputFolder, "Phrases", domainName);
         Directory.CreateDirectory(outputPath); //  Corrected
-
         string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt"); // Corrected
         await File.WriteAllLinesAsync(filePath, phrases);
-    }
+    }
 
+    /// <summary>
+    /// Saves the processed documents asynchronously.
+    /// </summary>
+    /// <param name="documentType">The type of the document.</param>
+    /// <param name="documents">The documents to save.</param>
+    /// <param name="outputFolder">The folder to save the processed documents.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task SaveDocumentsAsync(string documentType, IEnumerable<string> documents, string outputFolder)
     {
+
         string documentPath = Path.Combine(outputFolder, "Documents");
+
         Directory.CreateDirectory(documentPath);// Ensure the Documents folder exists
 
-        string filePath = Path.Combine(documentPath, "preprocessed_documents.txt");
-        await File.WriteAllLinesAsync(filePath, documents);
-    }
 
-    // Data Loading Methods
+
+        string filePath = Path.Combine(documentPath, "preprocessed_documents.txt");
+
+        await File.WriteAllLinesAsync(filePath, documents);
+
+    }
+
+    /// <summary>
+    /// Loads preprocessed words asynchronously.
+    /// </summary>
+    /// <param name="domainName">The name of the domain.</param>
+    /// <param name="outputFolder">The folder to load the preprocessed words from.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of the loaded preprocessed words.</returns>
     public async Task<IEnumerable<string>> LoadPreprocessedWordsAsync(string domainName, string outputFolder)
     {
         string filePath = Path.Combine(outputFolder, "Words", domainName, "preprocessed_words.txt");
         return File.Exists(filePath) ? await File.ReadAllLinesAsync(filePath) : Enumerable.Empty<string>();
     }
 
+    /// <summary>
+    /// Loads preprocessed phrases asynchronously.
+    /// </summary>
+    /// <param name="domainName">The name of the domain.</param>
+    /// <param name="outputFolder">The folder to load the preprocessed phrases from.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of the loaded preprocessed phrases.</returns>
     public async Task<IEnumerable<string>> LoadPreprocessedPhrasesAsync(string domainName, string outputFolder)
     {
         string filePath = Path.Combine(outputFolder, "Phrases", domainName, "preprocessed_phrases.txt");
         return File.Exists(filePath) ? await File.ReadAllLinesAsync(filePath) : Enumerable.Empty<string>();
     }
 
+    /// <summary>
+    /// Loads preprocessed documents asynchronously.
+    /// </summary>
+    /// <param name="documentType">The type of the document.</param>
+    /// <param name="outputFolder">The folder to load the preprocessed documents from.</param>
+    /// <returns>A task representing the asynchronous operation, with a result of the loaded preprocessed documents.</returns>
     public async Task<IEnumerable<string>> LoadPreprocessedDocumentsAsync(string documentType, string outputFolder)
     {
         string filePath = Path.Combine(outputFolder, "Documents", documentType, "preprocessed_documents.txt");
         return File.Exists(filePath) ? await File.ReadAllLinesAsync(filePath) : Enumerable.Empty<string>();
     }
 
-    // Text Data Methods
+    /// <summary>
+    /// Loads the content from the file specified by the FilePath property.
+    /// </summary>
     public void LoadContent()
     {
         if (!string.IsNullOrEmpty(FilePath) && File.Exists(FilePath))
@@ -241,6 +289,10 @@ public class TextPreprocessor : IPreprocessor
         }
     }
 
+    /// <summary>
+    /// Saves the processed content to the specified output folder.
+    /// </summary>
+    /// <param name="outputFolder">The folder to save the processed content.</param>
     public void SaveProcessedContent(string outputFolder)
     {
         if (!string.IsNullOrEmpty(Content) && !string.IsNullOrEmpty(Name))
@@ -250,7 +302,13 @@ public class TextPreprocessor : IPreprocessor
         }
     }
 
-    // Batch Processing Methods
+    /// <summary>
+    /// Processes and saves words asynchronously.
+    /// </summary>
+    /// <param name="domainName">The name of the domain.</param>
+    /// <param name="wordsFolder">The folder containing the words.</param>
+    /// <param name="outputFolder">The folder to save the processed words.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task ProcessAndSaveWordsAsync(string domainName, string wordsFolder, string outputFolder)
     {
         string domainPath = Path.Combine(wordsFolder, domainName);
@@ -270,6 +328,13 @@ public class TextPreprocessor : IPreprocessor
         await SaveWordsAsync(domainName, processedWords, outputFolder);
     }
 
+    /// <summary>
+    /// Processes and saves phrases asynchronously.
+    /// </summary>
+    /// <param name="domainName">The name of the domain.</param>
+    /// <param name="phrasesFolder">The folder containing the phrases.</param>
+    /// <param name="outputFolder">The folder to save the processed phrases.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task ProcessAndSavePhrasesAsync(string domainName, string phrasesFolder, string outputFolder)
     {
         string domainPath = Path.Combine(phrasesFolder, domainName);
@@ -289,6 +354,13 @@ public class TextPreprocessor : IPreprocessor
 
 
 
+    /// <summary>
+    /// Processes and saves documents asynchronously.
+    /// </summary>
+    /// <param name="documentType">The type of the document.</param>
+    /// <param name="documentsFolder">The folder containing the documents.</param>
+    /// <param name="outputFolder">The folder to save the processed documents.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task ProcessAndSaveDocumentsAsync(string documentType, string documentsFolder, string outputFolder)
     {
         string documentPath = Path.Combine(documentsFolder, documentType); // Select the document type folder

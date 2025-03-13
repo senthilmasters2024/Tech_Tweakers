@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using OpenAI.Embeddings;
 using SemanticaAnalysisTextualData.Source.Interfaces;
+using SemanticaAnalysisTextualData.Source.pojo;
+using SemanticaAnalysisTextualData.Util;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,7 +33,7 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
             }
 
             var results = await ProcessPhrasePairsAsync(dataset.PhrasePairs);
-            SaveResults(results);
+            CsvHelperUtil.SaveResultsPhrase(results);
         }
         catch (Exception ex)
         {
@@ -39,9 +41,15 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
-    private InputDataset LoadDataset()
+    private InputDataset? LoadDataset()
     {
-        string projectRoot = Directory.GetParent(AppContext.BaseDirectory).Parent.Parent.Parent.FullName;
+        string? projectRoot = GetProjectRoot();
+        if (projectRoot == null)
+        {
+            Console.WriteLine("Project root is null.");
+            return null;
+        }
+
         string datasetPath = Path.Combine(projectRoot, "data", "InputPhrases50DataSet.json");
 
         try
@@ -56,7 +64,21 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
-    private async Task<List<PhraseSimilarity>> ProcessPhrasePairsAsync(List<PhraseSimilarity> phrasePairs)
+    private string? GetProjectRoot()
+    {
+        DirectoryInfo? directory = Directory.GetParent(AppContext.BaseDirectory);
+        for (int i = 0; i < 3; i++)
+        {
+            if (directory == null)
+            {
+                return null;
+            }
+            directory = directory.Parent;
+        }
+        return directory?.FullName;
+    }
+
+    private async Task <List<PhraseSimilarity>>ProcessPhrasePairsAsync(List<PhraseSimilarity> phrasePairs)
     {
         var results = new List<PhraseSimilarity>();
 
@@ -178,12 +200,5 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         public List<PhraseSimilarity> PhrasePairs { get; set; } = new List<PhraseSimilarity>();
     }
 
-    class PhraseSimilarity
-    {
-        public string? Phrase1 { get; set; }
-        public string? Phrase2 { get; set; }
-        public string? Domain { get; set; }
-        public string? Context { get; set; }
-        public double SimilarityScore { get; set; }
-    }
+
 }
