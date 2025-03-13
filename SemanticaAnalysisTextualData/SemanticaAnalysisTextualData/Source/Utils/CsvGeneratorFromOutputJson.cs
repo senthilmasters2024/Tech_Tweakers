@@ -6,7 +6,6 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
-
 namespace CsvGenerator
 {
     /// <summary>
@@ -58,39 +57,7 @@ namespace CsvGenerator
         {
             throw new NotImplementedException();
         }
-    }
-
-    public class CsvGeneratorFromOutputJson
-    {
-        /*static void Main(string[] args)
-        {
-            string currentDir = Directory.GetCurrentDirectory();
-            // Define relative paths
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory; // Gets the directory where the executable is running
-            Console.WriteLine($"Base Directory: {baseDir}");
-            string relativeJsonPath = Path.Combine(baseDir, "output_dataset.json");
-            Console.WriteLine($"File Path: {relativeJsonPath}");
-            string relativeCsvPath = Path.Combine(baseDir, "phrase_pairs_dataset.csv");
-
-            try
-            {
-                // Read JSON and parse
-                List<PhrasePair> jsonData = ReadJsonFile(relativeJsonPath);
-
-                if (jsonData != null)
-                {
-                    // Generate CSV
-                    GenerateCsv(jsonData, relativeCsvPath);
-                }
-
-                Console.WriteLine($"CSV file generated successfully at: {Path.GetFullPath(relativeCsvPath)}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-        }
-*/
+    
         /// <summary>
         /// Reads the JSON file and parses it into a list of PhrasePair objects.
         /// </summary>
