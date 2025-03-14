@@ -1,0 +1,21 @@
+II) Methods
+
+Data quality significantly influences the performance of a machine-learning model. Inadequate or low-quality data can lead to lower accuracy and effectiveness of the model. In general, text data derived from natural language is unstructured and noisy. So text preprocessing is a critical step to transform messy, unstructured text data into a form that can be effectively used to train machine learning models, leading to better results and insights. Text preprocessing refers to a series of techniques used to clean, transform and prepare raw textual data into a format that is suitable for NLP or ML tasks. The goal of text preprocessing is to enhance the quality and usability of the text data for subsequent analysis or modeling.
+
+Text preprocessing typically involves the following steps:
+•	Lowercasing
+•	Removing Punctuation & Special Characters
+•	Stop-Words Removal
+•	Removal of URLs
+•	Removal of HTML Tags
+•	Stemming & Lemmatization
+•	Tokenization
+•	Text Normalization
+Lowercasing
+Lowercasing is a text preprocessing step where all letters in the text are converted to lowercase. This step is implemented so that the algorithm does not treat the same words differently in different situations.
+Stop-Words Removal
+Stopwords are words that don’t contribute to the meaning of a sentence. So they can be removed without causing any change in the meaning of the sentence. The NLTK library has a set of stopwords and we can use these to remove stopwords from our text and return a list of word tokens. Removing these can help focus on the important words.
+Removing Punctuation & Special Characters
+Punctuation removal is a text preprocessing step where you remove all punctuation marks (such as periods, commas, exclamation marks, emojis etc.) from the text to simplify it and focus on the words themselves.
+Removal of HTML Tags
+Removal of HTML Tags is a text preprocessing step used to clean text data from HTML documents. When working with text data obtained from web pages or other HTML-formatted sources, the text may contain HTML tags, which are not desirable for text analysis or machine learning models. Therefore, it’s important to remove HTML tags from the text data.
