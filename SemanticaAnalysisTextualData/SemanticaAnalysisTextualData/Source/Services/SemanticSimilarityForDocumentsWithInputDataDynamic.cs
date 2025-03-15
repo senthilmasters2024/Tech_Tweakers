@@ -13,8 +13,15 @@ using System.Linq;
 using System.Threading.Tasks;
 namespace SemanticAnalysisTextualData.Source
 {
-    class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
+    /// <summary>
+    /// Provides methods for comparing the semantic similarity of documents using dynamic input data.
+    /// </summary>
+    public class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
     {
+        /// <summary>
+        /// Invokes the document comparison process with the specified arguments.
+        /// </summary>
+        /// <param name="args">The arguments for the document comparison process.</param>
         public async Task InvokeDocumentComparsion(string[] args)
         {
             var serviceProvider = ConfigureServices();
@@ -35,14 +42,14 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
-        private ServiceProvider ConfigureServices()
+        public ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
             services.AddSingleton<SemanticSimilarityForDocumentsWithInputDataDynamic>(provider => new SemanticSimilarityForDocumentsWithInputDataDynamic());
             return services.BuildServiceProvider();
         }
 
-        private (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles()
+        public (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles()
         {
             // Get the project root directory
             string? projectRoot = Directory.GetParent(AppContext.BaseDirectory)?.Parent?.Parent?.Parent?.FullName;
@@ -63,7 +70,7 @@ namespace SemanticAnalysisTextualData.Source
             return (sourceFiles, targetFiles);
         }
 
-        private async Task<List<DocumentSimilarity>> CompareDocumentsAsync(string[] sourceFiles, string[] targetFiles)
+        public  async Task<List<DocumentSimilarity>> CompareDocumentsAsync(string[] sourceFiles, string[] targetFiles)
         {
             var results = new List<DocumentSimilarity>();
             foreach (var sourceFile in sourceFiles)
@@ -95,7 +102,7 @@ namespace SemanticAnalysisTextualData.Source
             return results;
         }
 
-        private DocumentSimilarity CreatePhraseSimilarity(string fileName1, string fileName2, double similarity)
+        public DocumentSimilarity CreatePhraseSimilarity(string fileName1, string fileName2, double similarity)
         {
             var phraseSimilarity = new DocumentSimilarity
             {
@@ -159,7 +166,7 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
-        private void PrintScalarValues(float[] embedding)
+        public void PrintScalarValues(float[] embedding)
         {
             // Print each scalar value in the embedding
             for (int i = 0; i < embedding.Length; i++)
