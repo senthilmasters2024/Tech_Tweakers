@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticaAnalysisTextualDat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticaAnalysisTextualDataTest", "SemanticaAnalysisTextualDataTest\SemanticaAnalysisTextualDataTest.csproj", "{00893703-729E-4E72-9F9B-F5571BC1B758}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPreprocessing", "TestPreprocessing\TestPreprocessing.csproj", "{8F087895-B699-4D25-B807-E75F734DED2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{00893703-729E-4E72-9F9B-F5571BC1B758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00893703-729E-4E72-9F9B-F5571BC1B758}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00893703-729E-4E72-9F9B-F5571BC1B758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F087895-B699-4D25-B807-E75F734DED2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F087895-B699-4D25-B807-E75F734DED2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F087895-B699-4D25-B807-E75F734DED2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F087895-B699-4D25-B807-E75F734DED2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
