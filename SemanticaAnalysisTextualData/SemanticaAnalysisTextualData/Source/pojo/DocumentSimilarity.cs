@@ -11,7 +11,6 @@ namespace SemanticaAnalysisTextualData.Source.pojo
     /// </summary>
     public class DocumentSimilarity
     {
-        internal string Domain;
 
         /// <summary>
         /// Gets or sets the name of the first file.

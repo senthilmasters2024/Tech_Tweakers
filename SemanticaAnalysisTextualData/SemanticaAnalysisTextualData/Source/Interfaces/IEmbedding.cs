@@ -9,7 +9,7 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
     /// <summary>
     /// Interface for embedding and calculating similarity between textual data.
     /// </summary>
-    internal interface IEmbedding
+    public interface IEmbedding
     {
         /// <summary>
         /// Calculates the Embedding between two texts asynchronously.

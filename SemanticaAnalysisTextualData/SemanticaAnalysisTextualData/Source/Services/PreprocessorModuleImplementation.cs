@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 class TextPreprocessor : IPreprocessor
 {
     // Properties from ITextData
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the content of the text data.
     /// </summary>
-    public string Content { get; private set; }
+    public string Content { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the file path of the text data.
     /// </summary>
-    public string FilePath { get; private set; }
+    public string FilePath { get; private set; } = string.Empty;
 
     //private readonly StanfordCoreNLP _pipeline;
 
@@ -157,7 +157,8 @@ class TextPreprocessor : IPreprocessor
 
         return text;
 
-    }
+    }
+
     /// <summary>
     /// Lemmatize a single word using the dictionary.
     /// </summary>
@@ -202,7 +203,8 @@ class TextPreprocessor : IPreprocessor
         Directory.CreateDirectory(domainPath);// Ensure the Words folder exists
         string filePath = Path.Combine(domainPath, "preprocessed_words.txt");
         await File.WriteAllLinesAsync(filePath, words);
-    }
+    }
+
 
     /// <summary>
     /// Saves the processed phrases asynchronously.
@@ -218,7 +220,8 @@ class TextPreprocessor : IPreprocessor
         Directory.CreateDirectory(outputPath); //  Corrected
         string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt"); // Corrected
         await File.WriteAllLinesAsync(filePath, phrases);
-    }
+    }
+
 
     /// <summary>
     /// Saves the processed documents asynchronously.
@@ -240,7 +243,8 @@ class TextPreprocessor : IPreprocessor
 
         await File.WriteAllLinesAsync(filePath, documents);
 
-    }
+    }
+
 
     /// <summary>
     /// Loads preprocessed words asynchronously.
