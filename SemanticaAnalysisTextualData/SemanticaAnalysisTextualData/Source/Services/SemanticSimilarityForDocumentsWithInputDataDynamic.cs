@@ -109,7 +109,7 @@ namespace SemanticAnalysisTextualData.Source
                     Console.WriteLine($"Similarity between {fileName1} and {fileName2}: {similarity:F4}");
 
                     // Create a DocumentSimilarity object and add it to the results list
-                    var phraseSimilarity = CreatePhraseSimilarity(fileName1, fileName2, similarity);
+                    var phraseSimilarity = CreateDocumentSimilarity(fileName1, fileName2, similarity);
                     Console.WriteLine($"File: {sourceFile}, Domain: {phraseSimilarity.domain}");
                     results.Add(phraseSimilarity);
                 }
@@ -124,7 +124,7 @@ namespace SemanticAnalysisTextualData.Source
         /// <param name="fileName2">The name of the second file.</param>
         /// <param name="similarity">The similarity score between the two files.</param>
         /// <returns>A DocumentSimilarity object.</returns>
-        public DocumentSimilarity CreatePhraseSimilarity(string fileName1, string fileName2, double similarity)
+        public DocumentSimilarity CreateDocumentSimilarity(string fileName1, string fileName2, double similarity)
         {
             var phraseSimilarity = new DocumentSimilarity
             {

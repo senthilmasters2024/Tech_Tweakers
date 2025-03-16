@@ -16,22 +16,15 @@ using System.Threading.Tasks;
 /// Class for computing semantic similarity between phrases using OpenAI embeddings.
 /// Implements the ISimilarityService interface.
 /// </summary>
-class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
+public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
 {
     private readonly EmbeddingClient _client;
 
-    /// <summary>
-    /// Constructor initializes the OpenAI Embedding Client.
-    /// </summary>
     public SemanticSimilarityPhrasesWithInputDataSet()
     {
         _client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
     }
 
-    /// <summary>
-    /// Main method to invoke processing of phrases for similarity analysis.
-    /// Loads dataset, processes phrase pairs, and saves results.
-    /// </summary>
     public async Task InvokeProcessPhrases(string[] args)
     {
         try
@@ -52,11 +45,7 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
-    /// <summary>
-    /// Loads the input dataset from a JSON file.
-    /// </summary>
-    /// <returns>Returns the dataset if successfully loaded; otherwise, null.</returns>
-    private InputDataset? LoadDataset()
+    public InputDataset? LoadDataset()
     {
         string? projectRoot = GetProjectRoot();
         if (projectRoot == null)
@@ -78,10 +67,6 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
-    /// <summary>
-    /// Retrieves the root directory of the project.
-    /// </summary>
-    /// <returns>Returns the project root directory path.</returns>
     private string? GetProjectRoot()
     {
         DirectoryInfo? directory = Directory.GetParent(AppContext.BaseDirectory);
@@ -96,11 +81,6 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return directory?.FullName;
     }
 
-    /// <summary>
-    /// Processes a list of phrase pairs asynchronously and calculates similarity scores.
-    /// </summary>
-    /// <param name="phrasePairs">List of phrase pairs for similarity calculation.</param>
-    /// <returns>Returns a list of phrase similarity results.</returns>
     private async Task<List<PhraseSimilarity>> ProcessPhrasePairsAsync(List<PhraseSimilarity> phrasePairs)
     {
         var results = new List<PhraseSimilarity>();
@@ -125,12 +105,6 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return results;
     }
 
-    /// <summary>
-    /// Calculates the semantic similarity between two phrases using OpenAI embeddings.
-    /// </summary>
-    /// <param name="phrase1">First phrase.</param>
-    /// <param name="phrase2">Second phrase.</param>
-    /// <returns>Returns the similarity score between the two phrases.</returns>
     private async Task<double> CalculatePhraseSimilarityAsync(string phrase1, string phrase2)
     {
         try
@@ -150,9 +124,6 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
-    /// <summary>
-    /// Creates a PhraseSimilarity object with the calculated similarity score.
-    /// </summary>
     private PhraseSimilarity CreatePhraseSimilarity(PhraseSimilarity pair, double similarity)
     {
         return new PhraseSimilarity
@@ -165,9 +136,6 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         };
     }
 
-    /// <summary>
-    /// Saves the similarity results to JSON and CSV files.
-    /// </summary>
     private void SaveResults(List<PhraseSimilarity> results)
     {
         string currentDir = Directory.GetCurrentDirectory();
@@ -187,12 +155,6 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         Console.WriteLine($"Phrase Similarity Results saved to {outputPathCsv}.");
     }
 
-    /// <summary>
-    /// Calculates the cosine similarity between two embedding vectors.
-    /// </summary>
-    /// <param name="embedding1">First embedding vector.</param>
-    /// <param name="embedding2">Second embedding vector.</param>
-    /// <returns>Returns a similarity score between 0 and 1.</returns>
     public double CalculateSimilarity(float[] embedding1, float[] embedding2)
     {
         try
@@ -231,19 +193,22 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
     }
 
     /// <summary>
-    /// Not implemented: Asynchronous similarity calculation for text.
+    /// Asynchronously calculates the similarity between two texts.
     /// </summary>
+    /// <param name="text1">The first text.</param>
+    /// <param name="text2">The second text.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
     public Task<double> CalculateSimilarityAsync(string text1, string text2)
     {
         throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Represents the dataset containing phrase pairs.
-    /// </summary>
-    class InputDataset
+    public class InputDataset
     {
+        /// <summary>
+        /// Gets or sets the list of phrase pairs.
+        /// </summary>
         [JsonProperty("phrase_pairs")]
-        public List<PhraseSimilarity> PhrasePairs { get; set; } = new List<PhraseSimilarity>();
+        public List<PhraseSimilarity> PhrasePairs { get; set; } = new();
     }
 }
