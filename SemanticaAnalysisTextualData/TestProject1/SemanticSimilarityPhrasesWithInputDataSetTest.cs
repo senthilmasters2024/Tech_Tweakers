@@ -30,9 +30,6 @@ namespace SemanticaAnalysisTextualDataTest
             // Act
             CsvHelperUtilTest obj = new CsvHelperUtilTest();
             obj.SaveResultsPhrase_ShouldSaveResultsToCsvAndJsonFiles();
-            // Assert
-            
-
         }
 
         [TestMethod]
@@ -44,7 +41,7 @@ namespace SemanticaAnalysisTextualDataTest
             string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
             string datasetPath = Path.Combine(tempDir, "data", "InputPhrases50DataSet.json");
-            Directory.CreateDirectory(Path.GetDirectoryName(datasetPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(datasetPath) ?? throw new ArgumentNullException(nameof(datasetPath), "The dataset path cannot be null."));
 
             // mockService.Setup(s => s.GetProjectRoot()).Returns(tempDir);
 

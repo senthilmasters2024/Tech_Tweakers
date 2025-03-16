@@ -30,7 +30,7 @@ namespace SemanticaAnalysisTextualDataTest
 
             string currentDir = Directory.GetCurrentDirectory();
             string outputPath = Path.Combine(currentDir, "data", "output_dataset.csv");
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? throw new ArgumentNullException(nameof(outputPath)));
 
             // Act
             CsvHelperUtil.SaveResultsToCsv(results);
@@ -71,8 +71,8 @@ namespace SemanticaAnalysisTextualDataTest
             string outputPath = Path.Combine(currentDir, "data", "output_dataset.csv");
             string outputPathJson = Path.Combine(currentDir, "data", "output_dataset.json");
             string outputPathCsv = Path.Combine(currentDir, "data", "output_datasetphrases.csv");
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPathJson));
-            Directory.CreateDirectory(Path.GetDirectoryName(outputPathCsv));
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPathJson) ?? throw new ArgumentNullException(nameof(outputPathJson)));
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPathCsv) ?? throw new ArgumentNullException(nameof(outputPathCsv)));
 
             // Act
             CsvHelperUtil.SaveResultsPhrase(results);
