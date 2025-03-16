@@ -105,7 +105,13 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return results;
     }
 
-    private async Task<double> CalculatePhraseSimilarityAsync(string phrase1, string phrase2)
+    /// <summary>
+    /// Asynchronously calculates the similarity between two phrases using OpenAI embeddings.
+    /// </summary>
+    /// <param name="phrase1">The first phrase.</param>
+    /// <param name="phrase2">The second phrase.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
+    public async Task<double> CalculatePhraseSimilarityAsync(string phrase1, string phrase2)
     {
         try
         {
@@ -136,25 +142,12 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         };
     }
 
-    private void SaveResults(List<PhraseSimilarity> results)
-    {
-        string currentDir = Directory.GetCurrentDirectory();
-        string outputPathJson = Path.Combine(currentDir, "data", "output_dataset.json");
-        string outputPathCsv = Path.Combine(currentDir, "data", "output_datasetphrases.csv");
-
-        var obj = new InputDataset { PhrasePairs = results };
-
-        File.WriteAllText(outputPathJson, JsonConvert.SerializeObject(obj, Formatting.Indented));
-        Console.WriteLine("Results saved to output_dataset.json.");
-
-        using (var writer = new StreamWriter(outputPathCsv))
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-        {
-            csv.WriteRecords(results);
-        }
-        Console.WriteLine($"Phrase Similarity Results saved to {outputPathCsv}.");
-    }
-
+    /// <summary>
+    /// Calculates the cosine similarity between two embedding vectors.
+    /// </summary>
+    /// <param name="embedding1">The first embedding vector.</param>
+    /// <param name="embedding2">The second embedding vector.</param>
+    /// <returns>The cosine similarity score between the two embedding vectors.</returns>
     public double CalculateSimilarity(float[] embedding1, float[] embedding2)
     {
         try

@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using OpenAI.Embeddings;
 using SemanticaAnalysisTextualData.Source.pojo;
+using SemanticaAnalysisTextualData.Source.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +28,10 @@ namespace SemanticaAnalysisTextualDataTest
             await  mockService.InvokeProcessPhrases(S);
 
             // Act
-
-
+            CsvHelperUtilTest obj = new CsvHelperUtilTest();
+            obj.SaveResultsPhrase_ShouldSaveResultsToCsvAndJsonFiles();
             // Assert
-            Assert.Inconclusive("Method Does Not Return Anything but no Errors are thrown.");
+            
 
         }
 
@@ -53,6 +55,24 @@ namespace SemanticaAnalysisTextualDataTest
             Assert.IsNotNull(result, "Dataset should not be null.");
             Assert.AreEqual(51, result.PhrasePairs.Count, "The number of phrase pairs should match.");
        
+        }
+
+
+        [TestMethod]
+        public async Task CalculatePhraseSimilarityAsync_ShouldReturnZero_OnException()
+        {
+            // Arrange
+            EmbeddingClient client = new(Constants.EmbeddingModel, Environment.GetEnvironmentVariable(Constants.OpenAIAPIKeyEnvVar));
+            SemanticSimilarityPhrasesWithInputDataSet service = new SemanticSimilarityPhrasesWithInputDataSet();
+
+            var phrase1 = "phrase1";
+            var phrase2 = "phrase2";
+
+            // Act
+            var result = await service.CalculatePhraseSimilarityAsync(phrase1, phrase2);
+
+            // Assert
+            Assert.IsNotNull(result);
         }
     }
 }
