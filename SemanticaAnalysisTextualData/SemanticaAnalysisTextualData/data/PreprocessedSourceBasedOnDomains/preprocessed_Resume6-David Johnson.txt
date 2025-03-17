@@ -1,0 +1,14 @@
+name david johnson
+address 333 cloud rd austin tx
+email davidjohnsonemailcom
+phone 555 213-6547
+
+objective
+experienced systems architect seeking challenging position design scalable efficient systems using cutting-edge technologies
+
+experience
+- senior systems architect cloudtech solutions 2018present designed implemented cloud-based architectures using aws docker kubernetes
+- systems engineer techlabs 20152018 worked optimizing scaling systems enterprise-level clients
+
+education
+- ms computer engineering university texas

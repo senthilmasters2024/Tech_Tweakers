@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticaAnalysisTextualDat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticaAnalysisTextualDataTest", "TestProject1\SemanticaAnalysisTextualDataTest.csproj", "{69EF4A2C-0B55-4794-85AE-117B70314170}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPreprocessing", "TestPreprocessing\TestPreprocessing.csproj", "{8F087895-B699-4D25-B807-E75F734DED2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,12 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Office.Interop.Word;
 using SemanticaAnalysisTextualData.Source.Interfaces;
-using Microsoft.Extensions.Configuration.Json;
+
 
 namespace SemanticAnalysisTextualData.Source
 {
-    
-
     class Program
     {
         public static async System.Threading.Tasks.Task Main(string[] args)
@@ -145,7 +141,6 @@ namespace SemanticAnalysisTextualData.Source
             var textFiles = Directory.GetFiles(sourceFolder, "*.txt");
 
             if (textFiles.Length == 0)
-           
             {
                 Console.WriteLine($" No text files found in '{sourceFolder}'. Skipping.");
                 return;
@@ -174,17 +169,6 @@ namespace SemanticAnalysisTextualData.Source
                 Console.WriteLine($" Preprocessed and saved: {outputFilePath}");
             }
         }
-
-        //  Helper method to ensure a directory exists
-        static void EnsureDirectoryExists(string path)
-        {
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-        }
     }
 
-  
 }
-     
-     
-

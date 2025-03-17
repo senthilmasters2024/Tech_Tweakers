@@ -13,12 +13,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Source\Program.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="Google.Cloud.Language.V1" Version="3.7.0" />
 	  <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="App.Metrics.Health.Extensions.Configuration" Version="3.2.0" />
     <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.2" />
     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenAI" Version="2.1.0" />
@@ -27,6 +33,7 @@
     <PackageReference Include="Porter2Stemmer" Version="1.0.0" />
 	  <PackageReference Include="Plotly.NET" Version="5.1.0" />
 	  <PackageReference Include="ScottPlot" Version="5.0.53" />
+	  <PackageReference Include="Stanford.NLP.CoreNLP" Version="4.5.0" />
     <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
     <PackageReference Include="TiktokenSharp" Version="1.1.6" />
 	  <PackageReference Include="VaultSharp" Version="1.17.5.1" />
@@ -39,6 +46,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="data\InputPhrases50DataSet.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
