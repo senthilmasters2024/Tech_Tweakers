@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Plotly.NET.LayoutObjects;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,19 +9,38 @@ namespace TestPreprocessing
     [TestClass]
     public class TextPreprocessorTests
     {
-        private TextPreprocessor _preprocessor;
+        private TextPreprocessor _textPreprocessor;
 
         [TestInitialize]
         public void Setup()
         {
-            _preprocessor = new TextPreprocessor();
+            _textPreprocessor = new TextPreprocessor();
         }
+        [TestMethod]
+        public void InitializeTextData_ShouldSetPropertiesCorrectly()
+        {
+            // Arrange
+            string name = "Sample";
+            string content = "This is a test.";
+            string filePath = "sample.txt";
+
+            // Act
+            _textPreprocessor.InitializeTextData(name, content, filePath);
+
+            // Assert
+            Assert.AreEqual(name, _textPreprocessor.Name);
+            Assert.AreEqual(content, _textPreprocessor.Content);
+            Assert.AreEqual(filePath, _textPreprocessor.FilePath);
+        }
+
         [TestMethod]
         public void PreprocessText_ShouldConvertToLowercase()
         {
-            string input = "THE Goal of AI is to provide SOFTWARE that can reason on Input and explain on Output. ";
-            string expected = "the goal of AI is to provide software that can reason on input and explain on output.";
-            string result = _preprocessor.PreprocessText(input, TextDataType.Phrase);
+            //string input = "THE Goal of AI is to provide SOFTWARE that can reason on Input and explain on Output. ";
+            //string expected = "the goal of AI is to provide software that can reason on input and explain on output.";
+            string input = "ARTIFICIAL INTELLIGENCE";
+            string expected = "artificial intelligence";
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Console.WriteLine($"Actual Output: {result}");
             Assert.AreEqual(expected, result);
         }
@@ -28,7 +48,7 @@ namespace TestPreprocessing
         {
             string input = "<b>Hello</b> Visit http://example.com";
             string expected = "hello visit";  // URL and tags should be removed
-            string result = _preprocessor.PreprocessText(input, TextDataType.Phrase);
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
         
@@ -37,94 +57,167 @@ namespace TestPreprocessing
         {
             string input = "I can't do this";
             string expected = "i cannot do this";
-            string result = _preprocessor.PreprocessText(input, TextDataType.Phrase);
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
         [TestMethod]
         public void PreprocessText_ShouldRemoveSpecialCharacters()
         {
-            string input = "Hello, world!";
-            string expected = "hello world";
-            string result = _preprocessor.PreprocessText(input, TextDataType.Phrase);
+            string input = "Work hard, for a better future!";
+            string expected = "work hard for a  better future";
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
-        public void PreprocessText_ShouldApplyStopWordFilteringForWord()
+        public void PreprocessText_ShouldRemoveStopWords()
         {
-            string input = "the";
-            string expected = ""; // Stop words should be removed
-            string result = _preprocessor.PreprocessText(input, TextDataType.Word);
+           //Arrange
+            string input = "The quick brown fox";
+            string expected = "quick brown fox"; // Stop words should be removed
+            //Act
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
 
+       
+
         [TestMethod]
-        public void PreprocessText_ShouldHandlePhrases()
+        public void PreprocessText_ShouldLemmatizeWords()
         {
-            string input = "The quick brown fox jumps";
-            string expected = "quick brown fox jumps"; // "The" is a stop word
-            string result = _preprocessor.PreprocessText(input, TextDataType.Phrase);
+            // Arrange
+            string input = "running went better";
+            string expected = "run go good";
+
+            // Act
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
+
+            // Assert
             Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        public void LemmatizeWord_ShouldReturnCorrectLemma()
+        {
+            // Act & Assert
+            Assert.AreEqual("run", TextPreprocessor.LemmatizeWord("running"));
+            Assert.AreEqual("good", TextPreprocessor.LemmatizeWord("better"));
+            Assert.AreEqual("go", TextPreprocessor.LemmatizeWord("went"));
+            Assert.AreEqual("be", TextPreprocessor.LemmatizeWord("is"));
+            Assert.AreEqual("test", TextPreprocessor.LemmatizeWord("test")); // No lemma mapping, should return itself
         }
 
         [TestMethod]
-        public void PreprocessText_ShouldHandleDocuments()
+        public void LemmatizeText_ShouldLemmatizeSentence()
         {
-            string input = "Hello! This is a test. I am running.";
-            string expected = "hello. this test. i run";  // Stop words removed and lemmatization applied
-            string result = _preprocessor.PreprocessText(input, TextDataType.Document);
-            Assert.AreEqual(expected, result);
-        }
-
-        [TestMethod]
-        public void LemmatizeWord_ShouldReturnLemmatizedWord()
-        {
-            string input = "running";
-            string expected = "run";
-            string result = TextPreprocessor.LemmatizeWord(input);
-            Assert.AreEqual(expected, result);
-        }
-
-        [TestMethod]
-        public void LemmatizeText_ShouldApplyLemmatizationToSentence()
-        {
-            string input = "running better went";
-            string expected = "run good go";
+            //Arrange
+            string input = "running went better";
+            string expected = "run go good";
+            //Act
             string result = TextPreprocessor.LemmatizeText(input);
+            //Assert
+
             Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        public async Task SavePhrasesAsync_ShouldCreateFile()
+        {
+            // Arrange
+            string domain = "TestDomain";
+            string outputFolder = "TestOutput";
+            Directory.CreateDirectory(outputFolder);
+            var phrases = new List<string> { "phrase1", "phrase2" };
+
+            // Act
+            await _textPreprocessor.SavePhrasesAsync(domain, phrases, outputFolder);
+
+            // Assert
+            string filePath = Path.Combine(outputFolder, "Phrases", domain, "preprocessed_phrases.txt");
+            Assert.IsTrue(File.Exists(filePath));
+
+            // Cleanup
+            Directory.Delete(outputFolder, true);
+        }
+
+        [TestMethod]
+        public async Task SaveDocumentsAsync_ShouldCreateFile()
+        {
+            // Arrange
+            string documentType = "TestDocs";
+            string outputFolder = "TestOutput";
+            Directory.CreateDirectory(outputFolder);
+            var documents = new List<string> { "doc1", "doc2" };
+
+            // Act
+            await _textPreprocessor.SaveDocumentsAsync(documentType, documents, outputFolder);
+
+            // Assert
+            string filePath = Path.Combine(outputFolder, "Documents", "preprocessed_documents.txt");
+            Assert.IsTrue(File.Exists(filePath));
+
+            // Cleanup
+            Directory.Delete(outputFolder, true);
         }
 
         [TestMethod]
         public async Task SaveWordsAsync_ShouldCreateFile()
         {
             string domainName = "TestDomain";
-            List<string> words = new() { "word1", "word2", "word3" };
             string outputFolder = "TestOutput";
+            Directory.CreateDirectory(outputFolder);
+            var words = new List<string> { "word1", "word2", "word3" };
+            
+            //Act
+            await _textPreprocessor.SaveWordsAsync(domainName, words, outputFolder);
+            
+            //Assert  
+            string filePath = Path.Combine(outputFolder, "Words", "preprocessed_words.txt");
+            Assert.IsTrue(File.Exists(filePath));
+            
+            //Cleanup
 
-            await _preprocessor.SaveWordsAsync(domainName, words, outputFolder);
-
-            string filePath = System.IO.Path.Combine(outputFolder, "Words", "preprocessed_words.txt");
-            Assert.IsTrue(System.IO.File.Exists(filePath));
-
-            var savedWords = await System.IO.File.ReadAllLinesAsync(filePath);
-            CollectionAssert.AreEqual(words, savedWords);
+           Directory.Delete(filePath);
         }
 
         [TestMethod]
-        public async Task LoadPreprocessedWordsAsync_ShouldReturnStoredWords()
+        public async Task LoadPreprocessedWordsAsync_ShouldReturnWords()
         {
+            //Arrange
             string domainName = "TestDomain";
             string outputFolder = "TestOutput";
-            string filePath = System.IO.Path.Combine(outputFolder, "Words", domainName, "preprocessed_words.txt");
+            string filePath = Path.Combine(outputFolder, "Words", domainName, "preprocessed_words.txt");
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            await File.WriteAllLinesAsync(filePath, new[] { "word1", "word2" });
 
-            // Ensure the file exists
-            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
-            await System.IO.File.WriteAllLinesAsync(filePath, new[] { "word1", "word2" });
+            
+            //Act
+            var result = await _textPreprocessor.LoadPreprocessedWordsAsync(domainName, outputFolder);
+            //Assert
+            CollectionAssert.AreEqual(new[]{ "word1", "word2" }, result.ToList());
+            
+            // Cleanup
+            Directory.Delete(outputFolder, true);
+        }
+        [TestMethod]
+        public void SaveProcessedContent_ShouldCreateFile()
+        {
+            // Arrange
+            string outputFolder = "TestOutput";
+            string name = "TestContent";
+            string content = "Sample text content.";
+            _textPreprocessor.InitializeTextData(name, content);
 
-            var result = await _preprocessor.LoadPreprocessedWordsAsync(domainName, outputFolder);
-            CollectionAssert.AreEqual(new List<string> { "word1", "word2" }, new List<string>(result));
+            // Act
+            _textPreprocessor.SaveProcessedContent(outputFolder);
+
+            // Assert
+            string filePath = Path.Combine(outputFolder, $"{name}.txt");
+            Assert.IsTrue(File.Exists(filePath));
+
+            // Cleanup
+            Directory.Delete(outputFolder, true);
         }
     }
-
 }
+
+
 

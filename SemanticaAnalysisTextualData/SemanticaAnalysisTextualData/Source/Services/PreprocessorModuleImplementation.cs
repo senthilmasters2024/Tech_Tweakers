@@ -157,7 +157,8 @@ public class TextPreprocessor : IPreprocessor
 
         return text;
 
-    }
+    }
+
     /// <summary>
     /// Lemmatize a single word using the dictionary.
     /// </summary>
@@ -202,7 +203,8 @@ public class TextPreprocessor : IPreprocessor
         Directory.CreateDirectory(domainPath);// Ensure the Words folder exists
         string filePath = Path.Combine(domainPath, "preprocessed_words.txt");
         await File.WriteAllLinesAsync(filePath, words);
-    }
+    }
+
 
     /// <summary>
     /// Saves the processed phrases asynchronously.
@@ -218,7 +220,8 @@ public class TextPreprocessor : IPreprocessor
         Directory.CreateDirectory(outputPath); //  Corrected
         string filePath = Path.Combine(outputPath, "preprocessed_phrases.txt"); // Corrected
         await File.WriteAllLinesAsync(filePath, phrases);
-    }
+    }
+
 
     /// <summary>
     /// Saves the processed documents asynchronously.
@@ -240,7 +243,8 @@ public class TextPreprocessor : IPreprocessor
 
         await File.WriteAllLinesAsync(filePath, documents);
 
-    }
+    }
+
 
     /// <summary>
     /// Loads preprocessed words asynchronously.
