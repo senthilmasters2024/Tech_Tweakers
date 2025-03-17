@@ -6,18 +6,19 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
-public class TextPreprocessor : IPreprocessor
+
+class TextPreprocessor : IPreprocessor
 {
     // Properties from ITextData
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the content of the text data.
     /// </summary>
-    public string Content { get; private set; }
+    public string Content { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the file path of the text data.
     /// </summary>
-    public string FilePath { get; private set; }
+    public string FilePath { get; private set; } = string.Empty;
 
     //private readonly StanfordCoreNLP _pipeline;
 

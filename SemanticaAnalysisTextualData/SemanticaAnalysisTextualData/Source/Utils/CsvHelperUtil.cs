@@ -55,11 +55,16 @@ namespace SemanticaAnalysisTextualData.Util
             Console.WriteLine($"Phrase Similarity Results saved to {outputPathCsv}.");
         }
 
-        class InputDataset
+        /// <summary>
+        /// Represents a dataset containing phrase pairs.
+        /// </summary>
+        public class InputDataset
         {
+            /// <summary>
+            /// Gets or sets the list of phrase pairs.
+            /// </summary>
             [JsonProperty("phrase_pairs")]
             public List<PhraseSimilarity> PhrasePairs { get; set; } = new List<PhraseSimilarity>();
         }
-
     }
 }

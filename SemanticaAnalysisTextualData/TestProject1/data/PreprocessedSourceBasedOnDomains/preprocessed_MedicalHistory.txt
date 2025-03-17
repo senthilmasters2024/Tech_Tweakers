@@ -1,0 +1,24 @@
+patient name john doe
+age 58
+gender male
+medical history
+
+hypertension diagnosed 10 years ago currently losartan
+high cholesterol ldl levels elevated managed atorvastatin
+coronary artery disease cad diagnosed 5 years ago mild heart attack
+diabetes type 2 well-controlled metformin dietary management
+osteoarthritis experiencing mild joint pain especially knees
+gastric issues occasional acid reflux history ulcers major gi bleeding
+current medications
+
+losartan 50 mg blood pressure control
+atorvastatin 20 mg cholesterol management
+metformin 1000 mgday diabetes control
+omeprazole 20 mg acid reflux
+occasional ibuprofen joint pain
+physician notes recommendations
+
+due patients history coronary artery disease aspirin 81 mg daily recommended preventive measure reduce risk heart attack stroke
+patient monitor signs gastric irritation due aspirin use continue taking omeprazole needed
+ibuprofen used cautiously long-term nsaid use may pose cardiovascular risks
+regular blood pressure blood sugar monitoring advised

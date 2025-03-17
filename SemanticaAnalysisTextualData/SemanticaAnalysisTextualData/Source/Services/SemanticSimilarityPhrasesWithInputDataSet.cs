@@ -12,15 +12,26 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
+/// <summary>
+/// Class for computing semantic similarity between phrases using OpenAI embeddings.
+/// Implements the ISimilarityService interface.
+/// </summary>
+public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
 {
     private readonly EmbeddingClient _client;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SemanticSimilarityPhrasesWithInputDataSet"/> class.
+    /// </summary>
     public SemanticSimilarityPhrasesWithInputDataSet()
     {
         _client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
     }
 
+    /// <summary>
+    /// Invokes the process to compute semantic similarity between phrases.
+    /// </summary>
+    /// <param name="args">The arguments for the process.</param>
     public async Task InvokeProcessPhrases(string[] args)
     {
         try
@@ -37,11 +48,15 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in invokeProcessPhrases: {ex.Message}");
+            Console.WriteLine($"Error in InvokeProcessPhrases: {ex.Message}");
         }
     }
 
-    private InputDataset? LoadDataset()
+    /// <summary>
+    /// Loads the dataset from a JSON file.
+    /// </summary>
+    /// <returns>The loaded dataset or null if an error occurs.</returns>
+    public InputDataset? LoadDataset()
     {
         string? projectRoot = GetProjectRoot();
         if (projectRoot == null)
@@ -54,8 +69,7 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
 
         try
         {
-            var dataset = JsonConvert.DeserializeObject<InputDataset>(File.ReadAllText(datasetPath));
-            return dataset;
+            return JsonConvert.DeserializeObject<InputDataset>(File.ReadAllText(datasetPath));
         }
         catch (Exception ex)
         {
@@ -78,7 +92,7 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return directory?.FullName;
     }
 
-    private async Task <List<PhraseSimilarity>>ProcessPhrasePairsAsync(List<PhraseSimilarity> phrasePairs)
+    private async Task<List<PhraseSimilarity>> ProcessPhrasePairsAsync(List<PhraseSimilarity> phrasePairs)
     {
         var results = new List<PhraseSimilarity>();
 
@@ -86,7 +100,7 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         {
             try
             {
-                if (pair.Phrase1 != null && pair.Phrase2 != null)
+                if (!string.IsNullOrEmpty(pair.Phrase1) && !string.IsNullOrEmpty(pair.Phrase2))
                 {
                     var similarity = await CalculatePhraseSimilarityAsync(pair.Phrase1, pair.Phrase2);
                     var phraseSimilarity = CreatePhraseSimilarity(pair, similarity);
@@ -102,7 +116,13 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return results;
     }
 
-    private async Task<double> CalculatePhraseSimilarityAsync(string phrase1, string phrase2)
+    /// <summary>
+    /// Asynchronously calculates the similarity between two phrases using OpenAI embeddings.
+    /// </summary>
+    /// <param name="phrase1">The first phrase.</param>
+    /// <param name="phrase2">The second phrase.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
+    public async Task<double> CalculatePhraseSimilarityAsync(string phrase1, string phrase2)
     {
         try
         {
@@ -133,25 +153,12 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         };
     }
 
-    private void SaveResults(List<PhraseSimilarity> results)
-    {
-        string currentDir = Directory.GetCurrentDirectory();
-        string outputPathJson = Path.Combine(currentDir, "data", "output_dataset.json");
-        string outputPathCsv = Path.Combine(currentDir, "data", "output_datasetphrases.csv");
-
-        var obj = new InputDataset { PhrasePairs = results };
-
-        File.WriteAllText(outputPathJson, JsonConvert.SerializeObject(obj, Formatting.Indented));
-        Console.WriteLine("Results saved to output_dataset.json.");
-
-        using (var writer = new StreamWriter(outputPathCsv))
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-        {
-            csv.WriteRecords(results);
-        }
-        Console.WriteLine($"Phrase Similarity Results saved to {outputPathCsv}.");
-    }
-
+    /// <summary>
+    /// Calculates the cosine similarity between two embedding vectors.
+    /// </summary>
+    /// <param name="embedding1">The first embedding vector.</param>
+    /// <param name="embedding2">The second embedding vector.</param>
+    /// <returns>The cosine similarity score between the two embedding vectors.</returns>
     public double CalculateSimilarity(float[] embedding1, float[] embedding2)
     {
         try
@@ -189,16 +196,26 @@ class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
+    /// <summary>
+    /// Asynchronously calculates the similarity between two texts.
+    /// </summary>
+    /// <param name="text1">The first text.</param>
+    /// <param name="text2">The second text.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
     public Task<double> CalculateSimilarityAsync(string text1, string text2)
     {
         throw new NotImplementedException();
     }
 
-    class InputDataset
+    /// <summary>
+    /// Represents the input dataset containing a list of phrase pairs.
+    /// </summary>
+    public class InputDataset
     {
+        /// <summary>
+        /// Gets or sets the list of phrase pairs.
+        /// </summary>
         [JsonProperty("phrase_pairs")]
-        public List<PhraseSimilarity> PhrasePairs { get; set; } = new List<PhraseSimilarity>();
+        public List<PhraseSimilarity> PhrasePairs { get; set; } = new();
     }
-
-
 }

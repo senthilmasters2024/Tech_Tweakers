@@ -11,10 +11,18 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 namespace SemanticAnalysisTextualData.Source
 {
-    class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
+    /// <summary>
+    /// Provides methods for comparing the semantic similarity of documents using dynamic input data.
+    /// </summary>
+    public class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
     {
+        /// <summary>
+        /// Invokes the document comparison process with the specified arguments.
+        /// </summary>
+        /// <param name="args">The arguments for the document comparison process.</param>
         public async Task InvokeDocumentComparsion(string[] args)
         {
             var serviceProvider = ConfigureServices();
@@ -35,14 +43,22 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
-        private ServiceProvider ConfigureServices()
+        /// <summary>
+        /// Configures the services required for the document comparison process.
+        /// </summary>
+        /// <returns>A ServiceProvider instance with the configured services.</returns>
+        public static ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
             services.AddSingleton<SemanticSimilarityForDocumentsWithInputDataDynamic>(provider => new SemanticSimilarityForDocumentsWithInputDataDynamic());
             return services.BuildServiceProvider();
         }
 
-        private (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles()
+        /// <summary>
+        /// Gets the source and target files for the document comparison process.
+        /// </summary>
+        /// <returns>A tuple containing arrays of source and target file paths.</returns>
+        public (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles()
         {
             // Get the project root directory
             string? projectRoot = Directory.GetParent(AppContext.BaseDirectory)?.Parent?.Parent?.Parent?.FullName;
@@ -63,7 +79,13 @@ namespace SemanticAnalysisTextualData.Source
             return (sourceFiles, targetFiles);
         }
 
-        private async Task<List<DocumentSimilarity>> CompareDocumentsAsync(string[] sourceFiles, string[] targetFiles)
+        /// <summary>
+        /// Compares the documents asynchronously and returns a list of document similarities.
+        /// </summary>
+        /// <param name="sourceFiles">The source files to compare.</param>
+        /// <param name="targetFiles">The target files to compare.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a list of document similarities.</returns>
+        public async Task<List<DocumentSimilarity>> CompareDocumentsAsync(string[] sourceFiles, string[] targetFiles)
         {
             var results = new List<DocumentSimilarity>();
             foreach (var sourceFile in sourceFiles)
@@ -87,7 +109,7 @@ namespace SemanticAnalysisTextualData.Source
                     Console.WriteLine($"Similarity between {fileName1} and {fileName2}: {similarity:F4}");
 
                     // Create a DocumentSimilarity object and add it to the results list
-                    var phraseSimilarity = CreatePhraseSimilarity(fileName1, fileName2, similarity);
+                    var phraseSimilarity = CreateDocumentSimilarity(fileName1, fileName2, similarity);
                     Console.WriteLine($"File: {sourceFile}, Domain: {phraseSimilarity.domain}");
                     results.Add(phraseSimilarity);
                 }
@@ -95,7 +117,14 @@ namespace SemanticAnalysisTextualData.Source
             return results;
         }
 
-        private DocumentSimilarity CreatePhraseSimilarity(string fileName1, string fileName2, double similarity)
+        /// <summary>
+        /// Creates a DocumentSimilarity object based on the file names and similarity score.
+        /// </summary>
+        /// <param name="fileName1">The name of the first file.</param>
+        /// <param name="fileName2">The name of the second file.</param>
+        /// <param name="similarity">The similarity score between the two files.</param>
+        /// <returns>A DocumentSimilarity object.</returns>
+        public DocumentSimilarity CreateDocumentSimilarity(string fileName1, string fileName2, double similarity)
         {
             var phraseSimilarity = new DocumentSimilarity
             {
@@ -121,6 +150,14 @@ namespace SemanticAnalysisTextualData.Source
             return phraseSimilarity;
         }
 
+        /// <summary>
+        /// Calculates the embedding similarity between two texts asynchronously.
+        /// </summary>
+        /// <param name="text1">The first text to compare.</param>
+        /// <param name="text2">The second text to compare.</param>
+        /// <param name="fileName1">The name of the first file.</param>
+        /// <param name="fileName2">The name of the second file.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
         public async Task<double> CalculateEmbeddingAsync(string text1, string text2, string fileName1, string fileName2)
         {
             try
@@ -150,6 +187,7 @@ namespace SemanticAnalysisTextualData.Source
                 // Calculate the similarity between the embeddings
                 var similarity = CalculateSimilarity(embedding1, embedding2);
                 Console.WriteLine($"Embedding1 length: {embedding1.Length}, Embedding2 length: {embedding2.Length}");
+
                 return similarity;
             }
             catch (Exception ex)
@@ -159,7 +197,11 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
-        private void PrintScalarValues(float[] embedding)
+        /// <summary>
+        /// Prints each scalar value in the embedding.
+        /// </summary>
+        /// <param name="embedding">The embedding array containing scalar values.</param>
+        public static void PrintScalarValues(float[] embedding)
         {
             // Print each scalar value in the embedding
             for (int i = 0; i < embedding.Length; i++)
@@ -168,6 +210,12 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
+        /// <summary>
+        /// Calculates the similarity between two embeddings.
+        /// </summary>
+        /// <param name="embedding1">The first embedding vector.</param>
+        /// <param name="embedding2">The second embedding vector.</param>
+        /// <returns>The similarity score between the two embeddings.</returns>
         public double CalculateSimilarity(float[] embedding1, float[] embedding2)
         {
             try
@@ -212,6 +260,12 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
+        /// <summary>
+        /// Calculates the similarity between two texts asynchronously.
+        /// </summary>
+        /// <param name="text1">The first text to compare.</param>
+        /// <param name="text2">The second text to compare.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
         public Task<double> CalculateSimilarityAsync(string text1, string text2)
         {
             throw new NotImplementedException();
