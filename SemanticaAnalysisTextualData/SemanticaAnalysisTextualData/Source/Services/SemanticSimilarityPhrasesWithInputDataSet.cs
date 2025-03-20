@@ -20,11 +20,18 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
 {
     private readonly EmbeddingClient _client;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SemanticSimilarityPhrasesWithInputDataSet"/> class.
+    /// </summary>
     public SemanticSimilarityPhrasesWithInputDataSet()
     {
         _client = new EmbeddingClient("text-embedding-3-large", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
     }
 
+    /// <summary>
+    /// Invokes the process to compute semantic similarity between phrases.
+    /// </summary>
+    /// <param name="args">The arguments for the process.</param>
     public async Task InvokeProcessPhrases(string[] args)
     {
         try
@@ -45,6 +52,10 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
+    /// <summary>
+    /// Loads the dataset from a JSON file.
+    /// </summary>
+    /// <returns>The loaded dataset or null if an error occurs.</returns>
     public InputDataset? LoadDataset()
     {
         string? projectRoot = GetProjectRoot();
@@ -196,6 +207,9 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Represents the input dataset containing a list of phrase pairs.
+    /// </summary>
     public class InputDataset
     {
         /// <summary>
