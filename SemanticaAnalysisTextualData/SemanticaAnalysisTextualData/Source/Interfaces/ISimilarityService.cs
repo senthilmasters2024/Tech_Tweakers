@@ -5,13 +5,13 @@ namespace SemanticaAnalysisTextualData.Source.Interfaces
     /// </summary>
     public interface ISimilarityService
     {
-        /// <summary>
-        /// Calculates the similarity between two texts asynchronously.
-        /// </summary>
-        /// <param name="text1">The first text.</param>
-        /// <param name="text2">The second text.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
-        Task<double> CalculateSimilarityAsync(string text1, string text2);
+        ///// <summary>
+        ///// Calculates the similarity between two texts asynchronously.
+        ///// </summary>
+        ///// <param name="text1">The first text.</param>
+        ///// <param name="text2">The second text.</param>
+        ///// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
+        //Task<double> CalculateSimilarityAsync(string text1, string text2);
 
         /// <summary>
         /// Calculates the similarity between two embeddings.
