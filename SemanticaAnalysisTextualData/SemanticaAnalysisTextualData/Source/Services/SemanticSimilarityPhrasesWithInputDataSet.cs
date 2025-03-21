@@ -31,8 +31,7 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
     /// <summary>
     /// Invokes the process to compute semantic similarity between phrases.
     /// </summary>
-    /// <param name="args">The arguments for the process.</param>
-    public async Task InvokeProcessPhrases(string[] args)
+    public async Task InvokeProcessPhrases()
     {
         try
         {

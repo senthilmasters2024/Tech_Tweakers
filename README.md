@@ -46,30 +46,34 @@ This project provides utilities for analyzing textual data, including calculatin
 
 3. Restore the dependencies: dotnet restore
 
+### It can also used after downloading the zip file which we published without using visual studio code for this please contact the developers
+@senthilmasters2024@gmail.com and @neetu.ninnan21@gmail.com
 
 ## Usage
 ### Setup the Environment Variable
 OPENAI_API_KEY="Give the Key"
-### Run the Progam.CS
 
+### Run the Progam.CS as it is the entry point for the application and after running inorder to analysis developers are given with options to run the program
+
+The purpose of processing and pre processing section is understand if its generating different scores leading to understand the contextual difference 
+which we will help to and  clearly observe during the resutls analysis.
 It has main entry point for the application to invoke the preprocessor,phrase and words or documents comparsion
 
-2. Choose an option for preprocessing:
 Choose an option:
-1. Skip Preprocessing
-2. Apply Preprocessing
+1. SemanticAnalysis without Preprocessing
+2. SemanticAnalysis with Preprocessing
 
-3. If you choose to apply preprocessing, choose what to preprocess:
-Choose what to preprocess:
-1. Phrases
-2. Documents
-
-
-4. After preprocessing (or skipping preprocessing), choose an option for further processing:
+3. If you choose to 1,
+Skipping preprocessing.
 Choose an option:
 1. Process Documents
 2. Compare Phrases
-    
+
+4. If you choose to 2, After preprocessing, choose an option for further processing:
+Choose an option:
+1. Process Documents
+2. Compare Phrases
+   ,
 ### Preprocessing Documents
 
 When you choose to preprocess documents, the application will:
@@ -103,7 +107,7 @@ public async Task InvokeDocumentComparsion(string[] args)
     {
         try
         {
-            var (sourceFiles, targetFiles) = GetSourceAndTargetFiles();
+            var (sourceFiles, targetFiles) = GetSourceAndTargetFiles(bool isPreProcessRequiredFlag);
             var results = await CompareDocumentsAsync(sourceFiles, targetFiles);
             CsvHelperUtil.SaveResultsToCsv(results);
         }
@@ -125,7 +129,14 @@ To save the results of phrase similarity calculations to CSV and JSON files, use
 var results = new List { new PhraseSimilarity { Phrase1 = "phrase1", Phrase2 = "phrase2", Domain = "domain1", Context = "context1", SimilarityScore = 0.9 }, new PhraseSimilarity { Phrase1 = "phrase3", Phrase2 = "phrase4", Domain = "domain2", Context = "context2", SimilarityScore = 0.8 } };
 CsvHelperUtil.SaveResultsPhrase(results);
 
+Similarity Score outputs for phrases are stroed at : \bin\Release\net9.0\data\output_datasetphrases.csv
+
 ###TESTING
+Testing is done for all the methods , mainly for example sample method is given below.
+
+Further test methods can be explored from visual studio by developers by opening the Test Project named as 
+SemanticaAnalysisTextualDataTest where you can run and observe all the test results from the test explorer.
+
 [TestMethod] public void SaveResultsPhrase_ShouldSaveResultsToCsvAndJsonFiles() { 
 // Arrange var results = new List { new PhraseSimilarity 
 { Phrase1 = "phrase1", Phrase2 = "phrase2", Domain = "domain1", Context = "context1", SimilarityScore = 0.9 
@@ -165,6 +176,43 @@ using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
         Assert.AreEqual(results[i].SimilarityScore, readResults[i].SimilarityScore);
     }
 }
+
+###Visualization
+
+First Plot : Number of Possible Comparisons on X-axis vs Similairty Score between Documents or Phrases in Y axis
+
+https://senthilmasters2024.github.io/Tech_Tweakers/SemanticSimilarityLatestPlot.html
+
+Second Plot: Scalar Values in X-axis vs Similarity Score in Y-Axis (Represents between two phrases or two documents)
+
+https://senthilmasters2024.github.io/Tech_Tweakers/ScalarValuesVsSimilarityScorePlotForOneComparsion.html
+
+
+###Visualization Done Using The Help of Python
+
+Install Pycharm and Require Dependecies from requirements.txt, Once everything is installed you can import the project as a folder 
+and pointing the appropirate python file and running we will be able to plot the latest similarity scores generated from dotnet project.
+
+# Define the relative path to your file
+
+App2.py and FirstPlotForSimilarity.py has the latest code to plot the document and phrase comparsion charts
+file_path = os.path.join(current_directory, 'data', 'output_dataset.csv') 
+
+df = pd.read_csv("phrase_similarity.csv")
+
+For the second chart,  in the scalarPlot1.py we can change the corresponding output csv for finding their each of their scalar values to plot against similarity score between the documents
+
+# Read embedding values from two input CSV files
+collection1 = pd.read_csv('preprocessed_JobProfileCDeveloper.txtembedding_values.csv', header=None).values.flatten()
+collection2 = pd.read_csv('preprocessed_JobRequirement.txtembedding_values1.csv', header=None).values.flatten()
+
+Individual scalar values of range of size from collection 0 to 3052 will be stored in this path for each Document
+
+\bin\Release\net9.0 , developers can fetch the file results and use it with python program to create a chart and plot.
+
+Example File: \bin\Release\net9.0\preprocessed_Aspirin.txtembedding_values1.csv
+
+Similarity Score outputs are stroed at : \bin\Release\net9.0\data\output_dataset.csv
 
 ### Configuration
 

@@ -5,10 +5,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-
+/// <summary>
+///TextPreprocessor Class.
+/// </summary>
 public class TextPreprocessor : IPreprocessor
 {
-    // Properties from ITextData
+
+    /// <summary>
+    ///Gets the Name of the text data.
+    /// </summary>
     public string Name { get; private set; } = string.Empty;
     /// <summary>
     /// Gets the content of the text data.
@@ -52,6 +57,9 @@ public class TextPreprocessor : IPreprocessor
 };
     private readonly string _storagePath;
 
+    /// <summary>
+    /// Initialized the constructor
+    /// </summary>
     public TextPreprocessor()
 
     {

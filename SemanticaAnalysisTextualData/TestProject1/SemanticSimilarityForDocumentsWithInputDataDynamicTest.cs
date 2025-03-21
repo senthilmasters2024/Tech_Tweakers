@@ -124,8 +124,9 @@ namespace SemanticaAnalysisTextualDataTest
             // Arrange
             var service = new SemanticSimilarityForDocumentsWithInputDataDynamic();
 
+            bool isPreProcessRequired = true;
             // Act
-            var (sourceFiles, targetFiles) = service.GetSourceAndTargetFiles();
+            var (sourceFiles, targetFiles) = service.GetSourceAndTargetFiles(isPreProcessRequired);
 
             // Assert
             Assert.IsNotNull(sourceFiles);

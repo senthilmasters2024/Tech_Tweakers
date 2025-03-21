@@ -26,12 +26,12 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
             var textPreprocessor = serviceProvider.GetRequiredService<IPreprocessor>();
             var similarityService = serviceProvider.GetRequiredService<ISimilarityService>();
             var embeddingService = serviceProvider.GetRequiredService<IEmbedding>();
-
+            bool isPreProcessRequiredFlag = false;
 
             // User options
             Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Skip Preprocessing");
-            Console.WriteLine("2. Apply Preprocessing");
+            Console.WriteLine("1. Semantic Analysis without PreProcessing");
+            Console.WriteLine("2. Semantic Analysis with PreProcessing");
             var choice = Console.ReadLine();
 
             if (choice == "2")
@@ -43,6 +43,7 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
 
                 if (preprocessChoice == "1")
                 {
+                    isPreProcessRequiredFlag = true;
                     // Preprocess Phrases
                     Console.WriteLine("Preprocessing phrases...");
                     // await textPreprocessor.ProcessAndSavePhrasesAsync(phrasesFolder, outputFolder);
@@ -50,6 +51,7 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
                 }
                 else if (preprocessChoice == "2")
                 {
+                    isPreProcessRequiredFlag = false;
                     // Navigate up to the project's root directory from the bin folder
                     string projectRoot = Directory.GetParent(AppContext.BaseDirectory)?.Parent?.Parent?.Parent?.FullName ?? throw new InvalidOperationException("Unable to determine project root directory.");
 
@@ -99,13 +101,13 @@ using SemanticaAnalysisTextualData.Source.Interfaces;
             {
                 // Invoke document comparison
                 Console.WriteLine("Invoking document comparison...");
-                await invokeDoc.InvokeDocumentComparsion(args);
+                await invokeDoc.InvokeDocumentComparsion(isPreProcessRequiredFlag);
                 Console.WriteLine("Document comparison completed.");
             }
             else if (processChoice == "2")
             {
                 // Example: Calculate similarity between two sample phrases
-                await invokePhrases.InvokeProcessPhrases(args);
+                await invokePhrases.InvokeProcessPhrases();
                 Console.WriteLine("Phrases comparison completed.");
             }
             else

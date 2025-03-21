@@ -17,18 +17,17 @@
 	  <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="App.Metrics.Health.Extensions.Configuration" Version="3.2.0" />
     <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.3" />
     <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenAI" Version="2.1.0" />
-    <PackageReference Include="OpenAI-DotNet" Version="8.4.1" />
-    <PackageReference Include="PdfPig" Version="0.1.9" />
+    <PackageReference Include="OpenAI-DotNet" Version="8.6.2" />
+    <PackageReference Include="PdfPig" Version="0.1.10" />
     <PackageReference Include="Porter2Stemmer" Version="1.0.0" />
 	  <PackageReference Include="Plotly.NET" Version="5.1.0" />
-	  <PackageReference Include="ScottPlot" Version="5.0.53" />
-    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
-    <PackageReference Include="TiktokenSharp" Version="1.1.6" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.3" />
+    <PackageReference Include="TiktokenSharp" Version="1.1.7" />
 	  <PackageReference Include="VaultSharp" Version="1.17.5.1" />
  
   </ItemGroup>
@@ -36,6 +35,7 @@
   <ItemGroup>
     <Folder Include="Images\" />
     <Folder Include="ErrorsWarningFacedScreenshots\" />
+    <Folder Include="Source\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +49,66 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="data\phrase_pairs_dataset.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnDomains\preprocessed_ChristianoRonaldo.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnDomains\preprocessed_JobProfileCDeveloper.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnDomains\preprocessed_MedicalHistory.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnDomains\preprocessed_MSDhoni.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnDomains\preprocessed_SachinTendulkar.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnNeededRelevance\preprocessed_Aspirin.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnNeededRelevance\preprocessed_iboprofen.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnNeededRelevance\preprocessed_JobRequirement.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnNeededRelevance\preprocessed_paracetomol.txt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\PreprocessedSourceBasedOnNeededRelevance\preprocessed_SachinTendulkarNewsArticle.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnDomains\ChristianoRonaldo.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnDomains\JobProfileCDeveloper.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnDomains\MedicalHistory.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnDomains\MSDhoni.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnDomains\SachinTendulkar.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnNeededRelevance\Aspirin.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnNeededRelevance\iboprofen.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnNeededRelevance\JobRequirement.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnNeededRelevance\paracetomol.txt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="data\SourceBasedOnNeededRelevance\SachinTendulkarNewsArticle.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

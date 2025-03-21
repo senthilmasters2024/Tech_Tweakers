@@ -19,12 +19,22 @@ namespace SemanticaAnalysisTextualData.Source.Utils
         /// <summary>
         /// The folder path for preprocessed source files based on domains.
         /// </summary>
-        public const string SourceFolder = "PreprocessedSourceBasedOnDomains";
+        public const string ProcessedSourceFolder = "PreprocessedSourceBasedOnDomains";
 
         /// <summary>
         /// The folder path for preprocessed source files based on needed relevance.
         /// </summary>
-        public const string TargetFolder = "PreprocessedSourceBasedOnNeededRelevance";
+        public const string ProcessedTargetFolder = "PreprocessedSourceBasedOnNeededRelevance";
+
+       /// <summary>
+       /// The folder path for  source files based on needed relevance.
+       /// </summary>
+        public const string SourceFolder = "SourceBasedOnDomains";
+
+        /// <summary>
+        /// The folder path for  target files based on needed relevance.
+        /// </summary>
+        public const string TargetFolder = "SourceBasedOnNeededRelevance";
 
         /// <summary>
         /// The embedding model name.

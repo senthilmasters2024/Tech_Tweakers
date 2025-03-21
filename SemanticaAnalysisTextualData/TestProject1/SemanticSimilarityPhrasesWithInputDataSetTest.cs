@@ -25,7 +25,7 @@ namespace SemanticaAnalysisTextualDataTest
                 new PhraseSimilarity { Phrase1 = "phrase3", Phrase2 = "phrase4", Domain = "domain2", Context = "context2", SimilarityScore = 0.8 }
             };
             String[] S = new string[0];
-            await  mockService.InvokeProcessPhrases(S);
+            await  mockService.InvokeProcessPhrases();
 
             // Act
             CsvHelperUtilTest obj = new CsvHelperUtilTest();

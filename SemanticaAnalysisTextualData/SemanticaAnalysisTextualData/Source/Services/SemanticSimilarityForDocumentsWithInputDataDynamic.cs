@@ -7,6 +7,7 @@ using SemanticaAnalysisTextualData.Source.Utils;
 using SemanticaAnalysisTextualData.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,11 +20,13 @@ namespace SemanticAnalysisTextualData.Source
     /// </summary>
     public class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
     {
+
+
         /// <summary>
         /// Invokes the document comparison process with the specified arguments.
         /// </summary>
-        /// <param name="args">The arguments for the document comparison process.</param>
-        public async Task InvokeDocumentComparsion(string[] args)
+        /// <param name="isPreProcessRequiredFlag">The arguments for the document comparison process.</param>
+        public async Task InvokeDocumentComparsion(bool isPreProcessRequiredFlag)
         {
             var serviceProvider = ConfigureServices();
             var textAnalysisService = serviceProvider.GetService<SemanticSimilarityForDocumentsWithInputDataDynamic>();
@@ -32,7 +35,7 @@ namespace SemanticAnalysisTextualData.Source
             {
                 try
                 {
-                    var (sourceFiles, targetFiles) = GetSourceAndTargetFiles();
+                    var (sourceFiles, targetFiles) = GetSourceAndTargetFiles(isPreProcessRequiredFlag);
                     var results = await CompareDocumentsAsync(sourceFiles, targetFiles);
                     CsvHelperUtil.SaveResultsToCsv(results);
                 }
@@ -58,7 +61,7 @@ namespace SemanticAnalysisTextualData.Source
         /// Gets the source and target files for the document comparison process.
         /// </summary>
         /// <returns>A tuple containing arrays of source and target file paths.</returns>
-        public (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles()
+        public (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles(bool isPreProcessRequiredFlag)
         {
             // Get the project root directory
             string? projectRoot = Directory.GetParent(AppContext.BaseDirectory)?.Parent?.Parent?.Parent?.FullName;
@@ -69,14 +72,25 @@ namespace SemanticAnalysisTextualData.Source
 
             // Define the base data folder and subfolders for source and target files
             string baseDataFolder = Path.Combine(projectRoot, Constants.BaseDataFolder);
-            string sourceFolder = Path.Combine(baseDataFolder, Constants.SourceFolder);
-            string targetFolder = Path.Combine(baseDataFolder, Constants.TargetFolder);
+            string sourceFolder;
+            string targetFolder;
+            if (isPreProcessRequiredFlag)
+            {
+                sourceFolder = Path.Combine(baseDataFolder, Constants.ProcessedSourceFolder);
+                targetFolder = Path.Combine(baseDataFolder, Constants.ProcessedTargetFolder);
+            }
+            else
+            {
+                sourceFolder = Path.Combine(baseDataFolder, Constants.SourceFolder);
+                targetFolder = Path.Combine(baseDataFolder, Constants.TargetFolder);
+            }
 
             // Get the list of source and target files
-            var sourceFiles = Directory.GetFiles(sourceFolder, Constants.TextFileExtension);
-            var targetFiles = Directory.GetFiles(targetFolder, Constants.TextFileExtension);
+            string[] sourceFiles = Directory.GetFiles(sourceFolder, Constants.TextFileExtension);
+            string[] targetFiles = Directory.GetFiles(targetFolder, Constants.TextFileExtension);
 
             return (sourceFiles, targetFiles);
+ 
         }
 
         /// <summary>
