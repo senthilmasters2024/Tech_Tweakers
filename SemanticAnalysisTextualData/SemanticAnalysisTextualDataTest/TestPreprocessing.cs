@@ -30,7 +30,7 @@
         [TestMethod]
         public void PreprocessText_ShouldConvertToLowercase()
         {
-            
+
             string input = "ARTIFICIAL INTELLIGENCE";
             string expected = "artificial intelligence";
             string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
@@ -166,35 +166,33 @@
             string filePath = Path.Combine(outputFolder, "Words", "preprocessed_words.txt");
             Assert.IsTrue(File.Exists(filePath));
 
-            
+
         }
 
-        
+
 
         [TestMethod]
-        public void SaveProcessedContent_ShouldCreateFile()
+        public void SaveProcessedContent_ShouldSaveContentToFile()
         {
             // Arrange
-            string outputFolder = "TestOutput";
-            string name = "TestContent";
-            string content = "Sample text content.";
-            _textPreprocessor.InitializeTextData(name, content);
+            var preprocessor = new TextPreprocessor();
+            string testName = "TestFile";
+            string testContent = "This is a test content.";
+            string outputFolder = Path.Combine(Path.GetTempPath(), "TextPreprocessorTests");
+            Directory.CreateDirectory(outputFolder);
+            preprocessor.InitializeTextData(testName, testContent);
 
             // Act
-            _textPreprocessor.SaveProcessedContent(outputFolder);
+            preprocessor.SaveProcessedContent(outputFolder);
 
             // Assert
-            string filePath = Path.Combine(outputFolder, $"{name}.txt");
-            Assert.IsTrue(File.Exists(filePath));
+            string expectedFilePath = Path.Combine(outputFolder, $"{testName}.txt");
+            Assert.IsTrue(File.Exists(expectedFilePath), "The file was not created.");
+            string savedContent = File.ReadAllText(expectedFilePath);
+            Assert.AreEqual(testContent, savedContent, "The content of the file is not as expected.");
 
-            // Cleanup
-           // Directory.Delete(outputFolder, true);
-
-
+            
         }
-
     }
 }
-
-
-
+    
