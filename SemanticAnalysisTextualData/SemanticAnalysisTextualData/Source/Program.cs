@@ -45,9 +45,9 @@ namespace SemanticAnalysisTextualData.Source
                 }
                 else if (preprocessChoice == "2")
                 {
-                    isPreProcessRequiredFlag = false;
+                    isPreProcessRequiredFlag = true;
                     // Navigate up to the project's root directory from the bin folder
-                    string ? projectRoot = AppContext.BaseDirectory ?? throw new InvalidOperationException("Unable to determine project root directory.");
+                    string? projectRoot = AppContext.BaseDirectory ?? throw new InvalidOperationException("Unable to determine project root directory.");
 
                     // Define the data folder within the project root
                     string baseDataFolder = Path.Combine(projectRoot, "data");

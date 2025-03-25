@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using Newtonsoft.Json;
 using OpenAI.Embeddings;
 using SemanticAnalysisTextualData.Source.Interfaces;
 using SemanticAnalysisTextualData.Source.pojo;
 using SemanticAnalysisTextualData.Util;
+using System.Globalization;
 
 /// <summary>
 /// Class for computing semantic similarity between phrases using OpenAI embeddings.
@@ -55,18 +58,37 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
             Console.WriteLine("Project root is null.");
             return null;
         }
+        var allRecords = new List<PhraseSimilarity>();
+        var files = Directory.GetFiles(Path.Combine(projectRoot, "data"), "*_phrase_pairs.csv");
+        //string datasetPath = files.Any() ? files[0] : string.Empty;
 
-        string datasetPath = Path.Combine(projectRoot, "data", "InputPhrases50DataSet.json");
-
-        try
+        //Added Code to Read CSV File Input for Phrase to Ease the User Convenience for Providing Additional Data for Analysis
+        foreach (var file in files)
         {
-            return JsonConvert.DeserializeObject<InputDataset>(File.ReadAllText(datasetPath));
+            try
+            {
+                using (var reader = new StreamReader(file))
+                using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)))
+                {
+                    var records = csv.GetRecords<PhraseSimilarityInputCSV>()
+                       .Select(result => new PhraseSimilarity
+                       {
+                           Context = result.Context,
+                           Phrase1 = result.Phrase1,
+                           Phrase2 = result.Phrase2,
+                           Domain = result.Domain
+                       })
+                        .ToList();
+                    allRecords.AddRange(records);
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading dataset: {ex.Message}");
+            }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading dataset: {ex.Message}");
-            return null;
-        }
+        return new InputDataset { PhrasePairs = allRecords };
     }
 
     private string? GetProjectRoot()
