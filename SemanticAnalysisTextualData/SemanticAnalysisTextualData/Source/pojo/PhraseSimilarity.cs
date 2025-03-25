@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the similarity between two phrases.
     /// </summary>
-    public class PhraseSimilarity
+    public class PhraseSimilarityInputCSV
     {
         /// <summary>
         /// Gets or sets the first phrase.
@@ -24,7 +24,13 @@
         /// Gets or sets the context of the phrases.
         /// </summary>
         public string? Context { get; set; }
-
+    }
+    /// <summary>
+    /// Represents the similarity between two phrases.
+    /// </summary>
+    public class PhraseSimilarity: PhraseSimilarityInputCSV
+    {
+     
         /// <summary>
         /// Gets or sets the similarity score between the two phrases.
         /// </summary>

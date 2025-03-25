@@ -1,8 +1,0 @@
-Job Title: Healthcare Data Analyst
-Location: New York, NY
-Description:
-- Analyze healthcare data to provide insights on patient care, healthcare systems, and cost-effectiveness.
-- Collaborate with doctors, nurses, and administrators to ensure data integrity and accuracy.
-- Assist in the development of policies to improve the quality of care.
-- Requires proficiency in data analysis tools such as R and SQL.
-- Preferred background in healthcare management or public health.

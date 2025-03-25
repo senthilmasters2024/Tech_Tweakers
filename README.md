@@ -181,35 +181,19 @@ are indivudally compared though its relavant or irrelavant which helps to study 
 
 ## **Configuration**
 ## **Configuration For Phrase Analysis**
-- The input file `InputPhrases50DataSet.JSON` is predefined in the data folder (`./data/InputPhrases50DataSet.JSON`).
+- The input file `*_phrase_pairs.csv` is predefined in the data folder (`./data/sample_phrase_pairs.csv`).
 - Currently supports analyzing 50 phrases.
-- Results are plotted as described in the visualization section. 
+- Results are plotted as described in the visualization section.
+- You can add more files in the similar name format Ex: Sample1_phrase_pairs.csv to add your own for more analysis or else you can edit the existing file with same file name ends with format *_phrase_pairs.csv`
 
-### **Sample JSON Structure:**
-```json
-{
-  "phrase_pairs": [
-    {
-      "phrase1": "Angela Merkel",
-      "phrase2": "Government",
-      "domain": "Politics",
-      "context": "Leadership"
-    }
-  ]
-}
+### **Sample CSV Structure:**
+```csv
+Phrase1,Phrase2,Domain,Context
+Angela Merkel,Government,Politics,Leadership
+Cristiano Ronaldo,Government,Sports,Irrelevant
+Dog,Cat,Animals,Pets
+Medicine,Paracetamol,Medical,Medical
 ```
-
-### **Adding More Phrases:**
-```json
-,
-{
-  "phrase1": "More Phrase Sample",
-  "phrase2": "More Phrase Sample",
-  "domain": "Unknown",
-  "context": "Unknown"
-}
-```
-
 ## **Configuration For Document Analysis**
 - Ensure the project structure includes the following folders:
 ```

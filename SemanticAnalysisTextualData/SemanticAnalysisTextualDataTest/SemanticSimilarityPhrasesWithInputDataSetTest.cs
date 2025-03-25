@@ -43,7 +43,7 @@ namespace SemanticAnalysisTextualData
 
             // Assert
             Assert.IsNotNull(result, "Dataset should not be null.");
-            Assert.AreEqual(51, result.PhrasePairs.Count, "The number of phrase pairs should match.");
+            Assert.AreEqual(55, result.PhrasePairs.Count, "The number of phrase pairs should match.");
 
         }
 
