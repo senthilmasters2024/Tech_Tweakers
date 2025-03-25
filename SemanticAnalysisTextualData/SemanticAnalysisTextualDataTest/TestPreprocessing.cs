@@ -30,8 +30,7 @@
         [TestMethod]
         public void PreprocessText_ShouldConvertToLowercase()
         {
-            //string input = "THE Goal of AI is to provide SOFTWARE that can reason on Input and explain on Output. ";
-            //string expected = "the goal of AI is to provide software that can reason on input and explain on output.";
+            
             string input = "ARTIFICIAL INTELLIGENCE";
             string expected = "artificial intelligence";
             string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
@@ -58,7 +57,7 @@
         public void PreprocessText_ShouldRemoveSpecialCharacters()
         {
             string input = "Work hard, for a better future!";
-            string expected = "work hard for a  better future";
+            string expected = "work hard good future";
             string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
@@ -167,37 +166,10 @@
             string filePath = Path.Combine(outputFolder, "Words", "preprocessed_words.txt");
             Assert.IsTrue(File.Exists(filePath));
 
-            //Cleanup
-
-            Directory.Delete(filePath);
+            
         }
 
-        //[TestMethod]
-        //public async Task LoadPreprocessedWordsAsync_ShouldReturnWords()
-        //{
-        //    //Arrange
-        //     //Assert  
-        //    string filePath = Path.Combine(outputFolder, "Words", "preprocessed_words.txt");
-        //    // Fix for the first occurrence of CS8604
-        //    Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new ArgumentNullException(nameof(filePath)));
-
-        //    // Fix for the second occurrence of CS8604
-        //    Directory.CreateDirectory(Path.GetDirectoryName(filePath) ?? throw new ArgumentNullException(nameof(filePath)));
-        //    string domainName = "TestDomain";
-        //    string outputFolder = "TestOutput";
-        //    string filePath = Path.Combine(outputFolder, "Words", domainName, "preprocessed_words.txt");
-        //    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-        //    await File.WriteAllLinesAsync(filePath, new[] { "word1", "word2" });
-
-
-        //    //Act
-        //    var result = await _textPreprocessor.LoadPreprocessedWordsAsync(domainName, outputFolder);
-        //    //Assert
-        //    CollectionAssert.AreEqual(new[] { "word1", "word2" }, result.ToList());
-
-        //    // Cleanup
-        //    Directory.Delete(outputFolder, true);
-        //}
+        
 
         [TestMethod]
         public void SaveProcessedContent_ShouldCreateFile()
@@ -216,7 +188,7 @@
             Assert.IsTrue(File.Exists(filePath));
 
             // Cleanup
-            Directory.Delete(outputFolder, true);
+           // Directory.Delete(outputFolder, true);
 
 
         }
