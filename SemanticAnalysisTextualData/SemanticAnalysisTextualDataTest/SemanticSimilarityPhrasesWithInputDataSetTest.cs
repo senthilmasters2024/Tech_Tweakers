@@ -28,7 +28,7 @@ namespace SemanticAnalysisTextualData
         [TestMethod]
         public void LoadDataset_ShouldReturnDataset_WhenFileExists()
         {
-            // Arrange
+           
             // Arrange
             SemanticSimilarityPhrasesWithInputDataSet mockService = new SemanticSimilarityPhrasesWithInputDataSet();
             string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());

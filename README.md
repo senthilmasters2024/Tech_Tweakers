@@ -1,8 +1,8 @@
 # Tech_Tweakers
-# **Semantic Analysis of Textual Data**
+# **Semantic Similarity Analysis of Textual Data**
 
 ## Introduction
-Developed a scalable framework for Semantic Analysis of Textual Data focusing on words/phrases and/or documents comparisons using OpenAI embeddings and Cosine Similarity Algorithms. The tool offers flexible preprocessing, ensuring contextually relevant similarity assessments. It demonstrates effectiveness in capturing semantic nuances with practical applications like resume filtering, admission categorization, and content classification. This project provides utilities for analyzing textual data, calculating phrase similarities, and saving results to CSV and JSON files.
+Developed a scalable framework for Semantic Similarity Analysis of Textual Data focusing on words/phrases and/or documents comparisons using OpenAI embeddings and Cosine Similarity algorithm. The tool offers flexible preprocessing, ensuring contextually relevant similarity assessments. It demonstrates effectiveness in capturing semantic nuances with practical applications including resume filtering, admission categorization, and content classification. This project provides utilities for analyzing textual data, calculating phrase similarities, and saving results to CSV and JSON files.
 
 ### **Technologies Used:**
 - C# (.NET 9.0 or Latest)
