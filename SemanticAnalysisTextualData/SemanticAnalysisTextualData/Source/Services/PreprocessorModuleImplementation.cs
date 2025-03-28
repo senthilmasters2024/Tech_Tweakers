@@ -21,6 +21,7 @@ public class TextPreprocessor : IPreprocessor
 
     //private readonly StanfordCoreNLP _pipeline;
 
+    //Pre defined Article and Stop Word Removal Assignment
     private static readonly HashSet<string> StopWords = new()
 {
     "the", "is", "in", "at", "of", "am", "pm", "one", "to", "a", "an", "and",
@@ -35,6 +36,7 @@ public class TextPreprocessor : IPreprocessor
     "doing", "during", "before", "after", "above", "below", "between", "through"
 };
 
+    //Dictinaory Mapping Pre Defined for Limited Analysis of Lammatization
     private static readonly Dictionary<string, string> LemmaDictionary = new()
 {
     { "running", "run" },
@@ -48,7 +50,7 @@ public class TextPreprocessor : IPreprocessor
     { "doing", "do" },
     { "does", "do" },
     { "did", "do" },
-    // Add more mappings as needed
+     // Add more mappings as needed what words you like to lammatize
 };
     private readonly string _storagePath;
 
@@ -70,7 +72,7 @@ public class TextPreprocessor : IPreprocessor
         */
         _storagePath = AppContext.BaseDirectory;
         //Directory.CreateDirectory(_storagePath); // Ensure the storage directory exists
-        
+
 
     }
 

@@ -4,12 +4,23 @@ using SemanticAnalysisTextualData.Source.Interfaces;
 
 namespace SemanticAnalysisTextualData.Source
 {
+    /// <summary>
+    /// Main program class.
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// Main entry point of the application.
+        /// </summary>
+        /// <param name="args">Command-line arguments.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static async System.Threading.Tasks.Task Main(string[] args)
         {
+            // Initialize instances for document and phrase processing
             SemanticSimilarityForDocumentsWithInputDataDynamic invokeDoc = new SemanticSimilarityForDocumentsWithInputDataDynamic();
             SemanticSimilarityPhrasesWithInputDataSet invokePhrases = new SemanticSimilarityPhrasesWithInputDataSet();
+
             // Set up dependency injection
             var serviceProvider = new ServiceCollection()
                 .AddSingleton<IPreprocessor, TextPreprocessor>() // Use IPreprocessor and TextPreprocessor
@@ -17,12 +28,13 @@ namespace SemanticAnalysisTextualData.Source
                 .AddSingleton<IEmbedding, SemanticSimilarityForDocumentsWithInputDataDynamic>() // Use IEmbedding and SemanticSimilarityForDocumentsWithInputDataDynamic
                 .BuildServiceProvider();
 
+            // Retrieve services from the service provider
             var textPreprocessor = serviceProvider.GetRequiredService<IPreprocessor>();
             var similarityService = serviceProvider.GetRequiredService<ISimilarityService>();
             var embeddingService = serviceProvider.GetRequiredService<IEmbedding>();
             bool isPreProcessRequiredFlag = false;
 
-            // User options
+            // User options for preprocessing
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1. Semantic Analysis without PreProcessing");
             Console.WriteLine("2. Semantic Analysis with PreProcessing");
@@ -51,14 +63,10 @@ namespace SemanticAnalysisTextualData.Source
 
                     // Define the data folder within the project root
                     string baseDataFolder = Path.Combine(projectRoot, "data");
-                    // var config = new ConfigurationBuilder()
-                    // .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path to the project directory
-                    // .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // Load the JSON file
-                    // .Build();
+
                     // Define source and target folders dynamically
                     string sourceDomainsFolder = Path.Combine(baseDataFolder, "SourceBasedOnDomains");
                     string sourceRelevanceFolder = Path.Combine(baseDataFolder, "SourceBasedOnNeededRelevance");
-                    // Get folder paths from configuration
                     string outputDomainsFolder = Path.Combine(baseDataFolder, "PreprocessedSourceBasedOnDomains");
                     string outputRelevanceFolder = Path.Combine(baseDataFolder, "PreprocessedSourceBasedOnNeededRelevance");
 
@@ -70,7 +78,7 @@ namespace SemanticAnalysisTextualData.Source
                     await ProcessTextFilesInFolderAsync(textPreprocessor, sourceDomainsFolder, outputDomainsFolder);
                     await ProcessTextFilesInFolderAsync(textPreprocessor, sourceRelevanceFolder, outputRelevanceFolder);
 
-                    Console.WriteLine(" Preprocessing for both source folders completed.");
+                    Console.WriteLine("Preprocessing for both source folders completed.");
                     // Preprocess Documents
                     Console.WriteLine("Preprocessing documents...");
                     //await textPreprocessor.ProcessAndSaveDocumentsAsync(documentsFolder, outputFolder);
@@ -85,6 +93,7 @@ namespace SemanticAnalysisTextualData.Source
             {
                 Console.WriteLine("Skipping preprocessing.");
             }
+
             // Additional user choice for document processing or phrases comparison
             Console.WriteLine("Choose an option:");
             Console.WriteLine("1. Process Documents");
@@ -100,7 +109,7 @@ namespace SemanticAnalysisTextualData.Source
             }
             else if (processChoice == "2")
             {
-                // Example: Calculate similarity between two sample phrases
+                // Invoke phrases comparison
                 await invokePhrases.InvokeProcessPhrases();
                 Console.WriteLine("Phrases comparison completed.");
             }
@@ -112,57 +121,73 @@ namespace SemanticAnalysisTextualData.Source
             Console.WriteLine("Process completed.");
         }
 
-        // Helper method to ensure a directory exists
+        /// <summary>
+        /// Helper method to ensure a directory exists.
+        /// </summary>
+        /// <param name="path">The path of the directory.</param>
         public static void EnsureDirectoryExists(string path)
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
         }
 
+        /// <summary>
+        /// Processes text files in a folder asynchronously.
+        /// </summary>
+        /// <param name="textPreprocessor">The text preprocessor to use.</param>
+        /// <param name="sourceFolder">The folder containing the source text files.</param>
+        /// <param name="outputFolder">The folder to save the processed text files.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         public static async System.Threading.Tasks.Task ProcessTextFilesInFolderAsync(IPreprocessor textPreprocessor, string sourceFolder, string outputFolder)
         {
-            Console.WriteLine($" Checking folder: {sourceFolder}");
+            Console.WriteLine($"Checking folder: {sourceFolder}");
 
+            // Check if the source folder exists
             if (!Directory.Exists(sourceFolder))
             {
-                Console.WriteLine($" Source folder '{sourceFolder}' not found. Skipping.");
+                Console.WriteLine($"Source folder '{sourceFolder}' not found. Skipping.");
                 return;
             }
 
-            Console.WriteLine($" Source folder exists: {sourceFolder}");
+            Console.WriteLine($"Source folder exists: {sourceFolder}");
 
-            // Ensure output folder exists
+            // Ensure the output folder exists
             EnsureDirectoryExists(outputFolder);
 
+            // Get all text files in the source folder
             var textFiles = Directory.GetFiles(sourceFolder, "*.txt");
 
+            // Check if there are any text files in the source folder
             if (textFiles.Length == 0)
             {
-                Console.WriteLine($" No text files found in '{sourceFolder}'. Skipping.");
+                Console.WriteLine($"No text files found in '{sourceFolder}'. Skipping.");
                 return;
             }
 
-            Console.WriteLine($" Found {textFiles.Length} text files in '{sourceFolder}'. Processing...");
+            Console.WriteLine($"Found {textFiles.Length} text files in '{sourceFolder}'. Processing...");
 
+            // Process each text file
             foreach (var file in textFiles)
             {
                 string originalFileName = Path.GetFileName(file);
-                string newFileName = $"preprocessed_{originalFileName}";  //  Add "preprocessed_" prefix
-                Console.WriteLine($" Processing file: {originalFileName} → {newFileName}");
+                string newFileName = $"preprocessed_{originalFileName}";  // Add "preprocessed_" prefix
+                Console.WriteLine($"Processing file: {originalFileName} → {newFileName}");
                 string fileContent = await File.ReadAllTextAsync(file);
 
+                // Check if the file content is empty
                 if (string.IsNullOrWhiteSpace(fileContent))
                 {
-                    Console.WriteLine($" Skipping empty file: {originalFileName}");
+                    Console.WriteLine($"Skipping empty file: {originalFileName}");
                     continue;
                 }
 
-                //  Preprocess the content
+                // Preprocess the content
                 string preprocessedContent = textPreprocessor.PreprocessText(fileContent, TextDataType.Document);
-                string outputFilePath = Path.Combine(outputFolder, newFileName); //  Keep the same filename
+                string outputFilePath = Path.Combine(outputFolder, newFileName); // Keep the same filename
 
+                // Save the preprocessed content to the output folder
                 await File.WriteAllTextAsync(outputFilePath, preprocessedContent);
-                Console.WriteLine($" Preprocessed and saved: {outputFilePath}");
+                Console.WriteLine($"Preprocessed and saved: {outputFilePath}");
             }
         }
     }

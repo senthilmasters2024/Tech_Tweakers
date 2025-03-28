@@ -80,7 +80,7 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
                        })
                         .ToList();
                     allRecords.AddRange(records);
-                   
+
                 }
             }
             catch (Exception ex)
@@ -91,6 +91,10 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return new InputDataset { PhrasePairs = allRecords };
     }
 
+    /// <summary>
+    /// Method is to Fetch the Project Root Directory, Currently not in use, if we needed in future we can use it
+    /// </summary>
+    /// <returns>The loaded dataset or null if an error occurs.</returns>
     private string? GetProjectRoot()
     {
         DirectoryInfo? directory = Directory.GetParent(AppContext.BaseDirectory);
@@ -105,6 +109,11 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         return directory?.FullName;
     }
 
+    /// <summary>
+    /// Processes a list of phrase pairs to compute their semantic similarity.
+    /// </summary>
+    /// <param name="phrasePairs">The list of phrase pairs to process.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a list of phrase similarities.</returns>
     private async Task<List<PhraseSimilarity>> ProcessPhrasePairsAsync(List<PhraseSimilarity> phrasePairs)
     {
         var results = new List<PhraseSimilarity>();
@@ -154,6 +163,12 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
         }
     }
 
+    /// <summary>
+    /// Creates a PhraseSimilarity object with the given similarity score.
+    /// </summary>
+    /// <param name="pair">The PhraseSimilarity object containing the phrases and their context.</param>
+    /// <param name="similarity">The calculated similarity score between the two phrases.</param>
+    /// <returns>A new PhraseSimilarity object with the similarity score included.</returns>
     private PhraseSimilarity CreatePhraseSimilarity(PhraseSimilarity pair, double similarity)
     {
         return new PhraseSimilarity

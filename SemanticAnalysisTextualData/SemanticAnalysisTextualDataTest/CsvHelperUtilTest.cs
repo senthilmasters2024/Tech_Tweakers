@@ -9,11 +9,16 @@ using static SemanticAnalysisTextualData.Util.CsvHelperUtil;
 namespace SemanticAnalysisTextualData
 {
 
+    /// <summary>
+    /// Unit tests for the CsvHelperUtil class to ensure correct functionality of methods that save results to CSV and JSON files.
+    /// </summary>
     [TestClass]
     public class CsvHelperUtilTest
     {
 
-
+        /// <summary>
+        /// Tests the SaveResultsToCsv method to ensure it correctly saves a list of DocumentSimilarity objects to a CSV file.
+        /// </summary>
         [TestMethod]
         public void SaveResultsToCsv_ShouldSaveResultsToCsvFile()
         {
@@ -52,6 +57,9 @@ namespace SemanticAnalysisTextualData
             //Directory.Delete(tempDir, true);
         }
 
+        /// <summary>
+        /// Tests the SaveResultsPhrase method to ensure it correctly saves a list of PhraseSimilarity objects to both CSV and JSON files.
+        /// </summary>
         [TestMethod]
         public void SaveResultsPhrase_ShouldSaveResultsToCsvAndJsonFiles()
         {

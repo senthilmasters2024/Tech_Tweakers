@@ -6,11 +6,17 @@ using SemanticAnalysisTextualData.Source.Utils;
 
 namespace SemanticAnalysisTextualData
 {
+
+    /// <summary>
+    /// Unit tests for the SemanticSimilarityForDocumentsWithInputDataDynamic class to ensure correct functionality of its methods.
+    /// </summary>
     [TestClass]
     public class SemanticSimilarityForDocumentsWithInputDataDynamicTest
     {
 
-
+        /// <summary>
+        /// A sample test method to demonstrate basic Test.
+        /// </summary>
         [TestMethod]
         public void SampleTestMethod()
         {
@@ -19,6 +25,9 @@ namespace SemanticAnalysisTextualData
             Assert.AreEqual(1, 1);
         }
 
+        /// <summary>
+        /// Tests the CompareDocumentsAsync method to ensure it handles exceptions correctly and results its returning is not null.
+        /// </summary>
         [TestMethod]
         public async Task CompareDocumentsAsync_ShouldHandleExceptions()
         {
@@ -48,6 +57,9 @@ namespace SemanticAnalysisTextualData
             //Assert.AreEqual(0, results.Count); // Expecting an empty list due to file not found exceptions
         }
 
+        /// <summary>
+        /// Tests the CalculateEmbeddingAsync method to ensure it returns a similarity score and returns non null value and zero.
+        /// </summary>
         [TestMethod]
         public async Task CalculateEmbeddingAsync_ShouldReturnSimilarityScore()
         {
@@ -100,10 +112,13 @@ namespace SemanticAnalysisTextualData
             // Assert
             foreach (var result in results)
             {
-                Assert.IsTrue(result.SimilarityScore !=0, $"Similarity score for {result.FileName1} and {result.FileName2} should be greater than or less than 0.");
+                Assert.IsTrue(result.SimilarityScore != 0, $"Similarity score for {result.FileName1} and {result.FileName2} should be greater than or less than 0.");
             }
         }
 
+        /// <summary>
+        /// Tests the ConfigureServices method to ensure it returns a service provider with configured services.
+        /// </summary>
         [TestMethod]
         public void ConfigureServices_ShouldReturnServiceProviderWithConfiguredServices()
         {
@@ -117,6 +132,9 @@ namespace SemanticAnalysisTextualData
             Assert.IsInstanceOfType(service, typeof(SemanticSimilarityForDocumentsWithInputDataDynamic));
         }
 
+        /// <summary>
+        /// Tests the GetSourceAndTargetFiles method to ensure it returns source and target files is present and have expected file extensions.
+        /// </summary>
         [TestMethod]
         public void GetSourceAndTargetFiles_ShouldReturnSourceAndTargetFiles()
         {
@@ -136,6 +154,9 @@ namespace SemanticAnalysisTextualData
             Assert.IsTrue(targetFiles.All(file => file.EndsWith(".txt")), "All target files should have the correct extension.");
         }
 
+        /// <summary>
+        /// Tests the PrintScalarValues method to ensure it prints each scalar value.
+        /// </summary>
         [TestMethod]
         public void PrintScalarValues_ShouldPrintEachScalarValue()
         {
@@ -156,6 +177,9 @@ namespace SemanticAnalysisTextualData
             }
         }
 
+        /// <summary>
+        /// Tests the CalculateSimilarity method to ensure it returns the correct similarity score.
+        /// </summary>
         [TestMethod]
         public void CalculateSimilarity_ShouldReturnCorrectSimilarityScore()
         {
@@ -177,6 +201,9 @@ namespace SemanticAnalysisTextualData
             Assert.AreEqual(0, similarity3, "Similarity with zero magnitude embedding should be 0.");
         }
 
+        /// <summary>
+        /// Tests the CalculateSimilarity method to ensure it returns zero for embeddings of different lengths.
+        /// </summary>
         [TestMethod]
         public void CalculateSimilarity_ShouldReturnZeroForDifferentLengthEmbeddings()
         {

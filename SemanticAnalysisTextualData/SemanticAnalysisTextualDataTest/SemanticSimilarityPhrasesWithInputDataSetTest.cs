@@ -4,9 +4,15 @@ using SemanticAnalysisTextualData.Source.Utils;
 
 namespace SemanticAnalysisTextualData
 {
+    /// <summary>
+    /// Unit tests for the SemanticSimilarityPhrasesWithInputDataSet class to ensure correct functionality of its methods.
+    /// </summary>
     [TestClass]
     public class SemanticSimilarityPhrasesWithInputDataSetTest
     {
+        /// <summary>
+        /// Tests the InvokeProcessPhrases method to ensure it processes phrases and saves the results correctly.
+        /// </summary>
         [TestMethod]
         public async Task InvokeProcessPhrases_ShouldProcessPhrasesAndSaveResults()
         {
@@ -25,10 +31,13 @@ namespace SemanticAnalysisTextualData
             obj.SaveResultsPhrase_ShouldSaveResultsToCsvAndJsonFiles();
         }
 
+        /// <summary>
+        /// Tests the LoadDataset method to ensure it returns the dataset when the file exists.
+        /// </summary>
         [TestMethod]
         public void LoadDataset_ShouldReturnDataset_WhenFileExists()
         {
-           
+
             // Arrange
             SemanticSimilarityPhrasesWithInputDataSet mockService = new SemanticSimilarityPhrasesWithInputDataSet();
             string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -47,7 +56,9 @@ namespace SemanticAnalysisTextualData
 
         }
 
-
+        /// <summary>
+        /// Tests the CalculatePhraseSimilarityAsync method to ensure it returns zero on exception.
+        /// </summary>
         [TestMethod]
         public async Task CalculatePhraseSimilarityAsync_ShouldReturnZero_OnException()
         {
