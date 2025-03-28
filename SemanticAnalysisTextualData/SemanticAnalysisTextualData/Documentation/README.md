@@ -39,7 +39,8 @@ Developed a scalable framework for Semantic Similarity Analysis of Textual Data 
    dotnet restore
    ```
 4. Alternatively, download the published zip file from the [Release Section](https://github.com/senthilmasters2024/Tech_Tweakers/releases/tag/v1.0-beta.1).
-5. For Setup and Run the application, you can have a look short setup tutorial [SetupTutorial](https://github.com/senthilmasters2024/Tech_Tweakers/tree/main/SemanticAnalysisTextualData/SemanticAnalysisTextualData/Documentation/SetupandRunFromVisualStudioAndFromReleaseSection)
+5. For Setup and Run the application, you can have a look short setup tutorial
+[SetupTutorial](https://github.com/senthilmasters2024/Tech_Tweakers/blob/main/SemanticAnalysisTextualData/SemanticAnalysisTextualData/Documentation/SetupandRunFromVisualStudioAndFromReleaseSection.mp4)
 
 **Tools Required:**
 - Visual Studio
@@ -51,7 +52,7 @@ Developed a scalable framework for Semantic Similarity Analysis of Textual Data 
 ### **Setup the Environment Variable**
 
 OPENAI_API_KEY="Your_API_Key_Here" and 
-How to Setup Tutorial Video can be found here -[HowtoSetOpenAPIKeyinSystemEnvironmentVariable](https://www.youtube.com/watch?v=hgXJia5WxtY).
+How to Setup Tutorial Video can be found here -[HowtoSetOpenAPIKeyinSystemEnvironmentVariable](https://www.youtube.com/watch?v=hgXJia5WxtY)
 
 ### **Running the Program**
 1. Build the solution in Visual Studio by selecting `Build > Build Solution`.
@@ -167,13 +168,13 @@ You can click or hover over the dots plotted to view details of the plot like wh
   - [View Plot](https://senthilmasters2024.github.io/Tech_Tweakers/SemanticSimilarityLatestPlot.html)
 First Plot Helps to Understand that user or developers to observe the number of documens used for the comparsion, as each and every documents
 are indivudally compared though its relavant or irrelavant which helps to study the contextual alignment more clearly.
-  - **Second Plot:** Scalar Values (X-axis) vs. Similarity Score (Y-axis)
+- **Second Plot:** Scalar Values (X-axis) vs. Similarity Score (Y-axis)
   - [View Plot](https://senthilmasters2024.github.io/Tech_Tweakers/ScalarValuesVsSimilarityScorePlotForOneComparsion.html)
 Second Plot Helps to Understand that user or developers to observe how you can utilize this plot to understand how contextual alignment is done
 by Open AI Embedding as we trying to plot 0-3052 collections of embedding in x-axis vs Similarity Score in Y-axis, You can observe how in the different
 ranges plot are travelling and varying together within that 0-3052 range between any two documents generated Embeddings  
   
-  - **Third Plot:** Phrases Comparsion (X-axis) vs. Similarity Score (Y-axis)
+- **Third Plot:** Phrases Comparsion (X-axis) vs. Similarity Score (Y-axis)
   - [View Plot](https://senthilmasters2024.github.io/Tech_Tweakers/PhrasesSimilarityClassficationByDomainsPlots.html)
 Third Plot Helps to Understand the user or developers to observe the number of Phrases used for the comparsion, as each and every documents
 are indivudally compared though its relavant or irrelavant which helps to study the contextual alignment more clearly.
