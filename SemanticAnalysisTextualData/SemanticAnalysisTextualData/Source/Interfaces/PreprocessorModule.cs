@@ -1,6 +1,12 @@
 ﻿/// <summary>
 /// Interface for preprocessing text data.
 /// </summary>
+namespace SemanticAnalysisTextualData.Source;
+
+
+/// <summary>
+/// Interface for preprocessing the text data (e.g words,phrases and documents)
+/// </summary>
 public interface IPreprocessor
 {
     /// <summary>

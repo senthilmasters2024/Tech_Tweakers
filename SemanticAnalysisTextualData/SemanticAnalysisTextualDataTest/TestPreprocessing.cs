@@ -1,4 +1,6 @@
-﻿namespace SemanticAnalysisTextualData
+﻿using SemanticAnalysisTextualData.Source;
+
+namespace SemanticAnalysisTextualData.source
 {
     /// <summary>
     /// Unit tests for the TextPreprocessor class to ensure correct functionality of its methods.
@@ -181,9 +183,6 @@
         }
 
 
-        /// <summary>
-        /// Tests the SaveDocumentsAsync method to ensure it creates a file.
-        /// </summary>
         [TestMethod]
         public async Task SaveDocumentsAsync_ShouldCreateFile()
         {
@@ -205,9 +204,6 @@
             Directory.Delete(outputFolder, true);
         }
 
-        /// <summary>
-        /// Tests the SaveWordsAsync method to ensure it creates a file.
-        /// </summary>
         [TestMethod]
         public async Task SaveWordsAsync_ShouldCreateFile()
         {
@@ -230,9 +226,6 @@
 
 
 
-        /// <summary>
-        /// Tests the SaveProcessedContent method to ensure it saves content to a file.
-        /// </summary>
         [TestMethod]
         public void SaveProcessedContent_ShouldSaveContentToFile()
         {
@@ -258,4 +251,4 @@
         }
     }
 }
-
+    

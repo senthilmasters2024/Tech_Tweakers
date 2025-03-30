@@ -112,7 +112,7 @@ namespace SemanticAnalysisTextualData
             // Assert
             foreach (var result in results)
             {
-                Assert.IsTrue(result.SimilarityScore != 0, $"Similarity score for {result.FileName1} and {result.FileName2} should be greater than or less than 0.");
+                Assert.IsTrue(result.SimilarityScore !=0, $"Similarity score for {result.FileName1} and {result.FileName2} should be greater than or less than 0.");
             }
         }
 

@@ -12,14 +12,13 @@ namespace SemanticAnalysisTextualData.Source
     /// </summary>
     public class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
     {
-
-
         /// <summary>
         /// Invokes the document comparison process with the specified arguments.
         /// </summary>
         /// <param name="isPreProcessRequiredFlag">The arguments for the document comparison process.</param>
         public async Task InvokeDocumentComparsion(bool isPreProcessRequiredFlag)
         {
+            // Configure services
             var serviceProvider = ConfigureServices();
             var textAnalysisService = serviceProvider.GetService<SemanticSimilarityForDocumentsWithInputDataDynamic>();
 
@@ -27,8 +26,13 @@ namespace SemanticAnalysisTextualData.Source
             {
                 try
                 {
+                    // Get source and target files based on preprocessing flag
                     var (sourceFiles, targetFiles) = GetSourceAndTargetFiles(isPreProcessRequiredFlag);
+
+                    // Compare documents asynchronously
                     var results = await CompareDocumentsAsync(sourceFiles, targetFiles);
+
+                    // Save results to CSV
                     CsvHelperUtil.SaveResultsToCsv(results);
                 }
                 catch (Exception ex)
@@ -82,7 +86,6 @@ namespace SemanticAnalysisTextualData.Source
             string[] targetFiles = Directory.GetFiles(targetFolder, Constants.TextFileExtension);
 
             return (sourceFiles, targetFiles);
-
         }
 
         /// <summary>

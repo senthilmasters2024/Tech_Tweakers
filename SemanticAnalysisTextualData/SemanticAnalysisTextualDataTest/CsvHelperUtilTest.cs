@@ -84,7 +84,7 @@ namespace SemanticAnalysisTextualData
             // Assert JSON file
             Assert.IsTrue(File.Exists(outputPathJson), "JSON file should be created.");
             var jsonContent = File.ReadAllText(outputPathJson);
-            var deserializedObj = JsonConvert.DeserializeObject<InputDataset>(jsonContent);
+            var deserializedObj = JsonConvert.DeserializeObject<Source.pojo.InputDataset>(jsonContent);
             Assert.IsNotNull(deserializedObj);
             Assert.AreEqual(results.Count, deserializedObj.PhrasePairs.Count, "The number of records in JSON should match.");
 

@@ -80,7 +80,7 @@ public class SemanticSimilarityPhrasesWithInputDataSet : ISimilarityService
                        })
                         .ToList();
                     allRecords.AddRange(records);
-
+                   
                 }
             }
             catch (Exception ex)
