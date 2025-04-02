@@ -9,7 +9,8 @@ namespace SemanticAnalysisTextualData.Source.Services
     public static class PreprocessingHandler
     {
         /// <summary>
-        /// Handles the preprocessing choice made by the user.
+        /// Handles the preprocessing choice made by the user inorder to provide the user with choice to make decision for proceeding the analysis
+        /// with or without preprocessing.
         /// </summary>
         /// <param name="textPreprocessor">The text preprocessor to use.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a flag indicating if preprocessing is required.</returns>
@@ -33,7 +34,7 @@ namespace SemanticAnalysisTextualData.Source.Services
         }
 
         /// <summary>
-        /// Performs the preprocessing based on the user's choice.
+        /// Performs the preprocessing based on the user's choice to make a decision wheather analysis should run for phrase or documents.
         /// </summary>
         /// <param name="textPreprocessor">The text preprocessor to use.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a flag indicating if preprocessing was performed.</returns>

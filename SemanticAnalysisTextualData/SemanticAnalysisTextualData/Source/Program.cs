@@ -26,7 +26,7 @@ namespace SemanticAnalysisTextualData.Source
             var invokePhrases = new SemanticSimilarityPhrasesWithInputDataSet();
 
             // Invoking HandlePreProcessing Method for the purpose of getting the user choice whether
-            // to decide analysis should run for phrase or documents
+            // to decide analysis should run for phrase or documents with or without preprocessing
             bool isPreProcessRequiredFlag = await PreprocessingHandler.HandlePreprocessing(textPreprocessor);
 
             // Invoking HandleProcessingChoice Method for the purpose of getting the user choice whether
