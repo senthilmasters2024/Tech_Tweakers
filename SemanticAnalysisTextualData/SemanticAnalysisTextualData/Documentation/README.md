@@ -179,6 +179,13 @@ ranges plot are travelling and varying together within that 0-3052 range between
 Third Plot Helps to Understand the user or developers to observe the number of Phrases used for the comparsion, as each and every documents
 are indivudally compared though its relavant or irrelavant which helps to study the contextual alignment more clearly.
 
+**What we can infer from Third Plot:**
+The output CSV generated from the document comparison analysis is being updated to include domain names derived from filenames, allowing for more structured, programmatic domain-based classification. This enhancement enables our approach to classify documents across different domains more effectively.
+Currently, document classification is performed by comparing documents from various domains with an initial dataset, which includes categories such as medical and job requirements. In addition to this, we now classify documents based on filenames to identify their type.
+For real-time applications, the system can be configured to restrict user inputs to specific file types based on predefined domain constraints. Alternatively, the application can be modified to accept datasets from a single domain (e.g., job requirements) to assess document relevance within that specific context.
+If a document's domain cannot be determined due to an unexpected filename, it will be categorized as "unknown." These documents will be handled separately in the visualization, while the remaining classified documents will be analyzed within their respective domains. This approach serves as an initial filtering mechanism to enhance the clarity and interpretability of the visualization.
+Through this process, we successfully achieve classification based on both domain and relevance while incorporating semantic analysis capabilities.
+
 ## **Configuration**
 ## **Configuration For Phrase Analysis**
 - The input file `*_phrase_pairs.csv` is predefined in the data folder (`./data/sample_phrase_pairs.csv`).
