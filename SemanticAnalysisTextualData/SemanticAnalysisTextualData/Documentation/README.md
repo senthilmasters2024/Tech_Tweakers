@@ -186,6 +186,9 @@ For real-time applications, the system can be configured to restrict user inputs
 If a document's domain cannot be determined due to an unexpected filename, it will be categorized as "unknown." These documents will be handled separately in the visualization, while the remaining classified documents will be analyzed within their respective domains. This approach serves as an initial filtering mechanism to enhance the clarity and interpretability of the visualization.
 Through this process, we successfully achieve classification based on both domain and relevance while incorporating semantic analysis capabilities.
 
+## **Another Representation for Document Categorization for Better visualisation With Reason**
+ - [View File](https://github.com/senthilmasters2024/Tech_Tweakers/blob/main/SemanticAnalysisTextualData/SemanticAnalysisTextualData/Results/DocumentCategorizationForBetterUnderstandingPlot.xlsx)
+
 ## **Configuration**
 ## **Configuration For Phrase Analysis**
 - The input file `*_phrase_pairs.csv` is predefined in the data folder (`./data/sample_phrase_pairs.csv`).
