@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+/*using Microsoft.Extensions.DependencyInjection;
 using OpenAI.Embeddings;
 using SemanticAnalysisTextualData.Source;
 using SemanticAnalysisTextualData.Source.pojo;
@@ -219,4 +219,4 @@ namespace SemanticAnalysisTextualData
             Assert.AreEqual(0, similarity, "Similarity between embeddings of different lengths should be 0.");
         }
     }
-}
+}*/

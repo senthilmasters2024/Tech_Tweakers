@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SemanticAnalysisTextualData.Source.Interfaces;
 using SemanticAnalysisTextualData.Source.Services;
 
@@ -9,44 +10,40 @@ namespace SemanticAnalysisTextualData.Source
     /// </summary>
     class Program
     {
-        /// <summary>
-        /// Main entry point of the application.
-        /// </summary>
-        /// <param name="args">Command-line arguments.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        /// <exception cref="InvalidOperationException"></exception>
+
+        // Configure services
         public static async System.Threading.Tasks.Task Main(string[] args)
         {
-            // Configure services
-            var serviceProvider = ConfigureServices();
+
+             
+        var serviceProvider = ConfigureServices();
 
             // Get required services
             var textPreprocessor = serviceProvider.GetRequiredService<IPreprocessor>();
-            var invokeDoc = new SemanticSimilarityForDocumentsWithInputDataDynamic();
+            var invokeDoc = serviceProvider.GetRequiredService<ISimilarityService>()
+     as SemanticSimilarityForDocumentsWithInputDataDynamic;
+            // Pass logger to constructor
             var invokePhrases = new SemanticSimilarityPhrasesWithInputDataSet();
 
-            // Invoking HandlePreProcessing Method for the purpose of getting the user choice whether
-            // to decide analysis should run for phrase or documents with or without preprocessing
             bool isPreProcessRequiredFlag = await PreprocessingHandler.HandlePreprocessing(textPreprocessor);
-
-            // Invoking HandleProcessingChoice Method for the purpose of getting the user choice whether
-            // to decide similarity score should generate for phrases or documents
             await ProcessingHandler.HandleProcessingChoice(invokeDoc, invokePhrases, isPreProcessRequiredFlag);
 
             Console.WriteLine("Process completed.");
         }
 
-        /// <summary>
-        /// Configures the services required for the application.
-        /// </summary>
-        /// <returns>A ServiceProvider instance with the configured services.</returns>
         private static ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
+                .AddLogging(config =>
+                {
+                    config.AddConsole(); // ✅ Console logger
+                    config.SetMinimumLevel(LogLevel.Information);
+                })
                 .AddSingleton<IPreprocessor, TextPreprocessor>()
                 .AddSingleton<ISimilarityService, SemanticSimilarityForDocumentsWithInputDataDynamic>()
                 .AddSingleton<IEmbedding, SemanticSimilarityForDocumentsWithInputDataDynamic>()
                 .BuildServiceProvider();
         }
+
     }
 }

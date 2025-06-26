@@ -1,24 +1,40 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenAI.Embeddings;
 using SemanticAnalysisTextualData.Source.Interfaces;
 using SemanticAnalysisTextualData.Source.pojo;
 using SemanticAnalysisTextualData.Source.Utils;
 using SemanticAnalysisTextualData.Util;
+using System.Linq;
 
 namespace SemanticAnalysisTextualData.Source
 {
     /// <summary>
-    /// Provides methods for comparing the semantic similarity of documents using dynamic input data.
+    /// Service class for computing semantic similarity between documents by using OpenAI embeddings.
+    /// Supports dynamic input data and chunk-based processing.
     /// </summary>
     public class SemanticSimilarityForDocumentsWithInputDataDynamic : ISimilarityService, IEmbedding
     {
+        private readonly ILogger<SemanticSimilarityForDocumentsWithInputDataDynamic> _logger;
+
         /// <summary>
-        /// Invokes the document comparison process with the specified arguments.
+        /// Constructor for dependency injection.
         /// </summary>
-        /// <param name="isPreProcessRequiredFlag">The arguments for the document comparison process.</param>
+        public SemanticSimilarityForDocumentsWithInputDataDynamic(ILogger<SemanticSimilarityForDocumentsWithInputDataDynamic> logger)
+        {
+            _logger = logger;
+        }
+
+        public SemanticSimilarityForDocumentsWithInputDataDynamic()
+        {
+        }
+
+        /// <summary>
+        /// Entry point for invoking document similarity processing.
+        /// </summary>
+        /// <param name="isPreProcessRequiredFlag">Flag indicating whether to use preprocessed folders or raw input folders.</param>
         public async Task InvokeDocumentComparsion(bool isPreProcessRequiredFlag)
         {
-            // Configure services
             var serviceProvider = ConfigureServices();
             var textAnalysisService = serviceProvider.GetService<SemanticSimilarityForDocumentsWithInputDataDynamic>();
 
@@ -26,220 +42,232 @@ namespace SemanticAnalysisTextualData.Source
             {
                 try
                 {
-                    // Get source and target files based on preprocessing flag
                     var (sourceFiles, targetFiles) = GetSourceAndTargetFiles(isPreProcessRequiredFlag);
-
-                    // Compare documents asynchronously
                     var results = await CompareDocumentsAsync(sourceFiles, targetFiles);
-
-                    // Save results to CSV
                     CsvHelperUtil.SaveResultsToCsv(results);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error: {ex.Message}");
+                    _logger.LogError(ex, "Error during document comparison");
                 }
             }
         }
 
         /// <summary>
-        /// Configures the services required for the document comparison process.
+        /// Configures dependency injection services including logging.
         /// </summary>
-        /// <returns>A ServiceProvider instance with the configured services.</returns>
         public static ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<SemanticSimilarityForDocumentsWithInputDataDynamic>(provider => new SemanticSimilarityForDocumentsWithInputDataDynamic());
+            services.AddLogging(config =>
+            {
+           
+                config.SetMinimumLevel(LogLevel.Information);
+            });
+            services.AddSingleton<SemanticSimilarityForDocumentsWithInputDataDynamic>();
             return services.BuildServiceProvider();
         }
 
         /// <summary>
-        /// Gets the source and target files for the document comparison process.
+        /// Retrieves source and target file mappings from directory structure.
         /// </summary>
-        /// <returns>A tuple containing arrays of source and target file paths.</returns>
-        public (string[] sourceFiles, string[] targetFiles) GetSourceAndTargetFiles(bool isPreProcessRequiredFlag)
+        public (Dictionary<string, string[]> sourceMap, Dictionary<string, string[]> targetMap) GetSourceAndTargetFiles(bool isPreProcessRequiredFlag)
         {
-            // Get the project root directory
             string? projectRoot = AppContext.BaseDirectory;
             if (projectRoot == null)
-            {
                 throw new InvalidOperationException("Unable to determine the project root directory.");
-            }
 
-            // Define the base data folder and subfolders for source and target files
             string baseDataFolder = Path.Combine(projectRoot, Constants.BaseDataFolder);
-            string sourceFolder;
-            string targetFolder;
-            if (isPreProcessRequiredFlag)
-            {
-                sourceFolder = Path.Combine(baseDataFolder, Constants.ProcessedSourceFolder);
-                targetFolder = Path.Combine(baseDataFolder, Constants.ProcessedTargetFolder);
-            }
-            else
-            {
-                sourceFolder = Path.Combine(baseDataFolder, Constants.SourceFolder);
-                targetFolder = Path.Combine(baseDataFolder, Constants.TargetFolder);
-            }
+            string sourceRoot = Path.Combine(baseDataFolder, isPreProcessRequiredFlag ? Constants.ProcessedSourceFolder : Constants.SourceFolder);
+            string targetRoot = Path.Combine(baseDataFolder, isPreProcessRequiredFlag ? Constants.ProcessedTargetFolder : Constants.TargetFolder);
 
-            // Get the list of source and target files
-            string[] sourceFiles = Directory.GetFiles(sourceFolder, Constants.TextFileExtension);
-            string[] targetFiles = Directory.GetFiles(targetFolder, Constants.TextFileExtension);
+            var sourceMap = Directory.GetDirectories(sourceRoot)
+                .ToDictionary(
+                    dir => Path.GetFileName(dir),
+                    dir => Directory.GetFiles(dir, "*.*")
+                        .Where(f => f.EndsWith(".txt") || f.EndsWith(".pdf"))
+                        .ToArray());
 
-            return (sourceFiles, targetFiles);
+            var targetMap = Directory.GetDirectories(targetRoot)
+                .ToDictionary(
+                    dir => Path.GetFileName(dir),
+                    dir => Directory.GetFiles(dir, "*.*")
+                        .Where(f => f.EndsWith(".txt") || f.EndsWith(".pdf"))
+                        .ToArray());
+
+            return (sourceMap, targetMap);
         }
 
         /// <summary>
-        /// Compares the documents asynchronously and returns a list of document similarities.
+        /// Compares documents in corresponding source and target folders asynchronously.
         /// </summary>
-        /// <param name="sourceFiles">The source files to compare.</param>
-        /// <param name="targetFiles">The target files to compare.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains a list of document similarities.</returns>
-        public async Task<List<DocumentSimilarity>> CompareDocumentsAsync(string[] sourceFiles, string[] targetFiles)
+        public async Task<List<DocumentSimilarity>> CompareDocumentsAsync(Dictionary<string, string[]> sourceMap, Dictionary<string, string[]> targetMap)
         {
             var results = new List<DocumentSimilarity>();
-            foreach (var sourceFile in sourceFiles)
+
+            foreach (var category in sourceMap.Keys)
             {
-                string fileName1 = Path.GetFileName(sourceFile);
-                Console.WriteLine($"File Name: {fileName1}");
-
-                // Read the content of the source file
-                string sentence1 = await File.ReadAllTextAsync(sourceFile);
-
-                foreach (var targetFile in targetFiles)
+                if (!targetMap.ContainsKey(category))
                 {
-                    string fileName2 = Path.GetFileName(targetFile);
-                    Console.WriteLine($"File Name: {fileName2}");
+                    _logger.LogWarning("No matching target subfolder for category: {Category}", category);
+                    continue;
+                }
 
-                    // Read the content of the target file
-                    string sentence2 = await File.ReadAllTextAsync(targetFile);
+                var sourceFiles = sourceMap[category];
+                var targetFiles = targetMap[category];
 
-                    // Calculate the similarity between the source and target sentences
-                    var similarity = await CalculateEmbeddingAsync(sentence1, sentence2, fileName1, fileName2);
-                    Console.WriteLine($"Similarity between {fileName1} and {fileName2}: {similarity:F4}");
+                foreach (var sourceFile in sourceFiles)
+                {
+                    string sentence1 = await File.ReadAllTextAsync(sourceFile);
+                    string fileName1 = Path.GetFileName(sourceFile);
 
-                    // Create a DocumentSimilarity object and add it to the results list
-                    var phraseSimilarity = CreateDocumentSimilarity(fileName1, fileName2, similarity);
-                    Console.WriteLine($"File: {sourceFile}, Domain: {phraseSimilarity.domain}");
-                    results.Add(phraseSimilarity);
+                    foreach (var targetFile in targetFiles)
+                    {
+                        string sentence2 = await File.ReadAllTextAsync(targetFile);
+                        string fileName2 = Path.GetFileName(targetFile);
+
+                        float[] embedding1 = await GetAveragedEmbeddingAsync(sentence1, fileName1, Constants.EmbeddingValuesSuffix);
+                        float[] embedding2 = await GetAveragedEmbeddingAsync(sentence2, fileName2, Constants.EmbeddingValues1Suffix);
+
+                        var similarity = CalculateSimilarity(embedding1, embedding2);
+                        var similarityResult = CreateDocumentSimilarity(fileName1, fileName2, similarity, category);
+                        results.Add(similarityResult);
+                    }
                 }
             }
+
             return results;
         }
 
         /// <summary>
-        /// Creates a DocumentSimilarity object based on the file names and similarity score.
+        /// Constructs a DocumentSimilarity object with similarity score and domain category.
         /// </summary>
-        /// <param name="fileName1">The name of the first file.</param>
-        /// <param name="fileName2">The name of the second file.</param>
-        /// <param name="similarity">The similarity score between the two files.</param>
-        /// <returns>A DocumentSimilarity object.</returns>
-        public DocumentSimilarity CreateDocumentSimilarity(string fileName1, string fileName2, double similarity)
+        public DocumentSimilarity CreateDocumentSimilarity(string fileName1, string fileName2, double similarity, string domain)
         {
-            var phraseSimilarity = new DocumentSimilarity
+            return new DocumentSimilarity
             {
                 FileName1 = fileName1,
                 FileName2 = fileName2,
-                SimilarityScore = similarity
+                SimilarityScore = similarity,
+                domain = domain
             };
-
-            // Determine the domain based on the file name
-            if (fileName1.StartsWith("preprocessed_JobProfile", StringComparison.OrdinalIgnoreCase))
-            {
-                phraseSimilarity.domain = Constants.JobProfileDomain;
-            }
-            else if (fileName1.StartsWith("preprocessed_MedicalHistory", StringComparison.OrdinalIgnoreCase))
-            {
-                phraseSimilarity.domain = Constants.MedicalHistoryDomain;
-            }
-            else
-            {
-                phraseSimilarity.domain = Constants.UnknownDomain; // Default or fallback domain
-            }
-
-            return phraseSimilarity;
         }
 
         /// <summary>
-        /// Calculates the embedding similarity between two texts asynchronously.
+        /// Computes averaged embedding from chunked text using OpenAI client.
         /// </summary>
-        /// <param name="text1">The first text to compare.</param>
-        /// <param name="text2">The second text to compare.</param>
-        /// <param name="fileName1">The name of the first file.</param>
-        /// <param name="fileName2">The name of the second file.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
-        public async Task<double> CalculateEmbeddingAsync(string text1, string text2, string fileName1, string fileName2)
+        private async Task<float[]> GetAveragedEmbeddingAsync(string text, string fileName, string suffix)
+        {
+            const int chunkSize = 3000;
+            var client = new EmbeddingClient(Constants.EmbeddingModel, Environment.GetEnvironmentVariable(Constants.OpenAIAPIKeyEnvVar));
+            var chunks = ChunkText(text, chunkSize);
+            var embeddings = new List<float[]>();
+
+            foreach (var chunk in chunks)
+            {
+                try
+                {
+                    OpenAIEmbeddingCollection response = await client.GenerateEmbeddingsAsync(new List<string> { chunk });
+                    if (response.Count > 0)
+                    {
+                        float[] vector = response[0].ToFloats().ToArray();
+                        embeddings.Add(vector);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to get embedding for a chunk in file: {FileName}", fileName);
+                }
+            }
+
+            if (embeddings.Count == 0)
+            {
+                _logger.LogWarning("No embeddings generated for file: {FileName}", fileName);
+                return Array.Empty<float>();
+            }
+
+            float[] averaged = AverageVectors(embeddings);
+            SaveEmbedding(fileName, averaged, suffix);
+            return averaged;
+        }
+
+        /// <summary>
+        /// Writes the embedding vector to a file.
+        /// </summary>
+        private void SaveEmbedding(string fileName, float[] embedding, string suffix)
         {
             try
             {
-                // Initialize the embedding client with the API key
-                EmbeddingClient client = new(Constants.EmbeddingModel, Environment.GetEnvironmentVariable(Constants.OpenAIAPIKeyEnvVar));
-                List<string> inputs = new() { text1, text2 };
-
-                // Generate embeddings for the input texts
-                OpenAIEmbeddingCollection collection = await client.GenerateEmbeddingsAsync(inputs);
-
-                // Convert the embeddings to float arrays
-                float[] embedding1 = collection[0].ToFloats().ToArray();
-                float[] embedding2 = collection[1].ToFloats().ToArray();
-
-                // Save the embeddings to CSV files
-                File.WriteAllLines(fileName1 + Constants.EmbeddingValuesSuffix, embedding1.Select(v => v.ToString()));
-                File.WriteAllLines(fileName2 + Constants.EmbeddingValues1Suffix, embedding2.Select(v => v.ToString()));
-
-                // Print scalar values for the embeddings
-                Console.WriteLine("Scalar values for text1:");
-                PrintScalarValues(embedding1);
-
-                Console.WriteLine("Scalar values for text2:");
-                PrintScalarValues(embedding2);
-
-                // Calculate the similarity between the embeddings
-                var similarity = CalculateSimilarity(embedding1, embedding2);
-                Console.WriteLine($"Embedding1 length: {embedding1.Length}, Embedding2 length: {embedding2.Length}");
-
-                return similarity;
+                File.WriteAllLines(fileName + suffix, embedding.Select(v => v.ToString()));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error calculating similarity: {ex.Message}");
-                return 0;
+                _logger.LogError(ex, "Failed to save embedding for file: {FileName}", fileName);
             }
         }
 
         /// <summary>
-        /// Prints each scalar value in the embedding.
+        /// Splits a large text into smaller chunks of defined character size.
         /// </summary>
-        /// <param name="embedding">The embedding array containing scalar values.</param>
-        public static void PrintScalarValues(float[] embedding)
+        private List<string> ChunkText(string text, int chunkSize)
         {
-            // Print each scalar value in the embedding
-            for (int i = 0; i < embedding.Length; i++)
+            var chunks = new List<string>();
+            for (int i = 0; i < text.Length; i += chunkSize)
             {
-                Console.WriteLine($"Word {i + 1}: {embedding[i]}");
+                chunks.Add(text.Substring(i, Math.Min(chunkSize, text.Length - i)));
+            }
+            return chunks;
+        }
+
+        /// <summary>
+        /// Averages a list of embedding vectors into a single vector.
+        /// </summary>
+        private float[] AverageVectors(List<float[]> vectors)
+        {
+            int length = vectors[0].Length;
+            float[] average = new float[length];
+
+            foreach (var vec in vectors)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    average[i] += vec[i];
+                }
+            }
+
+            for (int i = 0; i < length; i++)
+            {
+                average[i] /= vectors.Count;
+            }
+
+            return average;
+        }
+
+        /// <summary>
+        /// Logs the first 10 scalar values from an embedding for debugging.
+        /// </summary>
+        public void PrintScalarValues(float[] embedding)
+        {
+            for (int i = 0; i < Math.Min(10, embedding.Length); i++)
+            {
+                _logger.LogInformation("Value {Index}: {Value}", i + 1, embedding[i]);
             }
         }
 
         /// <summary>
-        /// Calculates the similarity between two embeddings.
+        /// Calculates cosine similarity between two float vectors.
         /// </summary>
-        /// <param name="embedding1">The first embedding vector.</param>
-        /// <param name="embedding2">The second embedding vector.</param>
-        /// <returns>The similarity score between the two embeddings.</returns>
         public double CalculateSimilarity(float[] embedding1, float[] embedding2)
         {
             try
             {
-                // Ensure the embeddings have the same length
-                if (embedding1.Length != embedding2.Length)
-                {
+                if (embedding1.Length != embedding2.Length || embedding1.Length == 0)
                     return 0;
-                }
 
                 double dotProduct = 0.0;
                 double magnitude1 = 0.0;
                 double magnitude2 = 0.0;
 
-                // Calculate the dot product and magnitudes of the embeddings
                 for (int i = 0; i < embedding1.Length; i++)
                 {
                     dotProduct += embedding1[i] * embedding2[i];
@@ -250,32 +278,27 @@ namespace SemanticAnalysisTextualData.Source
                 magnitude1 = Math.Sqrt(magnitude1);
                 magnitude2 = Math.Sqrt(magnitude2);
 
-                // Ensure the magnitudes are not zero
                 if (magnitude1 == 0.0 || magnitude2 == 0.0)
-                {
-                    throw new ArgumentException("Embedding vectors must not have zero magnitude.");
-                }
+                    return 0;
 
-                Console.WriteLine("Magnitude 1 and 2 is" + magnitude1 + "and" + magnitude2);
-
-                // Calculate the cosine similarity
-                double cosineSimilarity = dotProduct / (magnitude1 * magnitude2);
-                return cosineSimilarity;
+                return dotProduct / (magnitude1 * magnitude2);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error calculating cosine similarity: {ex.Message}");
+                _logger.LogError(ex, "Error calculating cosine similarity");
                 return 0;
             }
         }
 
         /// <summary>
-        /// Calculates the similarity between two texts asynchronously.
+        /// Not implemented. Included for interface completeness.
         /// </summary>
-        /// <param name="text1">The first text to compare.</param>
-        /// <param name="text2">The second text to compare.</param>
-        /// <returns>A task that represents the asynchronous operation. The task result contains the similarity score.</returns>
         public Task<double> CalculateSimilarityAsync(string text1, string text2)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<double> IEmbedding.CalculateEmbeddingAsync(string text1, string text2, string fileName1, string fileName2)
         {
             throw new NotImplementedException();
         }

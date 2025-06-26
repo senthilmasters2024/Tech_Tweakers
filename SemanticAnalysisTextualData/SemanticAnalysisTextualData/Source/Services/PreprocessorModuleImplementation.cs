@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
 namespace SemanticAnalysisTextualData.Source
 {
     /// <summary>
@@ -239,18 +240,13 @@ namespace SemanticAnalysisTextualData.Source
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task SaveDocumentsAsync(string documentType, IEnumerable<string> documents, string outputFolder)
         {
-
-            string documentPath = Path.Combine(outputFolder, "Documents");
-
-            Directory.CreateDirectory(documentPath);// Ensure the Documents folder exists
-
-
+            string documentPath = Path.Combine(outputFolder, "Documents", documentType);
+            Directory.CreateDirectory(documentPath); // Ensure the subfolder exists
 
             string filePath = Path.Combine(documentPath, "preprocessed_documents.txt");
-
             await File.WriteAllLinesAsync(filePath, documents);
-
         }
+
 
 
         /// <summary>
@@ -364,6 +360,16 @@ namespace SemanticAnalysisTextualData.Source
         }
 
 
+        public async Task ProcessAllDocumentFoldersAsync(string documentsFolder, string outputFolder)
+        {
+            foreach (var typeFolder in Directory.GetDirectories(documentsFolder))
+            {
+                string documentType = Path.GetFileName(typeFolder);
+                await ProcessAndSaveDocumentsAsync(documentType, documentsFolder, outputFolder);
+            }
+        }
+
+
 
         /// <summary>
         /// Processes and saves documents asynchronously.
@@ -374,7 +380,7 @@ namespace SemanticAnalysisTextualData.Source
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task ProcessAndSaveDocumentsAsync(string documentType, string documentsFolder, string outputFolder)
         {
-            string documentPath = Path.Combine(documentsFolder, documentType); // Select the document type folder
+            string documentPath = Path.Combine(documentsFolder, documentType); // e.g., Documents/Job
 
             if (!Directory.Exists(documentPath))
             {
@@ -383,17 +389,17 @@ namespace SemanticAnalysisTextualData.Source
             }
 
             string outputDocumentPath = Path.Combine(outputFolder, "Documents", documentType);
-            Directory.CreateDirectory(outputDocumentPath); // Ensure the output folder exists
+            Directory.CreateDirectory(outputDocumentPath); // e.g., Output/Documents/Job
 
             var files = Directory.GetFiles(documentPath, "*.txt");
 
             if (files.Length == 0)
             {
-                Console.WriteLine($" No text files found in '{documentPath}'. Skipping.");
+                Console.WriteLine($"No text files found in '{documentPath}'. Skipping.");
                 return;
             }
 
-            Console.WriteLine($" Processing {files.Length} documents from {documentPath}...");
+            Console.WriteLine($"Processing {files.Length} documents from {documentPath}...");
 
             foreach (var file in files)
             {
@@ -407,11 +413,12 @@ namespace SemanticAnalysisTextualData.Source
                 }
 
                 string preprocessedContent = PreprocessText(fileContent, TextDataType.Document);
-                string outputFilePath = Path.Combine(outputDocumentPath, fileName); // Save as same filename
-
+                string outputFilePath = Path.Combine(outputDocumentPath, fileName); // Keep original filename
                 await File.WriteAllTextAsync(outputFilePath, preprocessedContent);
+
                 Console.WriteLine($"Preprocessed and saved: {outputFilePath}");
             }
         }
+
     }
 }
