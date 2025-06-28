@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using OpenAI.Embeddings;
 using SemanticAnalysisTextualData.Source.Interfaces;
 using SemanticAnalysisTextualData.Source.pojo;
+using SemanticAnalysisTextualData.Source.Services;
 using SemanticAnalysisTextualData.Source.Utils;
 using SemanticAnalysisTextualData.Util;
 using System.Linq;
@@ -42,7 +43,10 @@ namespace SemanticAnalysisTextualData.Source
             {
                 try
                 {
+
+                    
                     var (sourceFiles, targetFiles) = GetSourceAndTargetFiles(isPreProcessRequiredFlag);
+                    await LoadTrainingDataAsync("C:\\MyWork\\Tech_Tweakers\\SemanticAnalysisTextualData\\SemanticAnalysisTextualData\\data\\SourceBasedOnNeededRelevance");
                     var results = await CompareDocumentsAsync(sourceFiles, targetFiles);
                     CsvHelperUtil.SaveResultsToCsv(results);
                 }
@@ -118,12 +122,13 @@ namespace SemanticAnalysisTextualData.Source
 
                 foreach (var sourceFile in sourceFiles)
                 {
-                    string sentence1 = await File.ReadAllTextAsync(sourceFile);
+                    string sentence1 = await ReadTextContentAsync(sourceFile);
                     string fileName1 = Path.GetFileName(sourceFile);
 
                     foreach (var targetFile in targetFiles)
                     {
-                        string sentence2 = await File.ReadAllTextAsync(targetFile);
+                        string sentence2 = await ReadTextContentAsync(targetFile);
+                        //string sentence2 = await File.ReadAllTextAsync(targetFile);
                         string fileName2 = Path.GetFileName(targetFile);
 
                         float[] embedding1 = await GetAveragedEmbeddingAsync(sentence1, fileName1, Constants.EmbeddingValuesSuffix);
@@ -290,6 +295,37 @@ namespace SemanticAnalysisTextualData.Source
             }
         }
 
+        private async Task<string> ReadTextContentAsync(string filePath)
+        {
+            if (filePath.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                return await File.ReadAllTextAsync(filePath);
+            }
+            else if (filePath.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    using var document = UglyToad.PdfPig.PdfDocument.Open(filePath);
+                    var textBuilder = new System.Text.StringBuilder();
+
+                    foreach (var page in document.GetPages())
+                    {
+                        textBuilder.AppendLine(page.Text);
+                    }
+
+                    return textBuilder.ToString();
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogWarning(ex, "Failed to extract text from PDF: {FilePath}", filePath);
+                    return string.Empty;
+                }
+            }
+
+            return string.Empty;
+        }
+
+
         /// <summary>
         /// Not implemented. Included for interface completeness.
         /// </summary>
@@ -302,5 +338,6 @@ namespace SemanticAnalysisTextualData.Source
         {
             throw new NotImplementedException();
         }
+
     }
 }
