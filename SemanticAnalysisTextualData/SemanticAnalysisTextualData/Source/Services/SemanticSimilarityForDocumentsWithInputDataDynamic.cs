@@ -339,5 +339,60 @@ namespace SemanticAnalysisTextualData.Source
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Loads training data for classification by generating embeddings and associated domain labels
+        /// from the structured source folders (e.g., Source/Job, Source/Healthcare).
+        /// </summary>
+        /// <param name="baseSourceFolder">
+        /// The root folder path containing subdirectories named by domain (e.g., "Job", "Finance", etc.).
+        /// Each subfolder contains text or PDF documents used as training examples for that domain.
+        /// </param>
+        /// <returns>
+        /// A tuple containing:
+        /// - A list of float arrays representing embeddings for each document.
+        /// - A list of corresponding domain labels for those embeddings (same order).
+        /// </returns>
+        /// <remarks>
+        /// This method processes all subfolders under <paramref name="baseSourceFolder"/>.
+        /// Each document is read and converted to an embedding using OpenAI.
+        /// Embeddings are averaged if documents exceed chunk size and saved to disk
+        /// using a suffix (e.g., "_embedding1.txt") to prevent recomputation.
+        /// </remarks>
+        public async Task<(List<float[]> embeddings, List<string> labels)> LoadTrainingDataAsync(string baseSourceFolder)
+        {
+            var embeddings = new List<float[]>(); // List to store vector embeddings of all documents
+            var labels = new List<string>();      // List to store domain/category label for each embedding
+
+            // Iterate over each subfolder in the base source directory (each represents a domain)
+            foreach (var domainFolder in Directory.GetDirectories(baseSourceFolder))
+            {
+                var domain = Path.GetFileName(domainFolder); // e.g., "Job", "Healthcare", etc.
+
+                // Get all .txt and .pdf files within the current domain folder
+                var files = Directory.GetFiles(domainFolder, "*.*")
+                                     .Where(f => f.EndsWith(".txt") || f.EndsWith(".pdf"));
+
+                // Process each file in the current domain folder
+                foreach (var file in files)
+                {
+                    // Read text content from the file (supporting both TXT and PDF)
+                    string content = await ReadTextContentAsync(file);
+
+                    // Generate (or reuse if already cached) the averaged embedding for the document
+                    float[] embedding = await GetAveragedEmbeddingAsync(content, file, Constants.EmbeddingValues1Suffix);
+
+                    // Only add non-empty embeddings to the training set
+                    if (embedding.Length > 0)
+                    {
+                        embeddings.Add(embedding); // Add the embedding vector to the list
+                        labels.Add(domain);        // Add the corresponding domain label
+                    }
+                }
+            }
+
+            // Return both embeddings and their labels for training use (e.g., KNN)
+            return (embeddings, labels);
+        }
+
     }
 }
