@@ -36,7 +36,8 @@
     <PackageReference Include="System.Net.Http.Json" Version="9.0.3" />
     <PackageReference Include="TiktokenSharp" Version="1.1.7" />
 	  <PackageReference Include="VaultSharp" Version="1.17.5.1" />
- 
+	  <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+
   </ItemGroup>
 
   <ItemGroup>

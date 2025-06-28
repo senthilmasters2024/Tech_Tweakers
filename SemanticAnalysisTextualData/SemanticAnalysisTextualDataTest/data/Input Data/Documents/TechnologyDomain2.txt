@@ -1,8 +1,0 @@
-Job Title: Systems Architect
-Location: Austin, TX
-Description:
-- Design and implement complex IT systems that meet the needs of the business.
-- Work with developers to ensure that software applications are scalable and efficient.
-- Analyze and optimize system performance.
-- Expertise in cloud computing, microservices, and containerization technologies.
-- Experience with Azure, Docker, Kubernetes, and system integration.

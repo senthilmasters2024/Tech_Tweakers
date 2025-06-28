@@ -1,8 +1,0 @@
-Job Title: Software Engineer
-Location: San Francisco, CA
-Description:
-- Design, develop, and maintain software applications.
-- Write clean, maintainable, and efficient code.
-- Collaborate with cross-functional teams to define and implement new features.
-- Strong knowledge of Java, Python, and cloud technologies such as AWS.
-- BS in Computer Science or related field required.

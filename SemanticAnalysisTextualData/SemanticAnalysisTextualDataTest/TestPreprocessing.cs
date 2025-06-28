@@ -1,15 +1,27 @@
-﻿namespace SemanticAnalysisTextualData
+﻿using SemanticAnalysisTextualData.Source;
+
+namespace SemanticAnalysisTextualData.source
 {
+    /// <summary>
+    /// Unit tests for the TextPreprocessor class to ensure correct functionality of its methods.
+    /// </summary>
     [TestClass]
     public class TextPreprocessorTests
     {
         TextPreprocessor _textPreprocessor = new TextPreprocessor();
 
+        /// <summary>
+        /// Initializes the test setup.
+        /// </summary>
         [TestInitialize]
         public void Setup()
         {
             _textPreprocessor = new TextPreprocessor();
         }
+
+        /// <summary>
+        /// Tests the InitializeTextData method to ensure it sets properties correctly.
+        /// </summary>
         [TestMethod]
         public void InitializeTextData_ShouldSetPropertiesCorrectly()
         {
@@ -27,6 +39,9 @@
             Assert.AreEqual(filePath, _textPreprocessor.FilePath);
         }
 
+        /// <summary>
+        /// Tests the PreprocessText method to ensure it converts text to lowercase.
+        /// </summary>
         [TestMethod]
         public void PreprocessText_ShouldConvertToLowercase()
         {
@@ -37,31 +52,52 @@
             Console.WriteLine($"Actual Output: {result}");
             Assert.AreEqual(expected, result);
         }
+
+        /// <summary>
+        /// Tests the PreprocessText method to ensure it removes HTML tags and URLs.
+        /// </summary>
         public void PreprocessText_ShouldRemoveHtmlTagsAndUrls()
         {
+            // URL and tags should be removed
             string input = "<b>Hello</b> Visit http://example.com";
-            string expected = "hello visit";  // URL and tags should be removed
+            string expected = "hello visit";
             string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
 
+        /// <summary>
+        /// Tests the PreprocessText method to ensure it normalizes contractions.
+        /// </summary>
         [TestMethod]
         public void PreprocessText_ShouldNormalizeContractions()
         {
+            //Normalization of words
+            //Arrange
             string input = "I can't do this";
             string expected = "i cannot do";
-            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
-            Assert.AreEqual(expected, result);
-        }
-        [TestMethod]
-        public void PreprocessText_ShouldRemoveSpecialCharacters()
-        {
-            string input = "Work hard, for a better future!";
-            string expected = "work hard good future";
+            //Act
             string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
             Assert.AreEqual(expected, result);
         }
 
+        /// <summary>
+        /// Tests the PreprocessText method to ensure it removes special characters.
+        /// </summary>
+        [TestMethod]
+        public void PreprocessText_ShouldRemoveSpecialCharacters()
+        {
+            //Removed Unwanted words
+            //Arrange
+            string input = "Work hard, for a better future!";
+            string expected = "work hard good future";
+            //Act
+            string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
+            Assert.AreEqual(expected, result);
+        }
+
+        /// <summary>
+        /// Tests the PreprocessText method to ensure it removes stop words.
+        /// </summary>
         [TestMethod]
         public void PreprocessText_ShouldRemoveStopWords()
         {
@@ -70,11 +106,13 @@
             string expected = "quick brown fox"; // Stop words should be removed
             //Act
             string result = _textPreprocessor.PreprocessText(input, TextDataType.Phrase);
+            //Assert
             Assert.AreEqual(expected, result);
         }
 
-
-
+        /// <summary>
+        /// Tests the PreprocessText method to ensure it lemmatizes words.
+        /// </summary>
         [TestMethod]
         public void PreprocessText_ShouldLemmatizeWords()
         {
@@ -88,17 +126,25 @@
             // Assert
             Assert.AreEqual(expected, result);
         }
+
+        /// <summary>
+        /// Tests the LemmatizeWord method to ensure it returns the correct lemma.
+        /// </summary>
         [TestMethod]
         public void LemmatizeWord_ShouldReturnCorrectLemma()
         {
+            // No lemma mapping, should return itself
             // Act & Assert
             Assert.AreEqual("run", TextPreprocessor.LemmatizeWord("running"));
             Assert.AreEqual("good", TextPreprocessor.LemmatizeWord("better"));
             Assert.AreEqual("go", TextPreprocessor.LemmatizeWord("went"));
             Assert.AreEqual("be", TextPreprocessor.LemmatizeWord("is"));
-            Assert.AreEqual("test", TextPreprocessor.LemmatizeWord("test")); // No lemma mapping, should return itself
+            Assert.AreEqual("test", TextPreprocessor.LemmatizeWord("test"));
         }
 
+        /// <summary>
+        /// Tests the LemmatizeText method to ensure it lemmatizes a sentence.
+        /// </summary>
         [TestMethod]
         public void LemmatizeText_ShouldLemmatizeSentence()
         {
@@ -111,9 +157,14 @@
 
             Assert.AreEqual(expected, result);
         }
+
+        /// <summary>
+        /// Tests the SavePhrasesAsync method to ensure it creates a file.
+        /// </summary>
         [TestMethod]
         public async Task SavePhrasesAsync_ShouldCreateFile()
         {
+            //Save to Output folder
             // Arrange
             string domain = "TestDomain";
             string outputFolder = "TestOutput";
@@ -131,9 +182,11 @@
             Directory.Delete(outputFolder, true);
         }
 
+
         [TestMethod]
         public async Task SaveDocumentsAsync_ShouldCreateFile()
         {
+            //Save to  Output folder
             // Arrange
             string documentType = "TestDocs";
             string outputFolder = "TestOutput";
@@ -154,6 +207,8 @@
         [TestMethod]
         public async Task SaveWordsAsync_ShouldCreateFile()
         {
+            //Save words to output folder 
+            //Arrange
             string domainName = "TestDomain";
             string outputFolder = "TestOutput";
             Directory.CreateDirectory(outputFolder);
@@ -174,6 +229,7 @@
         [TestMethod]
         public void SaveProcessedContent_ShouldSaveContentToFile()
         {
+            //Processed word saving
             // Arrange
             var preprocessor = new TextPreprocessor();
             string testName = "TestFile";
@@ -191,7 +247,7 @@
             string savedContent = File.ReadAllText(expectedFilePath);
             Assert.AreEqual(testContent, savedContent, "The content of the file is not as expected.");
 
-            
+
         }
     }
 }

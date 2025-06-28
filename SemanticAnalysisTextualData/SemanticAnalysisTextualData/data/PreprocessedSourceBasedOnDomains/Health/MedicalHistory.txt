@@ -1,0 +1,24 @@
+Patient Name: John Doe
+Age: 58
+Gender: Male
+Medical History:
+
+Hypertension: Diagnosed 10 years ago, currently on Losartan.
+High Cholesterol: LDL levels elevated, managed with Atorvastatin.
+Coronary Artery Disease (CAD): Diagnosed 5 years ago, had a mild heart attack.
+Diabetes Type 2: Well-controlled with Metformin and dietary management.
+Osteoarthritis: Experiencing mild joint pain, especially in knees.
+Gastric Issues: Occasional acid reflux but no history of ulcers or major GI bleeding.
+Current Medications:
+
+Losartan (50 mg) – for blood pressure control
+Atorvastatin (20 mg) – for cholesterol management
+Metformin (1000 mg/day) – for diabetes control
+Omeprazole (20 mg) – for acid reflux
+Occasional Ibuprofen for joint pain
+Physician Notes & Recommendations:
+
+Due to the patient’s history of Coronary Artery Disease, Aspirin (81 mg daily) is recommended as a preventive measure to reduce the risk of heart attack or stroke.
+Patient should monitor for signs of gastric irritation due to Aspirin use and continue taking Omeprazole if needed.
+Ibuprofen should be used cautiously as long-term NSAID use may pose cardiovascular risks.
+Regular blood pressure and blood sugar monitoring are advised.
